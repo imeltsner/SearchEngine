@@ -21,9 +21,12 @@ public class Driver {
 
 	/**
 	 * Reads a file, cleans each word and stems words
-	 * Adds stememd words to a list
+	 * Adds file name and count of stememd words to a map
+	 * Outputs pretty JSON format of file name and count of words in file
 	 * @param input path of the file
-	 * @return list of stems
+	 * @param inString relative path of file as a string
+	 * @param outFile path to file where JSON format will be output
+	 * @return map of file name and count of words
 	 * @throws IOException
 	 */
 	public static HashMap<String, Integer> processFile(Path input, String inString, Path outFile) throws IOException {
@@ -36,6 +39,13 @@ public class Driver {
 		return obj;
 	}
 
+	/**
+	 * Recursivley iterates through a directory
+	 * and outputs file names and word counts
+	 * @param inPath path to directory
+	 * @param outFile path to output file
+	 * @throws IOException
+	 */
 	public static void processDir(Path inPath, Path outFile) throws IOException {
 		DirectoryStream<Path> stream = Files.newDirectoryStream(inPath);
 		var iterator = stream.iterator();
@@ -94,7 +104,8 @@ public class Driver {
 			try {
 				processDir(inPath, outFile);
 			} catch (IOException e) {
-				System.out.println("File not found");			}
+				System.out.println("File not found");			
+			}
 		}
 		else {
 			try {
