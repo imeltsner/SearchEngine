@@ -1,6 +1,7 @@
 package edu.usfca.cs272;
 
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -35,6 +36,26 @@ public class Driver {
 		return obj;
 	}
 
+	public static void processDir(Path inPath, Path outFile) throws IOException {
+		DirectoryStream<Path> stream = Files.newDirectoryStream(inPath);
+		var iterator = stream.iterator();
+		while (iterator.hasNext()) {
+			Path item = iterator.next();
+			if (Files.isDirectory(item)) {
+				System.out.println("In directory: " + item.toString());
+				processDir(item, outFile);
+			}
+			else {
+				if (item.toString().contains(".txt") || item.toString().contains(".text")) {
+					System.out.println("Processing file: " + item.toString());
+					processFile(item.toAbsolutePath(), item.toAbsolutePath().toString().replace(PATH_START, ""), outFile);
+				}
+				else {
+					continue;
+				}
+			}
+		}
+	}
 
 	/**
 	 * Initializes the classes necessary based on the provided command-line 
@@ -46,7 +67,7 @@ public class Driver {
 	public static void main(String[] args) {
 		String inString = "";
 		String outString = "";
-		Path inFile = null;
+		Path inPath = null;
 		Path outFile = null;
 
 		//Arg processing
@@ -54,7 +75,7 @@ public class Driver {
 			if (args[i].equals("-text")) {
 				inString = args[++i];
 			}
-			if (args[i].equals("-counts")) {
+			else if (args[i].equals("-counts")) {
 				try {
 					outString = args[++i];
 				} catch (IndexOutOfBoundsException e) {
@@ -63,17 +84,25 @@ public class Driver {
 			}
 		}
 
+		//create path objects
 		if (!inString.isEmpty()) {
-			inFile = Path.of(PATH_START,  inString);
+			inPath = Path.of(PATH_START,  inString);
 		}
 		outFile = Path.of(PATH_START, outString);
 
-		try {
-			HashMap<String, Integer> obj = processFile(inFile, inString, outFile);
-		} catch (IOException e) {
-			System.out.println("File not found");
+		if (Files.isDirectory(inPath)) {
+			try {
+				processDir(inPath, outFile);
+			} catch (IOException e) {
+				System.out.println("File not found");			}
 		}
-
+		else {
+			try {
+				HashMap<String, Integer> obj = processFile(inPath, inString, outFile);
+			} catch (IOException e) {
+				System.out.println("File not found");
+			}
+		}
 		
 	}
 }
