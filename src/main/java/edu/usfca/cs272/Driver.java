@@ -16,6 +16,8 @@ import java.util.HashMap;
  */
 public class Driver {
 
+	public static final String PATH_START = "/Users/isaacmeltsner/Desktop/CS/CS272-C/SearchEngine/project-tests/";
+
 	/**
 	 * Reads a file, cleans each word and stems words
 	 * Adds stememd words to a list
@@ -24,9 +26,11 @@ public class Driver {
 	 * @throws IOException
 	 */
 	public static HashMap<String, Integer> processFile(Path input, String inString, Path outFile) throws IOException {
-		ArrayList<String> stems = FileStemmer.listStems(input);
 		HashMap<String, Integer> obj = new HashMap<>();
-		obj.put(inString, stems.size());
+		ArrayList<String> stems = FileStemmer.listStems(input);
+		if (stems.size() != 0) {
+			obj.put(inString, stems.size());
+		}
 		JsonWriter.writeObject(obj, outFile);
 		return obj;
 	}
@@ -60,9 +64,9 @@ public class Driver {
 		}
 
 		if (!inString.isEmpty()) {
-			inFile = Path.of("/Users/isaacmeltsner/Desktop/CS/CS272-C/SearchEngine/project-tests/",  inString);
+			inFile = Path.of(PATH_START,  inString);
 		}
-		outFile = Path.of("/Users/isaacmeltsner/Desktop/CS/CS272-C/SearchEngine/project-tests/", outString);
+		outFile = Path.of(PATH_START, outString);
 
 		try {
 			HashMap<String, Integer> obj = processFile(inFile, inString, outFile);
