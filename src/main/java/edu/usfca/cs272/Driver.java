@@ -36,14 +36,31 @@ public class Driver {
 	 * @param args flag/value pairs used to start this program
 	 */
 	public static void main(String[] args) {
-		Path input = Path.of("/Users/isaacmeltsner/Desktop/CS/CS272-C/SearchEngine/project-tests/input/text/simple/hello.txt");
-		if (!Files.isDirectory(input)) {
-			try {
-				ArrayList<String> stems = processFile(input);
-	
-			} catch (IOException e) {
-				System.out.println("File not found");
+		String inString = "";
+		String outString = "";
+		Path inFile = null;
+		Path outFile = null;
+
+		//Arg processing
+		for (int i = 0; i < args.length; i++) {
+			if (args[i].equals("-text")) {
+				inString = args[++i];
+			}
+			if (args[i].equals("-counts")) {
+				try {
+					outString = args[++i];
+				} catch (IndexOutOfBoundsException e) {
+					outString = "counts.json";
+				}
 			}
 		}
+
+		if (!inString.isEmpty()) {
+			inFile = Path.of("/Users/isaacmeltsner/Desktop/CS/CS272-C/SearchEngine/project-tests/",  inString);
+		}
+		outFile = Path.of("/Users/isaacmeltsner/Desktop/CS/CS272-C/SearchEngine/project-tests/", outString);
+
+		System.out.println("Input file: " + inFile.toString());
+		System.out.println("Output file: " + outFile.toString() );
 	}
 }
