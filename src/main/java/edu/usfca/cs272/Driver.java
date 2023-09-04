@@ -14,6 +14,14 @@ import java.util.ArrayList;
  * @version Fall 2023
  */
 public class Driver {
+
+	/**
+	 * Reads a file, cleans each word and stems words
+	 * Adds stememd words to a list
+	 * @param input path of the file
+	 * @return list of stems
+	 * @throws IOException
+	 */
 	public static ArrayList<String> processFile(Path input) throws IOException {
 		ArrayList<String> stems = FileStemmer.listStems(input);
 		return stems;
@@ -21,7 +29,7 @@ public class Driver {
 
 
 	/**
-	 * Initializes the classes necessary based on the provided command-line
+	 * Initializes the classes necessary based on the provided command-line 
 	 * arguments. This includes (but is not limited to) how to build or search an
 	 * inverted index.
 	 *
