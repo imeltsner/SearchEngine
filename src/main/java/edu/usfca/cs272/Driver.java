@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Class responsible for running this project based on the provided command-line
@@ -22,9 +23,12 @@ public class Driver {
 	 * @return list of stems
 	 * @throws IOException
 	 */
-	public static ArrayList<String> processFile(Path input) throws IOException {
+	public static HashMap<String, Integer> processFile(Path input, String inString, Path outFile) throws IOException {
 		ArrayList<String> stems = FileStemmer.listStems(input);
-		return stems;
+		HashMap<String, Integer> obj = new HashMap<>();
+		obj.put(inString, stems.size());
+		JsonWriter.writeObject(obj, outFile);
+		return obj;
 	}
 
 
@@ -60,7 +64,12 @@ public class Driver {
 		}
 		outFile = Path.of("/Users/isaacmeltsner/Desktop/CS/CS272-C/SearchEngine/project-tests/", outString);
 
-		System.out.println("Input file: " + inFile.toString());
-		System.out.println("Output file: " + outFile.toString() );
+		try {
+			HashMap<String, Integer> obj = processFile(inFile, inString, outFile);
+		} catch (IOException e) {
+			System.out.println("File not found");
+		}
+
+		
 	}
 }
