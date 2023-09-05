@@ -47,6 +47,10 @@ public class Driver {
 					outString = "counts.json";
 				}
 			}
+			else {
+				System.out.println("Invalid flag");
+				break;
+			}
 		}
 
 		//create path objects
@@ -54,8 +58,6 @@ public class Driver {
 			inPath = Path.of(PATH_START,  inString);
 		}
 		outFile = Path.of(PATH_START, outString);
-		System.out.println("InFile: " + inPath.toString());
-		System.out.println("OutFile: " + outFile.toString());
 
 		//iterate through directories and output counts to files
 		TreeMap<String, Integer> map = new TreeMap<>();
@@ -69,6 +71,8 @@ public class Driver {
 			}
 			JsonWriter.writeObject(processor.getMap(), outFile);
 		} catch (IOException e) {
+			System.out.println("File not found");
+		} catch (NullPointerException e) {
 			System.out.println("File not found");
 		}
 	}
