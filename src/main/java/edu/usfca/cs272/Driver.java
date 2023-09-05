@@ -1,11 +1,9 @@
 package edu.usfca.cs272;
 
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.TreeMap;
 
 /**
  * Class responsible for running this project based on the provided command-line
@@ -16,56 +14,7 @@ import java.util.HashMap;
  * @version Fall 2023
  */
 public class Driver {
-
 	public static final String PATH_START = "/Users/isaacmeltsner/Desktop/CS/CS272-C/SearchEngine/project-tests/";
-
-	/**
-	 * Reads a file, cleans each word and stems words
-	 * Adds file name and count of stememd words to a map
-	 * Outputs pretty JSON format of file name and count of words in file
-	 * @param input path of the file
-	 * @param inString relative path of file as a string
-	 * @param outFile path to file where JSON format will be output
-	 * @return map of file name and count of words
-	 * @throws IOException
-	 */
-	public static HashMap<String, Integer> processFile(Path input, String inString, Path outFile) throws IOException {
-		HashMap<String, Integer> obj = new HashMap<>();
-		ArrayList<String> stems = FileStemmer.listStems(input);
-		if (stems.size() != 0) {
-			obj.put(inString, stems.size());
-		}
-		JsonWriter.writeObject(obj, outFile);
-		return obj;
-	}
-
-	/**
-	 * Recursivley iterates through a directory
-	 * and outputs file names and word counts
-	 * @param inPath path to directory
-	 * @param outFile path to output file
-	 * @throws IOException
-	 */
-	public static void processDir(Path inPath, Path outFile) throws IOException {
-		DirectoryStream<Path> stream = Files.newDirectoryStream(inPath);
-		var iterator = stream.iterator();
-		while (iterator.hasNext()) {
-			Path item = iterator.next();
-			if (Files.isDirectory(item)) {
-				System.out.println("In directory: " + item.toString());
-				processDir(item, outFile);
-			}
-			else {
-				if (item.toString().contains(".txt") || item.toString().contains(".text")) {
-					System.out.println("Processing file: " + item.toString());
-					processFile(item.toAbsolutePath(), item.toAbsolutePath().toString().replace(PATH_START, ""), outFile);
-				}
-				else {
-					continue;
-				}
-			}
-		}
-	}
 
 	/**
 	 * Initializes the classes necessary based on the provided command-line 
@@ -80,10 +29,16 @@ public class Driver {
 		Path inPath = null;
 		Path outFile = null;
 
-		//Arg processing
+		//arg processing
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].equals("-text")) {
-				inString = args[++i];
+				try {
+					inString = args[++i];
+				} catch (IndexOutOfBoundsException e) {
+					System.out.println("Invalid args");
+					break;
+				}
+				
 			}
 			else if (args[i].equals("-counts")) {
 				try {
@@ -99,21 +54,22 @@ public class Driver {
 			inPath = Path.of(PATH_START,  inString);
 		}
 		outFile = Path.of(PATH_START, outString);
+		System.out.println("InFile: " + inPath.toString());
+		System.out.println("OutFile: " + outFile.toString());
 
-		if (Files.isDirectory(inPath)) {
-			try {
-				processDir(inPath, outFile);
-			} catch (IOException e) {
-				System.out.println("File not found");			
+		//iterate through directories and output counts to files
+		TreeMap<String, Integer> map = new TreeMap<>();
+		Processor processor = new Processor(map);
+		try {
+			if (Files.isDirectory(inPath)) {
+				processor.processDir(inPath, outFile);
 			}
-		}
-		else {
-			try {
-				HashMap<String, Integer> obj = processFile(inPath, inString, outFile);
-			} catch (IOException e) {
-				System.out.println("File not found");
+			else {
+				processor.processFile(inPath, inString, outFile);
 			}
+			JsonWriter.writeObject(processor.getMap(), outFile);
+		} catch (IOException e) {
+			System.out.println("File not found");
 		}
-		
 	}
 }
