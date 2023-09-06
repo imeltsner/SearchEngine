@@ -28,52 +28,45 @@ public class Driver {
 		String outString = "";
 		Path inPath = null;
 		Path outFile = null;
-
-		//arg processing
-		for (int i = 0; i < args.length; i++) {
-			if (args[i].equals("-text")) {
-				try {
-					inString = args[++i];
-				} catch (IndexOutOfBoundsException e) {
-					System.out.println("Invalid args");
-					break;
-				}
-				
-			}
-			else if (args[i].equals("-counts")) {
-				try {
-					outString = args[++i];
-				} catch (IndexOutOfBoundsException e) {
-					outString = "counts.json";
-				}
-			}
-			else {
-				System.out.println("Invalid flag");
-				break;
-			}
-		}
-
-		//create path objects
-		if (!inString.isEmpty()) {
-			inPath = Path.of(PATH_START,  inString);
-		}
-		outFile = Path.of(PATH_START, outString);
-
-		//iterate through directories and output counts to files
 		TreeMap<String, Integer> map = new TreeMap<>();
 		Processor processor = new Processor(map);
-		try {
-			if (Files.isDirectory(inPath)) {
-				processor.processDir(inPath, outFile);
+
+		ArgumentParser parser = new ArgumentParser(args);
+
+		if (parser.hasFlag("-counts")) {
+			outString = parser.getString("-counts", "counts.json");
+			outFile = Path.of(PATH_START, outString);
+		}
+
+		if (parser.hasFlag("-text")) {
+			inString = parser.getString("-text");
+			inPath = (inString != null) ? Path.of(PATH_START, inString) : null;
+		}
+
+		if (inPath == null && outFile == null) {
+			System.out.println("Invalid args: Program expects either -text or -counts");
+		}
+		else if (inPath == null) {
+			try {
+				JsonWriter.writeObject(map, outFile);
+			} catch (IOException e) {
+				System.out.println("Output file not found");
 			}
-			else {
-				processor.processFile(inPath, inString, outFile);
+		}
+		else {
+			try {
+				if (Files.isDirectory(inPath)) {
+					processor.processDir(inPath);
+				}
+				else {
+					processor.processFile(inPath, inString);
+				}
+				if (outFile != null) {
+				JsonWriter.writeObject(map, outFile);
+				}
+			} catch (IOException e) {
+				System.out.println("Input file not found");
 			}
-			JsonWriter.writeObject(processor.getMap(), outFile);
-		} catch (IOException e) {
-			System.out.println("File not found");
-		} catch (NullPointerException e) {
-			System.out.println("File not found");
 		}
 	}
 }
