@@ -9,7 +9,7 @@ import java.util.TreeMap;
 
 /**
  * Class responsible for iterating through files and directories
- * and storeing file names and word counts of files in a map
+ * and storing file names and word counts of files in a map
  * 
  * @author Isaac Meltsner
  */
@@ -17,7 +17,7 @@ public class Processor {
     public TreeMap<String, Integer> map;
 
     /**
-     * Class constructor
+     * Class constructor to initialze TreeMap
      * @param map a map storing file names and word counts
      */
     public Processor(TreeMap<String, Integer> map) {
@@ -27,7 +27,6 @@ public class Processor {
 	/**
 	 * Reads a file, cleans each word and stems words
 	 * Adds file name and count of stememd words to a TreeMap
-	 * Outputs pretty JSON format of file name and count of words in file
 	 * @param inPath path of the file
 	 * @throws IOException if an IOException occurs
 	 */
