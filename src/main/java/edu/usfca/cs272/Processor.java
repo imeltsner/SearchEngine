@@ -15,7 +15,6 @@ import java.util.TreeMap;
  * @author Isaac Meltsner
  */
 public class Processor {
-    public final String PATH_START = "/Users/isaacmeltsner/Desktop/CS/CS272-C/SearchEngine/project-tests/";
     public TreeMap<String, Integer> map;
 
     /**
