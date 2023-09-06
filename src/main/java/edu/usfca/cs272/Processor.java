@@ -14,6 +14,7 @@ import java.util.TreeMap;
  * @author Isaac Meltsner
  */
 public class Processor {
+	//class variables
     public TreeMap<String, Integer> map;
 
     /**
