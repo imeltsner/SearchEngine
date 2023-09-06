@@ -8,9 +8,8 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 /**
- * Iterates through files and directories
- * and stores file names and word counts 
- * of .txt and .text files
+ * Class responsible for iterating through files and directories
+ * and storeing file names and word counts of files in a map
  * 
  * @author Isaac Meltsner
  */
@@ -29,28 +28,24 @@ public class Processor {
 	 * Reads a file, cleans each word and stems words
 	 * Adds file name and count of stememd words to a TreeMap
 	 * Outputs pretty JSON format of file name and count of words in file
-	 * @param input path of the file
-	 * @param inString relative path of file as a string
-	 * @param outFile path to file where JSON format will be output
-	 * @return map of file name and count of words
+	 * @param inPath path of the file
 	 * @throws IOException if an IOException occurs
 	 */
-	public void processFile(Path input) throws IOException {
-		ArrayList<String> stems = FileStemmer.listStems(input);
+	public void processFile(Path inPath) throws IOException {
+		ArrayList<String> stems = FileStemmer.listStems(inPath);
 
 		if (stems.size() != 0) {
-			this.map.put(input.toString(), stems.size());
+			this.map.put(inPath.toString(), stems.size());
 		}
 	}
 
     /**
 	 * Recursivley iterates through a directory
 	 * and outputs file names and word counts
-	 * @param inPath path to directory
-	 * @param outFile path to output file
+	 * @param inPath path of directory
 	 * @throws IOException if an IOException occurs
      * 
-     * @see #processFile(Path, String)
+     * @see #processFile(Path)
 	 */
 	public void processDir(Path inPath) throws IOException {
 		DirectoryStream<Path> stream = Files.newDirectoryStream(inPath);
