@@ -36,11 +36,11 @@ public class Processor {
 	 * @return map of file name and count of words
 	 * @throws IOException if an IOException occurs
 	 */
-	public void processFile(Path input, String inString) throws IOException {
+	public void processFile(Path input) throws IOException {
 		ArrayList<String> stems = FileStemmer.listStems(input);
 
 		if (stems.size() != 0) {
-			this.map.put(inString, stems.size());
+			this.map.put(input.toString(), stems.size());
 		}
 	}
 
@@ -61,13 +61,11 @@ public class Processor {
 			Path item = iterator.next();
 
 			if (Files.isDirectory(item)) {
-				System.out.println("In directory: " + item.toString());
 				processDir(item);
 			}
 			else {
 				if (item.toString().toLowerCase().endsWith(".txt") || item.toString().toLowerCase().endsWith(".text")) {
-					System.out.println("Processing file: " + item.toString());
-					processFile(item.toAbsolutePath(), item.toAbsolutePath().toString().replace(PATH_START, ""));
+					processFile(item);
 				}
 				else {
 					continue;

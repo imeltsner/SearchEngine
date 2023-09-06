@@ -14,8 +14,6 @@ import java.util.TreeMap;
  * @version Fall 2023
  */
 public class Driver {
-	public static final String PATH_START = "/Users/isaacmeltsner/Desktop/CS/CS272-C/SearchEngine/project-tests/";
-
 	/**
 	 * Initializes the classes necessary based on the provided command-line 
 	 * arguments. This includes (but is not limited to) how to build or search an
@@ -24,8 +22,8 @@ public class Driver {
 	 * @param args flag/value pairs used to start this program
 	 */
 	public static void main(String[] args) {
-		String inString = "";
-		String outString = "";
+		String inString = null;
+		String outString = null;
 		Path inPath = null;
 		Path outFile = null;
 		TreeMap<String, Integer> map = new TreeMap<>();
@@ -34,12 +32,12 @@ public class Driver {
 
 		if (parser.hasFlag("-counts")) {
 			outString = parser.getString("-counts", "counts.json");
-			outFile = Path.of(PATH_START, outString);
+			outFile = Path.of(outString);
 		}
 
 		if (parser.hasFlag("-text")) {
 			inString = parser.getString("-text");
-			inPath = (inString != null) ? Path.of(PATH_START, inString) : null;
+			inPath = (inString != null) ? Path.of(inString) : null;
 		}
 
 		if (inPath == null && outFile == null) {
@@ -59,7 +57,7 @@ public class Driver {
 					processor.processDir(inPath);
 				}
 				else {
-					processor.processFile(inPath, inString);
+					processor.processFile(inPath);
 				}
 
 				if (outFile != null) {
