@@ -36,7 +36,7 @@ public class Processor {
 	 * @return map of file name and count of words
 	 * @throws IOException if an IOException occurs
 	 */
-	public void processFile(Path input, String inString, Path outFile) throws IOException {
+	public void processFile(Path input, String inString) throws IOException {
 		ArrayList<String> stems = FileStemmer.listStems(input);
 		if (stems.size() != 0) {
 			this.map.put(inString, stems.size());
@@ -50,21 +50,21 @@ public class Processor {
 	 * @param outFile path to output file
 	 * @throws IOException if an IOException occurs
      * 
-     * @see #processFile(Path, String, Path)
+     * @see #processFile(Path, String)
 	 */
-	public void processDir(Path inPath, Path outFile) throws IOException {
+	public void processDir(Path inPath) throws IOException {
 		DirectoryStream<Path> stream = Files.newDirectoryStream(inPath);
 		var iterator = stream.iterator();
 		while (iterator.hasNext()) {
 			Path item = iterator.next();
 			if (Files.isDirectory(item)) {
 				System.out.println("In directory: " + item.toString());
-				processDir(item, outFile);
+				processDir(item);
 			}
 			else {
 				if (item.toString().toLowerCase().endsWith(".txt") || item.toString().toLowerCase().endsWith(".text")) {
 					System.out.println("Processing file: " + item.toString());
-					processFile(item.toAbsolutePath(), item.toAbsolutePath().toString().replace(PATH_START, ""), outFile);
+					processFile(item.toAbsolutePath(), item.toAbsolutePath().toString().replace(PATH_START, ""));
 				}
 				else {
 					continue;
