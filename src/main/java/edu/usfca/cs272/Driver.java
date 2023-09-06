@@ -30,7 +30,6 @@ public class Driver {
 		Path outFile = null;
 		TreeMap<String, Integer> map = new TreeMap<>();
 		Processor processor = new Processor(map);
-
 		ArgumentParser parser = new ArgumentParser(args);
 
 		if (parser.hasFlag("-counts")) {
@@ -49,7 +48,8 @@ public class Driver {
 		else if (inPath == null) {
 			try {
 				JsonWriter.writeObject(map, outFile);
-			} catch (IOException e) {
+			}
+			catch (IOException e) {
 				System.out.println("Output file not found");
 			}
 		}
@@ -61,10 +61,12 @@ public class Driver {
 				else {
 					processor.processFile(inPath, inString);
 				}
+
 				if (outFile != null) {
-				JsonWriter.writeObject(map, outFile);
+					JsonWriter.writeObject(map, outFile);
 				}
-			} catch (IOException e) {
+			}
+			catch (IOException e) {
 				System.out.println("Input file not found");
 			}
 		}

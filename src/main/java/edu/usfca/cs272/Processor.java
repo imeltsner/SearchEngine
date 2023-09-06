@@ -38,6 +38,7 @@ public class Processor {
 	 */
 	public void processFile(Path input, String inString) throws IOException {
 		ArrayList<String> stems = FileStemmer.listStems(input);
+
 		if (stems.size() != 0) {
 			this.map.put(inString, stems.size());
 		}
@@ -55,8 +56,10 @@ public class Processor {
 	public void processDir(Path inPath) throws IOException {
 		DirectoryStream<Path> stream = Files.newDirectoryStream(inPath);
 		var iterator = stream.iterator();
+
 		while (iterator.hasNext()) {
 			Path item = iterator.next();
+
 			if (Files.isDirectory(item)) {
 				System.out.println("In directory: " + item.toString());
 				processDir(item);
