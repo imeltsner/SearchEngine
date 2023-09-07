@@ -14,7 +14,9 @@ import java.util.TreeMap;
  * @author Isaac Meltsner
  */
 public class Processor {
-	//class variables
+    /**
+     *TreeMap with filenames as keys and wordcounts as values
+     */
     public TreeMap<String, Integer> map;
 
     /**
