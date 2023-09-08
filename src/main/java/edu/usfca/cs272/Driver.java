@@ -26,10 +26,24 @@ public class Driver {
 		String outString = null;
 		Path inPath = null;
 		Path outFile = null;
-		TreeMap<String, Integer> map = new TreeMap<>();
+		TreeMap<String, Integer> map = new TreeMap<>(); // TODO Move into its own class... that will eventually also have the inverted index in it
 		Processor processor = new Processor(map);
 		ArgumentParser parser = new ArgumentParser(args);
-
+		
+		/* TODO 
+		if (parser.hasFlag("-text")) {
+			Path input = parser.getPath("-text");
+			
+			try {
+				
+			}
+			catch ( ) {
+				Unable to index the file(s) at path: ...
+			}
+		}
+		*/
+		
+		
 		if (parser.hasFlag("-counts")) {
 			outString = parser.getString("-counts", "counts.json");
 			outFile = Path.of(outString);

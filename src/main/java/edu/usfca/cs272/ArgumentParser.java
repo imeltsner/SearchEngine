@@ -54,7 +54,9 @@ public class ArgumentParser {
 			return false;
 		}
 
-		Character second = (char) arg.codePointAt(1);
+		Character second = (char) arg.codePointAt(1); // TODO int second = arg.codePointAt(1);
+		// TODO return !Character.isDigit(second) && !Character.isWhitespace(second);
+		
 		if (Character.isDigit(second) || Character.isWhitespace(second)) {
 			return false;
 		}
@@ -85,9 +87,9 @@ public class ArgumentParser {
 			if (isFlag(arg)) {
 				currentFlag = arg;
 				map.put(currentFlag, null);
-				continue;
+				continue; // TODO Remove
 			}
-			else {
+			else { // TODO else if
 				if (currentFlag != null) {
 					map.put(currentFlag, arg);
 					currentFlag = null;
@@ -170,6 +172,8 @@ public class ArgumentParser {
 		}
 		return backup;
 	}
+	
+	// TODO try/catch like getInteger?
 
 	/**
 	 * Returns the value to which the specified flag is mapped as a {@link Path}, or
@@ -211,6 +215,8 @@ public class ArgumentParser {
 		}
 	}
 
+	// TODO try to reuse getInteger here
+	
 	/**
 	 * Returns the value the specified flag is mapped as an int value, or 0 if
 	 * unable to retrieve this mapping (including being unable to convert the value
