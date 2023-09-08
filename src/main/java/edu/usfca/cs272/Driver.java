@@ -22,64 +22,39 @@ public class Driver {
 	 * @param args flag/value pairs used to start this program
 	 */
 	public static void main(String[] args) {
-		String inString = null;
-		String outString = null;
-		Path inPath = null;
-		Path outFile = null;
+
 		TreeMap<String, Integer> map = new TreeMap<>(); // TODO Move into its own class... that will eventually also have the inverted index in it
-		Processor processor = new Processor(map);
 		ArgumentParser parser = new ArgumentParser(args);
 		
-		/* TODO 
 		if (parser.hasFlag("-text")) {
+
 			Path input = parser.getPath("-text");
-			
+
 			try {
-				
+				if (Files.isDirectory(input)) {
+					Processor.processDir(input, map);
+				}
+				else {
+					Processor.processFile(input, map);
+				}
+			} 
+			catch (IOException e) {
+				System.out.println("File not found at path: " + input.toString());
 			}
-			catch ( ) {
-				Unable to index the file(s) at path: ...
+			catch (NullPointerException e) {
+				System.out.println("Path to input file not found");
 			}
 		}
-		*/
-		
 		
 		if (parser.hasFlag("-counts")) {
-			outString = parser.getString("-counts", "counts.json");
-			outFile = Path.of(outString);
-		}
+			
+			Path output = parser.getPath("-counts", Path.of("counts.json"));
 
-		if (parser.hasFlag("-text")) {
-			inString = parser.getString("-text");
-			inPath = (inString != null) ? Path.of(inString) : null;
-		}
-
-		if (inPath == null && outFile == null) {
-			System.out.println("Invalid args: Program expects either -text or -counts");
-		}
-		else if (inPath == null) {
 			try {
-				JsonWriter.writeObject(map, outFile);
+				JsonWriter.writeObject(map, output);
 			}
 			catch (IOException e) {
 				System.out.println("Output file not found");
-			}
-		}
-		else {
-			try {
-				if (Files.isDirectory(inPath)) {
-					processor.processDir(inPath);
-				}
-				else {
-					processor.processFile(inPath);
-				}
-
-				if (outFile != null) {
-					JsonWriter.writeObject(map, outFile);
-				}
-			}
-			catch (IOException e) {
-				System.out.println("Input file not found");
 			}
 		}
 	}
