@@ -210,7 +210,7 @@ public class FileStemmer {
 	 * @see #addStems(String, Stemmer, Collection)
 	 */
 	public static void stemHelper(Path input, Stemmer stemmer, Collection<String> stems) throws IOException {
-		try (BufferedReader reader = Files.newBufferedReader(input);) { // TODO UTF-8
+		try (BufferedReader reader = Files.newBufferedReader(input, StandardCharsets.UTF_8);) {
 			while (reader.ready()) {
 				String line = reader.readLine();
 				addStems(line, stemmer, stems);
@@ -236,12 +236,9 @@ public class FileStemmer {
 	public static ArrayList<TreeSet<String>> listUniqueStems(Path input) throws IOException {
 		Stemmer stemmer = new SnowballStemmer(ENGLISH);
 		ArrayList<TreeSet<String>> stemsList = new ArrayList<TreeSet<String>>();
-		try (BufferedReader reader = Files.newBufferedReader(input);) { // TODO UTF-8
+		try (BufferedReader reader = Files.newBufferedReader(input, StandardCharsets.UTF_8);) {
 			while (reader.ready()) {
-				TreeSet<String> stems = new TreeSet<>(); // TODO stemsList.add(uniqueStems(line, stemmer))
-				String line = reader.readLine();
-				addStems(line, stemmer, stems);
-				stemsList.add(stems);
+				stemsList.add(uniqueStems(reader.readLine(), stemmer));
 			}
 			return stemsList;
 		}
