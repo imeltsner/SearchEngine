@@ -1,5 +1,6 @@
 package edu.usfca.cs272;
 
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.HashMap;
 
@@ -54,14 +55,8 @@ public class ArgumentParser {
 			return false;
 		}
 
-		Character second = (char) arg.codePointAt(1); // TODO int second = arg.codePointAt(1);
-		// TODO return !Character.isDigit(second) && !Character.isWhitespace(second);
-		
-		if (Character.isDigit(second) || Character.isWhitespace(second)) {
-			return false;
-		}
-
-		return true;
+		int second = arg.codePointAt(1);
+		return !Character.isDigit(second) && !Character.isWhitespace(second);
 	}
 
 	/**
@@ -87,13 +82,10 @@ public class ArgumentParser {
 			if (isFlag(arg)) {
 				currentFlag = arg;
 				map.put(currentFlag, null);
-				continue; // TODO Remove
 			}
-			else { // TODO else if
-				if (currentFlag != null) {
-					map.put(currentFlag, arg);
-					currentFlag = null;
-				}
+			else if (currentFlag != null) {
+				map.put(currentFlag, arg);
+				currentFlag = null;
 			}
 		}
 	}
@@ -149,7 +141,7 @@ public class ArgumentParser {
 	 *   there is no mapping
 	 */
 	public String getString(String flag) {
-		return map.get(flag) != null ? map.get(flag) : null;
+		return getString(flag, null);
 	}
 
 	/**
@@ -167,13 +159,12 @@ public class ArgumentParser {
 	 * @see Path#of(String, String...)
 	 */
 	public Path getPath(String flag, Path backup) {
-		if (map.get(flag) != null) {
-			return Path.of(map.get(flag));
+		try {
+			return map.get(flag) != null ? Path.of(map.get(flag)) : backup;
+		} catch (InvalidPathException e) {
+			return backup;
 		}
-		return backup;
 	}
-	
-	// TODO try/catch like getInteger?
 
 	/**
 	 * Returns the value to which the specified flag is mapped as a {@link Path}, or
@@ -189,10 +180,7 @@ public class ArgumentParser {
 	 * @see #getPath(String, Path)
 	 */
 	public Path getPath(String flag) {
-		if (map.get(flag) != null) {
-			return Path.of(map.get(flag));
-		}
-		return null;
+		return getPath(flag, null);
 	}
 
 	/**
@@ -214,8 +202,6 @@ public class ArgumentParser {
 			return backup;
 		}
 	}
-
-	// TODO try to reuse getInteger here
 	
 	/**
 	 * Returns the value the specified flag is mapped as an int value, or 0 if
@@ -229,11 +215,7 @@ public class ArgumentParser {
 	 * @see #getInteger(String, int)
 	 */
 	public int getInteger(String flag) {
-		try {
-			return Integer.parseInt(map.get(flag));
-		} catch (NumberFormatException e) {
-			return 0;
-		}
+		return getInteger(flag, 0);
 	}
 
 	@Override
