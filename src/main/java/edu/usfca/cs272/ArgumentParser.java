@@ -81,13 +81,10 @@ public class ArgumentParser {
 			if (isFlag(arg)) {
 				currentFlag = arg;
 				map.put(currentFlag, null);
-				continue; // TODO Remove
 			}
-			else { // TODO else if
-				if (currentFlag != null) {
-					map.put(currentFlag, arg);
-					currentFlag = null;
-				}
+			else if (currentFlag != null) {
+				map.put(currentFlag, arg);
+				currentFlag = null;
 			}
 		}
 	}
