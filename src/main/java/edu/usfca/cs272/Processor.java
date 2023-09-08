@@ -21,7 +21,7 @@ public class Processor {
 	 * @param inPath path of the file
 	 * @throws IOException if an IOException occurs
 	 */
-	public static void processFile(Path inPath, TreeMap<String, Integer> map) throws IOException { // TODO make static and pass in the new data structure class processFile(Path, InvertedIndex)
+	public static void processFile(Path inPath, TreeMap<String, Integer> map) throws IOException {
 		ArrayList<String> stems = FileStemmer.listStems(inPath);
 
 		if (stems.size() != 0) {
