@@ -33,7 +33,7 @@ public class Processor {
 	 * @param inPath path of the file
 	 * @throws IOException if an IOException occurs
 	 */
-	public void processFile(Path inPath) throws IOException {
+	public void processFile(Path inPath) throws IOException { // TODO make static and pass in the new data structure class processFile(Path, InvertedIndex)
 		ArrayList<String> stems = FileStemmer.listStems(inPath);
 
 		if (stems.size() != 0) {
@@ -50,7 +50,7 @@ public class Processor {
      * @see #processFile(Path)
 	 */
 	public void processDir(Path inPath) throws IOException {
-		DirectoryStream<Path> stream = Files.newDirectoryStream(inPath);
+		DirectoryStream<Path> stream = Files.newDirectoryStream(inPath); // TODO try-with-resources
 		var iterator = stream.iterator();
 
 		while (iterator.hasNext()) {
