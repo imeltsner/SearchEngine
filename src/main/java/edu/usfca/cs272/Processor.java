@@ -15,30 +15,17 @@ import java.util.TreeMap;
  * @author Isaac Meltsner
  */
 public class Processor {
-    /**
-     *TreeMap with filenames as keys and wordcounts as values
-     */
-    public TreeMap<String, Integer> map;
-
-    /**
-     * Class constructor to initialze TreeMap
-     * @param map a map storing file names and word counts
-     */
-    public Processor(TreeMap<String, Integer> map) {
-        this.map = map;
-    }
-
 	/**
 	 * Reads a file, cleans each word and stems words
 	 * Adds file name and count of stememd words to a TreeMap
 	 * @param inPath path of the file
 	 * @throws IOException if an IOException occurs
 	 */
-	public void processFile(Path inPath) throws IOException { // TODO make static and pass in the new data structure class processFile(Path, InvertedIndex)
+	public static void processFile(Path inPath, TreeMap<String, Integer> map) throws IOException { // TODO make static and pass in the new data structure class processFile(Path, InvertedIndex)
 		ArrayList<String> stems = FileStemmer.listStems(inPath);
 
 		if (stems.size() != 0) {
-			this.map.put(inPath.toString(), stems.size());
+			map.put(inPath.toString(), stems.size());
 		}
 	}
 
@@ -49,33 +36,24 @@ public class Processor {
      * 
      * @see #processFile(Path)
 	 */
-	public void processDir(Path inPath) {
+	public static void processDir(Path inPath, TreeMap<String, Integer> map) {
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(inPath);) {
 			var iterator = stream.iterator();
-
 			while (iterator.hasNext()) {
 				Path item = iterator.next();
 				if (Files.isDirectory(item)) {
-					processDir(item);
+					processDir(item, map);
 				}
 				else if (item.toString().toLowerCase().endsWith(".txt") || item.toString().toLowerCase().endsWith(".text")) {
-					processFile(item);
+					processFile(item, map);
 				}
 			}
 		} 
 		catch (NotDirectoryException e) {
-			System.out.println("Path given is not a directory");
+			System.out.println("Path given is not a directory: " + inPath.toString());
 		} 
 		catch (IOException e) {
 			System.out.println("Path not found");
 		}
 	}
-
-    /**
-     * Returns the TreeMap associated with this class
-     * @return a TreeMap object storing file names and word counts
-     */
-    public TreeMap<String, Integer> getMap() {
-        return map;
-    }
 }
