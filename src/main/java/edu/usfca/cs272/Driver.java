@@ -3,7 +3,6 @@ package edu.usfca.cs272;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.TreeMap;
 
 /**
  * Class responsible for running this project based on the provided command-line
@@ -23,7 +22,7 @@ public class Driver {
 	 */
 	public static void main(String[] args) {
 
-		TreeMap<String, Integer> map = new TreeMap<>(); // TODO Move into its own class... that will eventually also have the inverted index in it
+		Indexer index = new Indexer();
 		ArgumentParser parser = new ArgumentParser(args);
 		
 		if (parser.hasFlag("-text")) {
@@ -32,10 +31,10 @@ public class Driver {
 
 			try {
 				if (Files.isDirectory(input)) {
-					Processor.processDir(input, map);
+					Processor.processDir(input, index);
 				}
 				else {
-					Processor.processFile(input, map);
+					Processor.processFile(input, index);
 				}
 			} 
 			catch (IOException e) {
@@ -48,12 +47,24 @@ public class Driver {
 		
 		if (parser.hasFlag("-counts")) {
 			
-			Path output = parser.getPath("-counts", Path.of("counts.json"));
+			Path countsOutput = parser.getPath("-counts", Path.of("counts.json"));
 
 			try {
-				JsonWriter.writeObject(map, output);
+				JsonWriter.writeObject(index.getCounts(), countsOutput);
 			}
 			catch (IOException e) {
+				System.out.println("Output file not found");
+			}
+		}
+
+		if (parser.hasFlag("-index")) {
+
+			Path indexOutput = parser.getPath("index", Path.of("index.json"));
+
+			try {
+				//Write Inverted Index here
+				throw new IOException();
+			} catch (IOException e) {
 				System.out.println("Output file not found");
 			}
 		}
