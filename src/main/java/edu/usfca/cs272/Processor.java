@@ -3,6 +3,7 @@ package edu.usfca.cs272;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.TreeMap;
@@ -45,28 +46,28 @@ public class Processor {
 	 * Recursivley iterates through a directory
 	 * and outputs file names and word counts
 	 * @param inPath path of directory
-	 * @throws IOException if an IOException occurs
      * 
      * @see #processFile(Path)
 	 */
-	public void processDir(Path inPath) throws IOException {
-		DirectoryStream<Path> stream = Files.newDirectoryStream(inPath); // TODO try-with-resources
-		var iterator = stream.iterator();
+	public void processDir(Path inPath) {
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(inPath);) {
+			var iterator = stream.iterator();
 
-		while (iterator.hasNext()) {
-			Path item = iterator.next();
-
-			if (Files.isDirectory(item)) {
-				processDir(item);
-			}
-			else {
-				if (item.toString().toLowerCase().endsWith(".txt") || item.toString().toLowerCase().endsWith(".text")) {
+			while (iterator.hasNext()) {
+				Path item = iterator.next();
+				if (Files.isDirectory(item)) {
+					processDir(item);
+				}
+				else if (item.toString().toLowerCase().endsWith(".txt") || item.toString().toLowerCase().endsWith(".text")) {
 					processFile(item);
 				}
-				else {
-					continue;
-				}
 			}
+		} 
+		catch (NotDirectoryException e) {
+			System.out.println("Path given is not a directory");
+		} 
+		catch (IOException e) {
+			System.out.println("Path not found");
 		}
 	}
 
