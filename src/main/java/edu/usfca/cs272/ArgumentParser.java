@@ -54,14 +54,8 @@ public class ArgumentParser {
 			return false;
 		}
 
-		Character second = (char) arg.codePointAt(1); // TODO int second = arg.codePointAt(1);
-		// TODO return !Character.isDigit(second) && !Character.isWhitespace(second);
-		
-		if (Character.isDigit(second) || Character.isWhitespace(second)) {
-			return false;
-		}
-
-		return true;
+		int second = arg.codePointAt(1);
+		return !Character.isDigit(second) && !Character.isWhitespace(second);
 	}
 
 	/**
