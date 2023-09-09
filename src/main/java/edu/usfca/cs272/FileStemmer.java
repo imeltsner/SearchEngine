@@ -81,10 +81,8 @@ public class FileStemmer {
 	 * @see Collection#add(Object)
 	 */
 	public static void addStems(String line, Stemmer stemmer, Collection<String> stems) {
-		String[] words = parse(line);
-		for (String word : words) {
-			String stem = stemmer.stem(word).toString();
-			stems.add(stem);
+		for (String word : parse(line)) {
+			stems.add(stemmer.stem(word).toString());
 		}
 	}
 
@@ -117,8 +115,7 @@ public class FileStemmer {
 	 * @see #listStems(String, Stemmer)
 	 */
 	public static ArrayList<String> listStems(String line) {
-		Stemmer stemmer = new SnowballStemmer(ENGLISH);
-		return listStems(line, stemmer);
+		return listStems(line, new SnowballStemmer(ENGLISH));
 	}
 
 	/**
@@ -136,9 +133,8 @@ public class FileStemmer {
 	 * @see #stemHelper(Path, Stemmer, Collection)
 	 */
 	public static ArrayList<String> listStems(Path input) throws IOException {
-		Stemmer stemmer = new SnowballStemmer(ENGLISH);
 		ArrayList<String> stems = new ArrayList<>();
-		stemHelper(input, stemmer, stems);
+		stemHelper(input, new SnowballStemmer(ENGLISH), stems);
 		return stems;
 	}
 
@@ -171,8 +167,7 @@ public class FileStemmer {
 	 * @see #uniqueStems(String, Stemmer)
 	 */
 	public static TreeSet<String> uniqueStems(String line) {
-		Stemmer stemmer = new SnowballStemmer(ENGLISH);
-		return uniqueStems(line, stemmer);
+		return uniqueStems(line, new SnowballStemmer(ENGLISH));
 	}
 
 	/**
@@ -190,9 +185,8 @@ public class FileStemmer {
 	 * @see #stemHelper(Path, Stemmer, Collection)
 	 */
 	public static TreeSet<String> uniqueStems(Path input) throws IOException {
-		Stemmer stemmer = new SnowballStemmer(ENGLISH);
 		TreeSet<String> stems = new TreeSet<>();
-		stemHelper(input, stemmer, stems);
+		stemHelper(input, new SnowballStemmer(ENGLISH), stems);
 		return stems;
 	}
 	
@@ -212,8 +206,7 @@ public class FileStemmer {
 	public static void stemHelper(Path input, Stemmer stemmer, Collection<String> stems) throws IOException {
 		try (BufferedReader reader = Files.newBufferedReader(input, StandardCharsets.UTF_8);) {
 			while (reader.ready()) {
-				String line = reader.readLine();
-				addStems(line, stemmer, stems);
+				addStems(reader.readLine(), stemmer, stems);
 			}
 		}
 	}
@@ -234,11 +227,10 @@ public class FileStemmer {
 	 * @see #uniqueStems(String, Stemmer)
 	 */
 	public static ArrayList<TreeSet<String>> listUniqueStems(Path input) throws IOException {
-		Stemmer stemmer = new SnowballStemmer(ENGLISH);
 		ArrayList<TreeSet<String>> stemsList = new ArrayList<TreeSet<String>>();
 		try (BufferedReader reader = Files.newBufferedReader(input, StandardCharsets.UTF_8);) {
 			while (reader.ready()) {
-				stemsList.add(uniqueStems(reader.readLine(), stemmer));
+				stemsList.add(uniqueStems(reader.readLine(), new SnowballStemmer(ENGLISH)));
 			}
 			return stemsList;
 		}
