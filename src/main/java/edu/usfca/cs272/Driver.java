@@ -61,16 +61,6 @@ public class Driver {
 
 			Path indexOutput = parser.getPath("-index", Path.of("index.json"));
 
-			//print debugging
-			// for (String word : index.getWordMap().keySet()) {
-			// 	System.out.println(word);
-			// 	for (String file : index.getFileMap(word).keySet()) {
-			// 		System.out.println("\t" + file + " : " + index.getFileMap(word).get(file).toString());
-			// 	}
-			// }
-
-			//System.out.println(JsonWriter.writeInvertedIndex(index));
-
 			try {
 				JsonWriter.writeInvertedIndex(index, indexOutput);
 			} catch (IOException e) {
