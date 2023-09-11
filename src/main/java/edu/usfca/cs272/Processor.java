@@ -30,7 +30,7 @@ public class Processor {
 		}
 
 		for (int i = 0; i < stems.size(); i++) {
-			index.putData(stems.get(i), inPath.toString(), i);
+			index.putData(stems.get(i), inPath.toString(), i+1);
 		}
 	}
 
