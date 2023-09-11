@@ -53,7 +53,7 @@ public class Driver {
 				JsonWriter.writeObject(index.getCounts(), countsOutput);
 			}
 			catch (IOException e) {
-				System.out.println("Output file not found");
+				System.out.println("Counts output file not found");
 			}
 		}
 
@@ -61,12 +61,20 @@ public class Driver {
 
 			Path indexOutput = parser.getPath("index", Path.of("index.json"));
 
-			try {
-				//Write Inverted Index here
-				throw new IOException();
-			} catch (IOException e) {
-				System.out.println("Output file not found");
+			//print debugging
+			for (String word : index.getWordMap().keySet()) {
+				System.out.println(word);
+				for (String file : index.getFileMap(word).keySet()) {
+					System.out.println("\t" + file + " : " + index.getFileMap(word).get(file).toString());
+				}
 			}
+
+			// try {
+			// 	//Write Inverted Index here
+			// 	throw new IOException();
+			// } catch (IOException e) {
+			// 	System.out.println("Index output file not found");
+			// }
 		}
 	}
 }
