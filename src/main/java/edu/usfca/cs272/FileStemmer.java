@@ -196,6 +196,7 @@ public class FileStemmer {
 	 * @param input the input file to parse and stem
 	 * @param stemmer the stemmer to use
 	 * @param stems the collection to add the stems
+	 * @throws IOException if IO error occurs
 	 * 
 	 * @see SnowballStemmer
 	 * @see ALGORITHM#ENGLISH
