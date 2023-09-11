@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Outputs several simple data structures in "pretty" JSON format where newlines
@@ -342,15 +343,26 @@ public class JsonWriter {
 		}
 	}
 	
+	/**
+	 * Writes the index as a pretty JSON array with nested objects
+	 * @param index the inverted index
+	 * @param writer the writer to use
+	 * @param indent the starting indent level
+	 * @throws IOException if an IO error occurs
+	 * 
+	 * @see #writeQuote(String, Writer, int)
+	 * @see #writeObjectArrays(Map, Writer, int)
+	 */
 	public static void writeInvertedIndex(Indexer index, Writer writer, int indent) throws IOException {
 		int count = 0;
+		Set<String> wordKeys = index.getWordMap().keySet();
 		writer.write("{\n");
-		for (String word : index.getWordMap().keySet()) {
+		for (String word : wordKeys) {
 			writer.write("  ");
 			writeQuote(word, writer, indent);
 			writer.write(": ");
 			writeObjectArrays(index.getFileMap(word), writer, indent+1);
-			if (count < index.getWordMap().keySet().size() - 1) {
+			if (count < wordKeys.size() - 1) {
 				writer.write(",\n");
 			}
 			count++;
@@ -361,12 +373,25 @@ public class JsonWriter {
 		writer.write("}");
 	}
 
+	/**
+	 * Writes the inverted index in pretty JSON format to file
+	 * @param index the inverted index
+	 * @param path the path to the file
+	 * @throws IOException if an IO error occurs
+	 * 
+	 * @see #writeInvertedIndex(Indexer, Writer, int)
+	 */
 	public static void writeInvertedIndex(Indexer index, Path path) throws IOException{
 		try (BufferedWriter writer = Files.newBufferedWriter(path, UTF_8)) {
 			writeInvertedIndex(index, writer, 0);
 		}
 	}
 
+	/**
+	 * Returns the inverted index as a pretty JSON array
+	 * @param index the inverted index
+	 * @return a String containing the elements in pretty JSON format
+	 */
 	public static String writeInvertedIndex(Indexer index) {
 		try {
 			StringWriter writer = new StringWriter();
