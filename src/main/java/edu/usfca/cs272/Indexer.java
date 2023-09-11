@@ -3,6 +3,12 @@ package edu.usfca.cs272;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+/** 
+ * A class to store an inverted index and a 
+ * map of wordcounts
+ * 
+ * @author Isaac Meltsner
+ */
 public class Indexer {
     /**
      * Stores filenames and wordcounts
@@ -14,6 +20,9 @@ public class Indexer {
      */
     private TreeMap<String, TreeMap<String, ArrayList<Integer>>> invertedIndex; 
 
+    /**
+     * Class constructor to init map and inverted index
+     */
     public Indexer() {
         wordCounts = new TreeMap<>();
         invertedIndex = new TreeMap<>();
