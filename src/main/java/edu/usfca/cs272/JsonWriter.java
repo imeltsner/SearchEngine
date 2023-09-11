@@ -341,4 +341,37 @@ public class JsonWriter {
 			return null;
 		}
 	}
+	
+	public static void writeInvertedIndex(Indexer index, Writer writer, int indent) throws IOException {
+		int count = 0;
+		writer.write("{\n");
+		for (String word : index.getWordMap().keySet()) {
+			writer.write("  ");
+			writeQuote(word, writer, indent);
+			writer.write(": ");
+			writeObjectArrays(index.getFileMap(word), writer, indent+1);
+			if (count < index.getWordMap().keySet().size() - 1) {
+				writer.write(",\n");
+			}
+			count++;
+		}
+		writer.write("\n}");
+	}
+
+	public static void writeInvertedIndex(Indexer index, Path path) throws IOException{
+		try (BufferedWriter writer = Files.newBufferedWriter(path, UTF_8)) {
+			writeInvertedIndex(index, writer, 0);
+		}
+	}
+
+	public static String writeInvertedIndex(Indexer index) {
+		try {
+			StringWriter writer = new StringWriter();
+			writeInvertedIndex(index, writer, 0);
+			return writer.toString();
+		}
+		catch (IOException e) {
+			return null;
+		}
+	}
 }
