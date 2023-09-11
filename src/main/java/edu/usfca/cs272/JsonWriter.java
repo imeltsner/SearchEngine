@@ -355,7 +355,10 @@ public class JsonWriter {
 			}
 			count++;
 		}
-		writer.write("\n}");
+		if (count != 0) {
+			writer.write("\n");
+		}
+		writer.write("}");
 	}
 
 	public static void writeInvertedIndex(Indexer index, Path path) throws IOException{
