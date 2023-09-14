@@ -164,6 +164,14 @@ public class ArgumentParser {
 		} catch (InvalidPathException e) {
 			return backup;
 		}
+		
+		/* TODO 
+		try {
+			return Path.of(map.get(flag));
+		} catch (InvalidPathException | NullPointerException e) {
+			return backup;
+		}
+		*/
 	}
 
 	/**
@@ -198,7 +206,7 @@ public class ArgumentParser {
 	public int getInteger(String flag, int backup) {
 		try {
 			return Integer.parseInt(map.get(flag));
-		} catch (NumberFormatException e) {
+		} catch (NumberFormatException e) { // TODO Also nulls!
 			return backup;
 		}
 	}
