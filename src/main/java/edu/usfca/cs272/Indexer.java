@@ -9,7 +9,7 @@ import java.util.TreeMap;
  * 
  * @author Isaac Meltsner
  */
-public class Indexer {
+public class Indexer { // TODO InvertedIndex
     /**
      * Stores filenames and wordcounts
      */
@@ -18,7 +18,7 @@ public class Indexer {
     /**
      * Stores words, filenames, and positions in file
      */
-    private TreeMap<String, TreeMap<String, ArrayList<Integer>>> invertedIndex; 
+    private TreeMap<String, TreeMap<String, ArrayList<Integer>>> invertedIndex; // TODO ArrayList to TreeSet
 
     /**
      * Class constructor to init map and inverted index
@@ -84,4 +84,13 @@ public class Indexer {
         getFileMap(word).putIfAbsent(fileName, new ArrayList<>());
         putPosition(word, fileName, position);
     }
+    
+    /*
+     * TODO 
+     * More generally useful data structure methods here
+     * 
+     * boolean methods
+     * less nested get methods
+     * toString
+     */
 }

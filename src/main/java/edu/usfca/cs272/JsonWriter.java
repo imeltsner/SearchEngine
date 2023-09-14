@@ -84,7 +84,7 @@ public class JsonWriter {
 	public static void writeArray(Collection<? extends Number> elements, Writer writer, int indent) throws IOException {
 		writer.write("[\n");
 		for (int i = 0; i < elements.size(); i++) {
-			writeIndent(elements.toArray()[i].toString(), writer, indent+1);
+			writeIndent(elements.toArray()[i].toString(), writer, indent+1); // TODO array conversion isn't free
 			if (elements.size() != 1 && i < elements.size() - 1) {
 				writer.write(",");
 			}
@@ -343,6 +343,7 @@ public class JsonWriter {
 		}
 	}
 	
+	// TODO Don't take in Indexer as the parameter, take in a generic nested map
 	/**
 	 * Writes the index as a pretty JSON array with nested objects
 	 * @param index the inverted index
