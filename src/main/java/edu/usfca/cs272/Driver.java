@@ -62,7 +62,7 @@ public class Driver {
 			Path indexOutput = parser.getPath("-index", Path.of("index.json"));
 
 			try {
-				JsonWriter.writeInvertedIndex(index, indexOutput);
+				JsonWriter.writeInvertedIndex(index.getWordMap(), indexOutput);
 			} 
 			catch (IOException e) {
 				System.out.println("Index output file not found at path" + indexOutput.toString());
