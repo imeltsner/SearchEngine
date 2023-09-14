@@ -1,7 +1,7 @@
 package edu.usfca.cs272;
 
-import java.util.ArrayList;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 /** 
  * A class to store an inverted index and a 
@@ -18,7 +18,7 @@ public class InvertedIndex {
     /**
      * Stores words, filenames, and positions in file
      */
-    private TreeMap<String, TreeMap<String, ArrayList<Integer>>> invertedIndex; // TODO ArrayList to TreeSet
+    private TreeMap<String, TreeMap<String, TreeSet<Integer>>> invertedIndex;
 
     /**
      * Class constructor to init map and inverted index
@@ -43,7 +43,7 @@ public class InvertedIndex {
      * Getter function for retrieving the inverted index data structure
      * @return the inverted index
      */
-    public TreeMap<String, TreeMap<String, ArrayList<Integer>>> getWordMap() {
+    public TreeMap<String, TreeMap<String, TreeSet<Integer>>> getWordMap() {
         return invertedIndex;
     }
 
@@ -53,7 +53,7 @@ public class InvertedIndex {
      * @param word key associated with inner TreeMap
      * @return inner TreeMap of inverted index
      */
-    public TreeMap<String, ArrayList<Integer>> getFileMap(String word) {
+    public TreeMap<String, TreeSet<Integer>> getFileMap(String word) {
         return invertedIndex.get(word);
     }
 
@@ -81,7 +81,7 @@ public class InvertedIndex {
      */
     public void putData(String word, String fileName, int position) {
         invertedIndex.putIfAbsent(word, new TreeMap<>());
-        getFileMap(word).putIfAbsent(fileName, new ArrayList<>());
+        getFileMap(word).putIfAbsent(fileName, new TreeSet<>());
         putPosition(word, fileName, position);
     }
     
