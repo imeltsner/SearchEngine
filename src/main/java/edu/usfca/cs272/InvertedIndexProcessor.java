@@ -39,10 +39,12 @@ public class InvertedIndexProcessor {
 	 * and outputs file names and word counts
 	 * @param inPath path of directory
 	 * @param index the Indexer object
+	 * @throws IOException if IO error occurs
+	 * @throws NotDirectoryException if given path is not a directory
      * 
      * @see #processFile(Path, InvertedIndex)
 	 */
-	public static void processDir(Path inPath, InvertedIndex index) { // TODO throw exception here, remove the catch blocks
+	public static void processDir(Path inPath, InvertedIndex index) throws IOException, NotDirectoryException {
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(inPath);) {
 			var iterator = stream.iterator();
 			while (iterator.hasNext()) {
@@ -50,23 +52,26 @@ public class InvertedIndexProcessor {
 				if (Files.isDirectory(path)) {
 					processDir(path, index);
 				}
-				else if (path.toString().toLowerCase().endsWith(".txt") || path.toString().toLowerCase().endsWith(".text")) { // TODO Call isTextFile here
+				else if (isTextFile(path)) {
 					processFile(path, index);
 				}
 			}
 		} 
-		catch (NotDirectoryException e) {
-			System.out.println("Path given is not a directory: " + inPath.toString());
-		} 
-		catch (IOException e) {
-			System.out.println("Path not found");
-		}
 	}
-	
-	/* TODO 
+
+	/**
+	 * Checks to see if the given path is a text file
+	 * @param path the path to check
+	 * @return true if path is a text file false otherwise
+	 */
 	public static boolean isTextFile(Path path) {
-		
+		return path.toString().toLowerCase().endsWith(".txt") || path.toString().toLowerCase().endsWith(".text");
 	}
-	*/
-	
 }
+
+
+
+
+
+
+
