@@ -9,7 +9,7 @@ import java.util.TreeMap;
  * 
  * @author Isaac Meltsner
  */
-public class Indexer { // TODO InvertedIndex
+public class InvertedIndex {
     /**
      * Stores filenames and wordcounts
      */
@@ -23,7 +23,7 @@ public class Indexer { // TODO InvertedIndex
     /**
      * Class constructor to init map and inverted index
      */
-    public Indexer() {
+    public InvertedIndex() {
         wordCounts = new TreeMap<>();
         invertedIndex = new TreeMap<>();
     }

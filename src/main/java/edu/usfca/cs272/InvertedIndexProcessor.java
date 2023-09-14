@@ -22,7 +22,7 @@ public class InvertedIndexProcessor {
 	 * @throws IOException if an IOException occurs
 	 * 
 	 */
-	public static void processFile(Path inPath, Indexer index) throws IOException {
+	public static void processFile(Path inPath, InvertedIndex index) throws IOException {
 		ArrayList<String> stems = FileStemmer.listStems(inPath);
 
 		if (stems.size() != 0) {
@@ -40,9 +40,9 @@ public class InvertedIndexProcessor {
 	 * @param inPath path of directory
 	 * @param index the Indexer object
      * 
-     * @see #processFile(Path, Indexer)
+     * @see #processFile(Path, InvertedIndex)
 	 */
-	public static void processDir(Path inPath, Indexer index) { // TODO throw exception here, remove the catch blocks
+	public static void processDir(Path inPath, InvertedIndex index) { // TODO throw exception here, remove the catch blocks
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(inPath);) {
 			var iterator = stream.iterator();
 			while (iterator.hasNext()) {
