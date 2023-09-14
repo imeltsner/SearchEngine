@@ -35,8 +35,9 @@ public class InvertedIndexProcessor {
 	}
 
     /**
-	 * Recursivley iterates through a directory
-	 * and outputs file names and word counts
+	 * Recursively iterates through a directory
+	 * checks if files are text files
+	 * adds contents of text files to inverted index
 	 * @param inPath path of directory
 	 * @param index the Indexer object
 	 * @throws IOException if IO error occurs
