@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * 
  * @author Isaac Meltsner
  */
-public class Processor { // TODO InvertedIndexProcessor
+public class InvertedIndexProcessor {
 	/**
 	 * Reads a file, cleans each word and stems words
 	 * Adds word counts and word positions in files to Indexer 
@@ -46,12 +46,12 @@ public class Processor { // TODO InvertedIndexProcessor
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(inPath);) {
 			var iterator = stream.iterator();
 			while (iterator.hasNext()) {
-				Path item = iterator.next();
-				if (Files.isDirectory(item)) {
-					processDir(item, index);
+				Path path = iterator.next();
+				if (Files.isDirectory(path)) {
+					processDir(path, index);
 				}
-				else if (item.toString().toLowerCase().endsWith(".txt") || item.toString().toLowerCase().endsWith(".text")) { // TODO Call isTextFile here
-					processFile(item, index);
+				else if (path.toString().toLowerCase().endsWith(".txt") || path.toString().toLowerCase().endsWith(".text")) { // TODO Call isTextFile here
+					processFile(path, index);
 				}
 			}
 		} 
