@@ -228,10 +228,10 @@ public class FileStemmer {
 	 */
 	public static ArrayList<TreeSet<String>> listUniqueStems(Path input) throws IOException {
 		ArrayList<TreeSet<String>> stemsList = new ArrayList<TreeSet<String>>();
-		// TODO Create new SnowballStemmer(ENGLISH) here and reuse
+		SnowballStemmer stemmer = new SnowballStemmer(ENGLISH);
 		try (BufferedReader reader = Files.newBufferedReader(input, StandardCharsets.UTF_8);) {
 			while (reader.ready()) {
-				stemsList.add(uniqueStems(reader.readLine(), new SnowballStemmer(ENGLISH)));
+				stemsList.add(uniqueStems(reader.readLine(), stemmer));
 			}
 			return stemsList;
 		}
