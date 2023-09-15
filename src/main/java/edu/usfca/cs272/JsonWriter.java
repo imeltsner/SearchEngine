@@ -158,7 +158,6 @@ public class JsonWriter {
 
 		while (iterator.hasNext()) {
 			String word = iterator.next();
-
 			writeQuote(word, writer, indent+1);
 			writer.write(": ");
 			writer.write(elements.get(word).toString());
@@ -306,7 +305,7 @@ public class JsonWriter {
 		var iterator = elements.iterator();
 
 		while (iterator.hasNext()) {
-			writer.write("  ");
+			writeIndent(writer, indent+1);
 			writeObject(iterator.next(), writer, indent+1);
 
 			if (iterator.hasNext()) {
@@ -373,7 +372,7 @@ public class JsonWriter {
 
 		while (iterator.hasNext()) {
 			String word = iterator.next();
-			writer.write("  ");
+			writeIndent(writer, indent+1);
 			writeQuote(word, writer, indent);
 			writer.write(": ");
 			writeObjectArrays(invertedIndex.get(word), writer, indent+1);
