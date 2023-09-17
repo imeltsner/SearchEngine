@@ -22,7 +22,7 @@ public class Driver {
 	 */
 	public static void main(String[] args) {
 
-		Indexer index = new Indexer();
+		InvertedIndex index = new InvertedIndex();
 		ArgumentParser parser = new ArgumentParser(args);
 		
 		if (parser.hasFlag("-text")) {
@@ -31,10 +31,10 @@ public class Driver {
 
 			try {
 				if (Files.isDirectory(input)) {
-					Processor.processDir(input, index);
+					InvertedIndexProcessor.processDir(input, index);
 				}
 				else {
-					Processor.processFile(input, index);
+					InvertedIndexProcessor.processFile(input, index);
 				}
 			} 
 			catch (IOException e) {
@@ -50,7 +50,7 @@ public class Driver {
 			Path countsOutput = parser.getPath("-counts", Path.of("counts.json"));
 
 			try {
-				JsonWriter.writeObject(index.getCounts(), countsOutput);
+				JsonWriter.writeObject(index.getWordCounts(), countsOutput);
 			}
 			catch (IOException e) {
 				System.out.println("Counts output file not found");
@@ -62,9 +62,10 @@ public class Driver {
 			Path indexOutput = parser.getPath("-index", Path.of("index.json"));
 
 			try {
-				JsonWriter.writeInvertedIndex(index, indexOutput);
-			} catch (IOException e) {
-				System.out.println("Index output file not found");
+				JsonWriter.writeInvertedIndex(index.getInvertedIndex(), indexOutput);
+			} 
+			catch (IOException e) {
+				System.out.println("Index output file not found at path" + indexOutput.toString());
 			}
 		}
 	}

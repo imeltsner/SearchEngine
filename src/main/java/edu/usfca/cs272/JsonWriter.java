@@ -83,15 +83,20 @@ public class JsonWriter {
 	 */
 	public static void writeArray(Collection<? extends Number> elements, Writer writer, int indent) throws IOException {
 		writer.write("[\n");
-		for (int i = 0; i < elements.size(); i++) {
-			writeIndent(elements.toArray()[i].toString(), writer, indent+1); // TODO array conversion isn't free
-			if (elements.size() != 1 && i < elements.size() - 1) {
+
+		var iterator = elements.iterator();
+
+		while (iterator.hasNext()) {
+			writeIndent(iterator.next().toString(), writer, indent+1);
+
+			if (iterator.hasNext()) {
 				writer.write(",");
 			}
+
 			writer.write("\n");
-			}
-		writeIndent(writer, indent);
-		writer.write("]");
+		}
+
+		writeIndent("]", writer, indent);
 	}
 
 	/**
@@ -146,20 +151,24 @@ public class JsonWriter {
 	 * @see #writeIndent(String, Writer, int)
 	 */
 	public static void writeObject(Map<String, ? extends Number> elements, Writer writer, int indent) throws IOException {
-		int count = 0;
 		writer.write("{\n");
-		for (String key : elements.keySet()) {
-			writeQuote(key, writer, indent+1);
+
+		var iterator = elements.keySet().iterator();
+
+		while (iterator.hasNext()) {
+			String word = iterator.next();
+			writeQuote(word, writer, indent+1);
 			writer.write(": ");
-			writer.write(elements.get(key).toString());
-			if (elements.keySet().size() != 1 && count < elements.keySet().size()-1) {
+			writer.write(elements.get(word).toString());
+
+			if (iterator.hasNext()) {
 				writer.write(",");
 			}
+
 			writer.write("\n");
-			count++;
 		}
-		writeIndent(writer, indent);
-		writer.write("}");
+
+		writeIndent("}", writer, indent);
 	}
 
 	/**
@@ -217,22 +226,23 @@ public class JsonWriter {
 	 * @see #writeArray(Collection)
 	 */
 	public static void writeObjectArrays(Map<String, ? extends Collection<? extends Number>> elements, Writer writer, int indent) throws IOException {
-		int count = 0;
 		writer.write("{\n");
-		for (String key : elements.keySet()) {
-			writeQuote(key, writer, indent+1);
+		var iterator = elements.keySet().iterator();
+
+		while (iterator.hasNext()) {
+			String word = iterator.next();
+			writeQuote(word, writer, indent+1);
 			writer.write(": ");
-			writeArray(elements.get(key), writer, indent+1);
-			if (elements.keySet().size() != 1 && count < elements.keySet().size()-1) {
-				writer.write(",\n");
+			writeArray(elements.get(word), writer, indent+1);
+
+			if (iterator.hasNext()) {
+				writer.write(",");
 			}
-			else {
-				writer.write("\n");
-			}
-			count++;
+
+			writer.write("\n");
 		}
-		writeIndent(writer, indent);
-		writer.write("}");
+
+		writeIndent("}", writer, indent);
 	}
 
 	/**
@@ -290,19 +300,20 @@ public class JsonWriter {
 	 * @see #writeObject(Map)
 	 */
 	public static void writeArrayObjects(Collection<? extends Map<String, ? extends Number>> elements, Writer writer, int indent) throws IOException {
-		int count = 0;
 		writer.write("[\n");
-		for (Map<String, ? extends Number> map: elements) {
-			writer.write("  ");
-			writeObject(map, writer, indent+1);
-			if (elements.size() != 1 && count < elements.size() - 1) {
-				writer.write(",\n");
+		var iterator = elements.iterator();
+
+		while (iterator.hasNext()) {
+			writeIndent(writer, indent+1);
+			writeObject(iterator.next(), writer, indent+1);
+
+			if (iterator.hasNext()) {
+				writer.write(",");
 			}
-			else {
-				writer.write("\n");
-			}
-			count++;
+
+			writer.write("\n");
 		}
+
 		writer.write("]");
 	}
 
@@ -343,9 +354,8 @@ public class JsonWriter {
 		}
 	}
 	
-	// TODO Don't take in Indexer as the parameter, take in a generic nested map
 	/**
-	 * Writes the index as a pretty JSON array with nested objects
+	 * Writes the inverted index as a pretty JSON array with nested objects
 	 * @param index the inverted index
 	 * @param writer the writer to use
 	 * @param indent the starting indent level
@@ -354,23 +364,24 @@ public class JsonWriter {
 	 * @see #writeQuote(String, Writer, int)
 	 * @see #writeObjectArrays(Map, Writer, int)
 	 */
-	public static void writeInvertedIndex(Indexer index, Writer writer, int indent) throws IOException {
-		int count = 0;
-		Set<String> wordKeys = index.getWordMap().keySet();
+	public static void writeInvertedIndex(Map<String, ? extends Map<String, ? extends Set<? extends Number>>> index, Writer writer, int indent) throws IOException {
 		writer.write("{\n");
-		for (String word : wordKeys) {
-			writer.write("  ");
+		var iterator = index.keySet().iterator();
+
+		while (iterator.hasNext()) {
+			String word = iterator.next();
+			writeIndent(writer, indent+1);
 			writeQuote(word, writer, indent);
 			writer.write(": ");
-			writeObjectArrays(index.getFileMap(word), writer, indent+1);
-			if (count < wordKeys.size() - 1) {
-				writer.write(",\n");
+			writeObjectArrays(index.get(word), writer, indent+1);
+
+			if (iterator.hasNext()) {
+				writer.write(",");
 			}
-			count++;
-		}
-		if (count != 0) {
+
 			writer.write("\n");
 		}
+
 		writer.write("}");
 	}
 
@@ -379,10 +390,8 @@ public class JsonWriter {
 	 * @param index the inverted index
 	 * @param path the path to the file
 	 * @throws IOException if an IO error occurs
-	 * 
-	 * @see #writeInvertedIndex(Indexer, Writer, int)
 	 */
-	public static void writeInvertedIndex(Indexer index, Path path) throws IOException{
+	public static void writeInvertedIndex(Map<String, ? extends Map<String, ? extends Set<? extends Number>>> index, Path path) throws IOException{
 		try (BufferedWriter writer = Files.newBufferedWriter(path, UTF_8)) {
 			writeInvertedIndex(index, writer, 0);
 		}
@@ -393,7 +402,7 @@ public class JsonWriter {
 	 * @param index the inverted index
 	 * @return a String containing the elements in pretty JSON format
 	 */
-	public static String writeInvertedIndex(Indexer index) {
+	public static String writeInvertedIndex(Map<String, ? extends Map<String, ? extends Set<? extends Number>>> index) {
 		try {
 			StringWriter writer = new StringWriter();
 			writeInvertedIndex(index, writer, 0);

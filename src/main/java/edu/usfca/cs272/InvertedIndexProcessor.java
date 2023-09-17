@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * 
  * @author Isaac Meltsner
  */
-public class Processor { // TODO InvertedIndexProcessor
+public class InvertedIndexProcessor {
 	/**
 	 * Reads a file, cleans each word and stems words
 	 * Adds word counts and word positions in files to Indexer 
@@ -22,11 +22,11 @@ public class Processor { // TODO InvertedIndexProcessor
 	 * @throws IOException if an IOException occurs
 	 * 
 	 */
-	public static void processFile(Path inPath, Indexer index) throws IOException {
+	public static void processFile(Path inPath, InvertedIndex index) throws IOException {
 		ArrayList<String> stems = FileStemmer.listStems(inPath);
 
 		if (stems.size() != 0) {
-			index.getCounts().put(inPath.toString(), stems.size());
+			index.getWordCounts().put(inPath.toString(), stems.size());
 		}
 
 		for (int i = 0; i < stems.size(); i++) {
@@ -35,38 +35,44 @@ public class Processor { // TODO InvertedIndexProcessor
 	}
 
     /**
-	 * Recursivley iterates through a directory
-	 * and outputs file names and word counts
+	 * Recursively iterates through a directory
+	 * checks if files are text files
+	 * adds contents of text files to inverted index
 	 * @param inPath path of directory
 	 * @param index the Indexer object
+	 * @throws IOException if IO error occurs
+	 * @throws NotDirectoryException if given path is not a directory
      * 
-     * @see #processFile(Path, Indexer)
+     * @see #processFile(Path, InvertedIndex)
 	 */
-	public static void processDir(Path inPath, Indexer index) { // TODO throw exception here, remove the catch blocks
+	public static void processDir(Path inPath, InvertedIndex index) throws IOException, NotDirectoryException {
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(inPath);) {
 			var iterator = stream.iterator();
 			while (iterator.hasNext()) {
-				Path item = iterator.next();
-				if (Files.isDirectory(item)) {
-					processDir(item, index);
+				Path path = iterator.next();
+				if (Files.isDirectory(path)) {
+					processDir(path, index);
 				}
-				else if (item.toString().toLowerCase().endsWith(".txt") || item.toString().toLowerCase().endsWith(".text")) { // TODO Call isTextFile here
-					processFile(item, index);
+				else if (isTextFile(path)) {
+					processFile(path, index);
 				}
 			}
 		} 
-		catch (NotDirectoryException e) {
-			System.out.println("Path given is not a directory: " + inPath.toString());
-		} 
-		catch (IOException e) {
-			System.out.println("Path not found");
-		}
 	}
-	
-	/* TODO 
+
+	/**
+	 * Checks to see if the given path is a text file
+	 * @param path the path to check
+	 * @return true if path is a text file false otherwise
+	 */
 	public static boolean isTextFile(Path path) {
-		
+		return path.toString().toLowerCase().endsWith(".txt") || path.toString().toLowerCase().endsWith(".text");
 	}
-	*/
-	
 }
+
+
+
+
+
+
+
