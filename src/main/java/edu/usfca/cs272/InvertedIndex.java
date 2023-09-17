@@ -13,12 +13,12 @@ public class InvertedIndex {
     /**
      * Stores filenames and wordcounts
      */
-    private TreeMap<String, Integer> wordCounts;
+    private final TreeMap<String, Integer> wordCounts;
 
     /**
      * Stores words, filenames, and positions in file
      */
-    private TreeMap<String, TreeMap<String, TreeSet<Integer>>> invertedIndex;
+    private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> invertedIndex;
 
     /**
      * Class constructor to init map and inverted index
@@ -130,13 +130,4 @@ public class InvertedIndex {
     public String toString() {
         return invertedIndex.toString();
     }
-
-    /*
-     * TODO 
-     * More generally useful data structure methods here
-     * 
-     * boolean methods
-     * less nested get methods
-     * toString
-     */
 }
