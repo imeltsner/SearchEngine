@@ -11,8 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.Set;
 
 /**
  * Outputs several simple data structures in "pretty" JSON format where newlines
@@ -355,9 +354,8 @@ public class JsonWriter {
 		}
 	}
 	
-	// TODO Don't take in Indexer as the parameter, take in a generic nested map
 	/**
-	 * Writes the index as a pretty JSON array with nested objects
+	 * Writes the inverted index as a pretty JSON array with nested objects
 	 * @param index the inverted index
 	 * @param writer the writer to use
 	 * @param indent the starting indent level
@@ -366,16 +364,16 @@ public class JsonWriter {
 	 * @see #writeQuote(String, Writer, int)
 	 * @see #writeObjectArrays(Map, Writer, int)
 	 */
-	public static void writeInvertedIndex(TreeMap<String, TreeMap<String, TreeSet<Integer>>> invertedIndex, Writer writer, int indent) throws IOException {
+	public static void writeInvertedIndex(Map<String, ? extends Map<String, ? extends Set<? extends Number>>> index, Writer writer, int indent) throws IOException {
 		writer.write("{\n");
-		var iterator = invertedIndex.keySet().iterator();
+		var iterator = index.keySet().iterator();
 
 		while (iterator.hasNext()) {
 			String word = iterator.next();
 			writeIndent(writer, indent+1);
 			writeQuote(word, writer, indent);
 			writer.write(": ");
-			writeObjectArrays(invertedIndex.get(word), writer, indent+1);
+			writeObjectArrays(index.get(word), writer, indent+1);
 
 			if (iterator.hasNext()) {
 				writer.write(",");
@@ -392,10 +390,8 @@ public class JsonWriter {
 	 * @param index the inverted index
 	 * @param path the path to the file
 	 * @throws IOException if an IO error occurs
-	 * 
-	 * @see #writeInvertedIndex(InvertedIndex, Writer, int)
 	 */
-	public static void writeInvertedIndex(TreeMap<String, TreeMap<String, TreeSet<Integer>>> index, Path path) throws IOException{
+	public static void writeInvertedIndex(Map<String, ? extends Map<String, ? extends Set<? extends Number>>> index, Path path) throws IOException{
 		try (BufferedWriter writer = Files.newBufferedWriter(path, UTF_8)) {
 			writeInvertedIndex(index, writer, 0);
 		}
@@ -406,7 +402,7 @@ public class JsonWriter {
 	 * @param index the inverted index
 	 * @return a String containing the elements in pretty JSON format
 	 */
-	public static String writeInvertedIndex(TreeMap<String, TreeMap<String, TreeSet<Integer>>> index) {
+	public static String writeInvertedIndex(Map<String, ? extends Map<String, ? extends Set<? extends Number>>> index) {
 		try {
 			StringWriter writer = new StringWriter();
 			writeInvertedIndex(index, writer, 0);
