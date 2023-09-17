@@ -26,7 +26,7 @@ public class InvertedIndexProcessor {
 		ArrayList<String> stems = FileStemmer.listStems(inPath);
 
 		if (stems.size() != 0) {
-			index.getCounts().put(inPath.toString(), stems.size());
+			index.getWordCounts().put(inPath.toString(), stems.size());
 		}
 
 		for (int i = 0; i < stems.size(); i++) {

@@ -50,7 +50,7 @@ public class Driver {
 			Path countsOutput = parser.getPath("-counts", Path.of("counts.json"));
 
 			try {
-				JsonWriter.writeObject(index.getCounts(), countsOutput);
+				JsonWriter.writeObject(index.getWordCounts(), countsOutput);
 			}
 			catch (IOException e) {
 				System.out.println("Counts output file not found");
@@ -62,7 +62,7 @@ public class Driver {
 			Path indexOutput = parser.getPath("-index", Path.of("index.json"));
 
 			try {
-				JsonWriter.writeInvertedIndex(index.getWordMap(), indexOutput);
+				JsonWriter.writeInvertedIndex(index.getInvertedIndex(), indexOutput);
 			} 
 			catch (IOException e) {
 				System.out.println("Index output file not found at path" + indexOutput.toString());
