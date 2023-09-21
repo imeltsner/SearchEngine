@@ -23,6 +23,10 @@ public class InvertedIndexProcessor {
 	 * 
 	 */
 	public static void processFile(Path inPath, InvertedIndex index) throws IOException {
+		/*
+		 * TODO Copy/paste some logic from filestemmer into here
+		 * so you can go from stem to index without ever creating a list
+		 */
 		ArrayList<String> stems = FileStemmer.listStems(inPath);
 
 		if (stems.size() != 0) {
@@ -66,13 +70,7 @@ public class InvertedIndexProcessor {
 	 * @return true if path is a text file false otherwise
 	 */
 	public static boolean isTextFile(Path path) {
+		// TODO Save the lowercase and reuse
 		return path.toString().toLowerCase().endsWith(".txt") || path.toString().toLowerCase().endsWith(".text");
 	}
 }
-
-
-
-
-
-
-

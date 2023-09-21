@@ -85,6 +85,9 @@ public class JsonWriter {
 		writer.write("[\n");
 
 		var iterator = elements.iterator();
+		
+		// TODO Practice refactoring to the if/while approach discussed in group code review and CampusWire!
+		// TODO Then take the same approach in all of the other write methods in this Java class!
 
 		while (iterator.hasNext()) {
 			writeIndent(iterator.next().toString(), writer, indent+1);
@@ -153,7 +156,7 @@ public class JsonWriter {
 	public static void writeObject(Map<String, ? extends Number> elements, Writer writer, int indent) throws IOException {
 		writer.write("{\n");
 
-		var iterator = elements.keySet().iterator();
+		var iterator = elements.keySet().iterator(); // TODO Try the entrySet!
 
 		while (iterator.hasNext()) {
 			String word = iterator.next();
@@ -233,7 +236,7 @@ public class JsonWriter {
 			String word = iterator.next();
 			writeQuote(word, writer, indent+1);
 			writer.write(": ");
-			writeArray(elements.get(word), writer, indent+1);
+			writeArray(elements.get(word), writer, indent+1); // TODO formatting, indent + 1
 
 			if (iterator.hasNext()) {
 				writer.write(",");
@@ -364,6 +367,7 @@ public class JsonWriter {
 	 * @see #writeQuote(String, Writer, int)
 	 * @see #writeObjectArrays(Map, Writer, int)
 	 */
+	// TODO GREAT generic type! Change Set to Collection to make it even more general!
 	public static void writeInvertedIndex(Map<String, ? extends Map<String, ? extends Set<? extends Number>>> index, Writer writer, int indent) throws IOException {
 		writer.write("{\n");
 		var iterator = index.keySet().iterator();

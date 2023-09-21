@@ -62,6 +62,7 @@ public class Driver {
 			Path indexOutput = parser.getPath("-index", Path.of("index.json"));
 
 			try {
+				// TODO index.writeJson(indexOutput)
 				JsonWriter.writeInvertedIndex(index.getInvertedIndex(), indexOutput);
 			} 
 			catch (IOException e) {
