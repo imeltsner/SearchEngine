@@ -1,6 +1,5 @@
 package edu.usfca.cs272;
 
-import java.util.Collections;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -35,7 +34,7 @@ public class InvertedIndex {
      * @return the Treemap containing file names and word counts
      */
     public TreeMap<String, Integer> getWordCounts() {
-        return wordCounts; // TODO Collections.unmodifableMap(...)
+        return wordCounts; //TODO Collections.unmodifiableMap()
     }
 
     /**
@@ -46,8 +45,7 @@ public class InvertedIndex {
      * @see #wordCountHas(String)
      */
     public int getCount(String file) {
-    	// TODO return wordCounts.getOrDefault(file, 0);
-        return wordCountHas(file) ? wordCounts.get(file) : 0;
+        return wordCounts.getOrDefault(file, 0);
     }
 
     /**
