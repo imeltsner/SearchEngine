@@ -11,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Outputs several simple data structures in "pretty" JSON format where newlines
@@ -82,23 +81,24 @@ public class JsonWriter {
 	 * @see #writeIndent(String, Writer, int)
 	 */
 	public static void writeArray(Collection<? extends Number> elements, Writer writer, int indent) throws IOException {
-		writer.write("[\n");
+		writer.write("[");
 
 		var iterator = elements.iterator();
 		
 		// TODO Practice refactoring to the if/while approach discussed in group code review and CampusWire!
 		// TODO Then take the same approach in all of the other write methods in this Java class!
-
-		while (iterator.hasNext()) {
-			writeIndent(iterator.next().toString(), writer, indent+1);
-
-			if (iterator.hasNext()) {
-				writer.write(",");
-			}
-
+		
+		if (iterator.hasNext()) {
 			writer.write("\n");
+			writeIndent(iterator.next().toString(), writer, indent + 1);
 		}
 
+		while (iterator.hasNext()) {
+			writer.write(",\n");
+			writeIndent(iterator.next().toString(), writer, indent + 1);
+		}
+
+		writer.write("\n");
 		writeIndent("]", writer, indent);
 	}
 
@@ -154,23 +154,27 @@ public class JsonWriter {
 	 * @see #writeIndent(String, Writer, int)
 	 */
 	public static void writeObject(Map<String, ? extends Number> elements, Writer writer, int indent) throws IOException {
-		writer.write("{\n");
+		writer.write("{");
 
 		var iterator = elements.keySet().iterator(); // TODO Try the entrySet!
 
-		while (iterator.hasNext()) {
-			String word = iterator.next();
-			writeQuote(word, writer, indent+1);
-			writer.write(": ");
-			writer.write(elements.get(word).toString());
-
-			if (iterator.hasNext()) {
-				writer.write(",");
-			}
-
+		if (iterator.hasNext()) {
+			String element = iterator.next();
 			writer.write("\n");
+			writeQuote(element, writer, indent + 1);
+			writer.write(": ");
+			writer.write(elements.get(element).toString());
 		}
 
+		while (iterator.hasNext()) {
+			String element = iterator.next();
+			writer.write(",\n");
+			writeQuote(element, writer, indent + 1);
+			writer.write(": ");
+			writer.write(elements.get(element).toString());
+		}
+
+		writer.write("\n");
 		writeIndent("}", writer, indent);
 	}
 
@@ -230,21 +234,25 @@ public class JsonWriter {
 	 */
 	public static void writeObjectArrays(Map<String, ? extends Collection<? extends Number>> elements, Writer writer, int indent) throws IOException {
 		writer.write("{\n");
+
 		var iterator = elements.keySet().iterator();
 
-		while (iterator.hasNext()) {
-			String word = iterator.next();
-			writeQuote(word, writer, indent+1);
+		if (iterator.hasNext()) {
+			String element = iterator.next();
+			writeQuote(element, writer, indent + 1);
 			writer.write(": ");
-			writeArray(elements.get(word), writer, indent+1); // TODO formatting, indent + 1
-
-			if (iterator.hasNext()) {
-				writer.write(",");
-			}
-
-			writer.write("\n");
+			writeArray(elements.get(element), writer, indent + 1);
 		}
 
+		while (iterator.hasNext()) {
+			String element = iterator.next();
+			writer.write(",\n");
+			writeQuote(element, writer, indent + 1);
+			writer.write(": ");
+			writeArray(elements.get(element), writer, indent + 1);
+		}
+
+		writer.write("\n");
 		writeIndent("}", writer, indent);
 	}
 
@@ -303,21 +311,23 @@ public class JsonWriter {
 	 * @see #writeObject(Map)
 	 */
 	public static void writeArrayObjects(Collection<? extends Map<String, ? extends Number>> elements, Writer writer, int indent) throws IOException {
-		writer.write("[\n");
+		writer.write("[");
+
 		var iterator = elements.iterator();
 
-		while (iterator.hasNext()) {
-			writeIndent(writer, indent+1);
-			writeObject(iterator.next(), writer, indent+1);
-
-			if (iterator.hasNext()) {
-				writer.write(",");
-			}
-
+		if (iterator.hasNext()) {
 			writer.write("\n");
+			writeIndent(writer, indent + 1);
+			writeObject(iterator.next(), writer, indent + 1);
 		}
 
-		writer.write("]");
+		while (iterator.hasNext()) {
+			writer.write(",");
+			writeIndent(writer, indent + 1);
+			writeObject(iterator.next(), writer, indent + 1);
+		}
+
+		writer.write("\n]");
 	}
 
 	/**
@@ -367,26 +377,31 @@ public class JsonWriter {
 	 * @see #writeQuote(String, Writer, int)
 	 * @see #writeObjectArrays(Map, Writer, int)
 	 */
-	// TODO GREAT generic type! Change Set to Collection to make it even more general!
-	public static void writeInvertedIndex(Map<String, ? extends Map<String, ? extends Set<? extends Number>>> index, Writer writer, int indent) throws IOException {
-		writer.write("{\n");
+
+	public static void writeInvertedIndex(Map<String, ? extends Map<String, ? extends Collection<? extends Number>>> index, Writer writer, int indent) throws IOException {
+		writer.write("{");
+
 		var iterator = index.keySet().iterator();
 
-		while (iterator.hasNext()) {
-			String word = iterator.next();
-			writeIndent(writer, indent+1);
-			writeQuote(word, writer, indent);
-			writer.write(": ");
-			writeObjectArrays(index.get(word), writer, indent+1);
-
-			if (iterator.hasNext()) {
-				writer.write(",");
-			}
-
+		if (iterator.hasNext()) {
+			String element = iterator.next();
 			writer.write("\n");
+			writeIndent(writer, indent + 1);
+			writeQuote(element, writer, indent);
+			writer.write(": ");
+			writeObjectArrays(index.get(element), writer, indent + 1);
 		}
 
-		writer.write("}");
+		while (iterator.hasNext()) {
+			String element = iterator.next();
+			writer.write(",\n");
+			writeIndent(writer, indent + 1);
+			writeQuote(element, writer, indent);
+			writer.write(": ");
+			writeObjectArrays(index.get(element), writer, indent + 1);
+		}
+
+		writer.write("\n}");
 	}
 
 	/**
@@ -395,7 +410,7 @@ public class JsonWriter {
 	 * @param path the path to the file
 	 * @throws IOException if an IO error occurs
 	 */
-	public static void writeInvertedIndex(Map<String, ? extends Map<String, ? extends Set<? extends Number>>> index, Path path) throws IOException{
+	public static void writeInvertedIndex(Map<String, ? extends Map<String, ? extends Collection<? extends Number>>> index, Path path) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, UTF_8)) {
 			writeInvertedIndex(index, writer, 0);
 		}
@@ -406,7 +421,7 @@ public class JsonWriter {
 	 * @param index the inverted index
 	 * @return a String containing the elements in pretty JSON format
 	 */
-	public static String writeInvertedIndex(Map<String, ? extends Map<String, ? extends Set<? extends Number>>> index) {
+	public static String writeInvertedIndex(Map<String, ? extends Map<String, ? extends Collection<? extends Number>>> index) {
 		try {
 			StringWriter writer = new StringWriter();
 			writeInvertedIndex(index, writer, 0);
