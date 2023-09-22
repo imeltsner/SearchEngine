@@ -1,5 +1,6 @@
 package edu.usfca.cs272;
 
+import java.util.Collections;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -34,7 +35,7 @@ public class InvertedIndex {
      * @return the Treemap containing file names and word counts
      */
     public TreeMap<String, Integer> getWordCounts() {
-        return wordCounts;
+        return wordCounts; // TODO Collections.unmodifableMap(...)
     }
 
     /**
@@ -45,6 +46,7 @@ public class InvertedIndex {
      * @see #wordCountHas(String)
      */
     public int getCount(String file) {
+    	// TODO return wordCounts.getOrDefault(file, 0);
         return wordCountHas(file) ? wordCounts.get(file) : 0;
     }
 
@@ -61,7 +63,7 @@ public class InvertedIndex {
      * Getter function for retrieving the inverted index data structure
      * @return the inverted index
      */
-    public TreeMap<String, TreeMap<String, TreeSet<Integer>>> getInvertedIndex() {
+    public TreeMap<String, TreeMap<String, TreeSet<Integer>>> getInvertedIndex() { // TODO Eventually remove
         return invertedIndex;
     }
 
@@ -87,6 +89,8 @@ public class InvertedIndex {
     public boolean inFile(String word, String file) {
         return hasWord(word) ? getFileMap(word).containsKey(file) : false;
     }
+    
+    // TODO foundAt(String word, String file, int position)
 
     /**
      * Getter function for retrieving TreeMap with all 
@@ -94,9 +98,23 @@ public class InvertedIndex {
      * @param word key associated with inner TreeMap
      * @return inner TreeMap of inverted index
      */
-    public TreeMap<String, TreeSet<Integer>> getFileMap(String word) {
+    public TreeMap<String, TreeSet<Integer>> getFileMap(String word) { // TODO Remove
         return invertedIndex.get(word);
     }
+    
+    /*
+     * TODO 
+
+    public Set<Integer> getPositions(String word, String filename) {
+    	return inFile(word, file) ? Collections.unmodifiableSet(invertedIndex.get(...).get(...)) : Collections.emptySet();
+    }
+    
+    getLocations(String word) --> a view of the inner map keyset
+    
+    getWords() --> a view of the outer keyset
+    
+    numWords --> getWords().size() -or- have an efficient implementation
+    */
 
     /**
      * Adds the position a word was found to the inverted index
@@ -106,7 +124,7 @@ public class InvertedIndex {
      * 
      * @see #getFileMap(String)
      */
-    public void putPosition(String word, String fileName, int position) {
+    public void putPosition(String word, String fileName, int position) { // TODO Remove or make private
         getFileMap(word).get(fileName).add(position);
     }
 
@@ -121,6 +139,16 @@ public class InvertedIndex {
      * @see #putPosition(String, String, int)
      */
     public void putData(String word, String fileName, int position) {
+    	/* TODO 
+    	invertedIndex.putIfAbsent(word, new TreeMap<>());
+    	invertedIndex.get(word).putIfAbsent(word, new TreeSet<>());
+    	invertedIndex.get(word).get(fileName).add(position);
+    	
+    	-or- look into computeIfAbsent
+    	
+    	Decide for the entire class if want to promote concise code or efficient code
+    	*/
+    	
         invertedIndex.putIfAbsent(word, new TreeMap<>());
         getFileMap(word).putIfAbsent(fileName, new TreeSet<>());
         putPosition(word, fileName, position);
@@ -130,4 +158,10 @@ public class InvertedIndex {
     public String toString() {
         return invertedIndex.toString();
     }
+    
+    /* TODO 
+    public void writeJson(Path path) throws IOException {
+    	JsonWriter.writeInvertedIndex(invertedIndex, path);
+    }
+    */
 }
