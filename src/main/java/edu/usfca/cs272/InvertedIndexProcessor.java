@@ -70,7 +70,7 @@ public class InvertedIndexProcessor {
 	 * @return true if path is a text file false otherwise
 	 */
 	public static boolean isTextFile(Path path) {
-		// TODO Save the lowercase and reuse
-		return path.toString().toLowerCase().endsWith(".txt") || path.toString().toLowerCase().endsWith(".text");
+		String lowerCasePath = path.toString().toLowerCase();
+		return lowerCasePath.endsWith(".txt") || lowerCasePath.endsWith(".text");
 	}
 }
