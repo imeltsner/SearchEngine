@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Outputs several simple data structures in "pretty" JSON format where newlines
@@ -85,9 +86,6 @@ public class JsonWriter {
 
 		var iterator = elements.iterator();
 		
-		// TODO Practice refactoring to the if/while approach discussed in group code review and CampusWire!
-		// TODO Then take the same approach in all of the other write methods in this Java class!
-		
 		if (iterator.hasNext()) {
 			writer.write("\n");
 			writeIndent(iterator.next().toString(), writer, indent + 1);
@@ -156,22 +154,22 @@ public class JsonWriter {
 	public static void writeObject(Map<String, ? extends Number> elements, Writer writer, int indent) throws IOException {
 		writer.write("{");
 
-		var iterator = elements.keySet().iterator(); // TODO Try the entrySet!
+		var iterator = elements.entrySet().iterator();
 
 		if (iterator.hasNext()) {
-			String element = iterator.next();
+			Entry<String, ? extends Number> element = iterator.next();
 			writer.write("\n");
-			writeQuote(element, writer, indent + 1);
+			writeQuote(element.getKey(), writer, indent + 1);
 			writer.write(": ");
-			writer.write(elements.get(element).toString());
+			writer.write(element.getValue().toString());
 		}
 
 		while (iterator.hasNext()) {
-			String element = iterator.next();
+			Entry<String, ? extends Number> element = iterator.next();
 			writer.write(",\n");
-			writeQuote(element, writer, indent + 1);
+			writeQuote(element.getKey(), writer, indent + 1);
 			writer.write(": ");
-			writer.write(elements.get(element).toString());
+			writer.write(element.getValue().toString());
 		}
 
 		writer.write("\n");
@@ -235,21 +233,21 @@ public class JsonWriter {
 	public static void writeObjectArrays(Map<String, ? extends Collection<? extends Number>> elements, Writer writer, int indent) throws IOException {
 		writer.write("{\n");
 
-		var iterator = elements.keySet().iterator();
+		var iterator = elements.entrySet().iterator();
 
 		if (iterator.hasNext()) {
-			String element = iterator.next();
-			writeQuote(element, writer, indent + 1);
+			Entry<String, ? extends Collection<? extends Number>> element = iterator.next();
+			writeQuote(element.getKey(), writer, indent + 1);
 			writer.write(": ");
-			writeArray(elements.get(element), writer, indent + 1);
+			writeArray(element.getValue(), writer, indent + 1);
 		}
 
 		while (iterator.hasNext()) {
-			String element = iterator.next();
+			Entry<String, ? extends Collection<? extends Number>> element = iterator.next();
 			writer.write(",\n");
-			writeQuote(element, writer, indent + 1);
+			writeQuote(element.getKey(), writer, indent + 1);
 			writer.write(": ");
-			writeArray(elements.get(element), writer, indent + 1);
+			writeArray(element.getValue(), writer, indent + 1);
 		}
 
 		writer.write("\n");
@@ -381,24 +379,24 @@ public class JsonWriter {
 	public static void writeInvertedIndex(Map<String, ? extends Map<String, ? extends Collection<? extends Number>>> index, Writer writer, int indent) throws IOException {
 		writer.write("{");
 
-		var iterator = index.keySet().iterator();
+		var iterator = index.entrySet().iterator();
 
 		if (iterator.hasNext()) {
-			String element = iterator.next();
+			Entry<String, ? extends Map<String, ? extends Collection<? extends Number>>> element = iterator.next();
 			writer.write("\n");
 			writeIndent(writer, indent + 1);
-			writeQuote(element, writer, indent);
+			writeQuote(element.getKey(), writer, indent);
 			writer.write(": ");
-			writeObjectArrays(index.get(element), writer, indent + 1);
+			writeObjectArrays(element.getValue(), writer, indent + 1);
 		}
 
 		while (iterator.hasNext()) {
-			String element = iterator.next();
+			Entry<String, ? extends Map<String, ? extends Collection<? extends Number>>> element = iterator.next();
 			writer.write(",\n");
 			writeIndent(writer, indent + 1);
-			writeQuote(element, writer, indent);
+			writeQuote(element.getKey(), writer, indent);
 			writer.write(": ");
-			writeObjectArrays(index.get(element), writer, indent + 1);
+			writeObjectArrays(element.getValue(), writer, indent + 1);
 		}
 
 		writer.write("\n}");
