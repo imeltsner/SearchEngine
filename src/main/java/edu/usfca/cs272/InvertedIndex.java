@@ -1,5 +1,10 @@
 package edu.usfca.cs272;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -10,42 +15,80 @@ import java.util.TreeSet;
  * @author Isaac Meltsner
  */
 public class InvertedIndex {
-    /**
-     * Stores filenames and wordcounts
-     */
+    /** Stores filenames and wordcounts */
     private final TreeMap<String, Integer> wordCounts;
 
-    /**
-     * Stores words, filenames, and positions in file
-     */
+    /** Stores words, filenames, and positions in file */
     private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> invertedIndex;
 
-    /**
-     * Class constructor to init map and inverted index
-     */
+    /** Class constructor to init map and inverted index */
     public InvertedIndex() {
         wordCounts = new TreeMap<>();
         invertedIndex = new TreeMap<>();
     }
-    
+
     /**
-     * Getter function for retrieving TreeMap containing
-     * file names and word counts
-     * @return the Treemap containing file names and word counts
+     * Returns of view of the map containing file names and word counts
+     * @return an unmodifiable map of the file names and word counts
      */
-    public TreeMap<String, Integer> getWordCounts() {
-        return wordCounts; //TODO Collections.unmodifiableMap()
+    public Map<String, Integer> viewCounts() {
+        return Collections.unmodifiableMap(wordCounts);
+    }
+
+    /**
+     * Returns a view of the inverted index
+     * @return an unmodifiable map of the inverted index
+     */
+    public Map<String, TreeMap<String, TreeSet<Integer>>> viewInvertedIndex() {
+        return Collections.unmodifiableMap(invertedIndex);
+    }
+
+    /**
+     * Returns a view of the locations associated with a word in the inverted index
+     * @param word the word in the locations
+     * @return an unmodifiable map of the locations associated with a word or an empty map
+     *          if the word is not found in the index
+     * 
+     * @see #hasWord(String)
+     */
+    public Map<String, TreeSet<Integer>> viewLocations(String word) {
+        return hasWord(word) ? Collections.unmodifiableMap(invertedIndex.get(word)) : Collections.emptyMap();
+    }
+
+    /**
+     * Returns a view of all positions where a word occured in a location
+     * @param word the word in the locations
+     * @param location the location of the word
+     * @return an unmodifiable set containing all the positions a word was found at a given location
+     *          or an empty set if word is not in index or not found at location
+     */
+    public Set<Integer> viewPositions(String word, String location) {
+        return hasLocation(word, location) ? Collections.unmodifiableSet(invertedIndex.get(word).get(location)) : Collections.emptySet();
     }
 
     /**
      * Gets a word count from the wordCounts map
-     * @param file the file associated with the count
+     * @param path the file associated with the count
      * @return the number of words in a file or 0 if file not found
-     * 
-     * @see #wordCountHas(String)
      */
-    public int getCount(String file) {
-        return wordCounts.getOrDefault(file, 0);
+    public int getCount(String path) {
+        return wordCounts.getOrDefault(path, 0);
+    }
+
+    /**
+     * Returns the number files in the map
+     * @return the number of files in the map
+     */
+    public int numFiles() {
+        return wordCounts.size();
+    }
+
+    /**
+     * Returns the number of words in the inverted index
+     * @return the number of words in the inverted index
+     */
+    public int numWords() {
+        return invertedIndex.size();
     }
 
     /**
@@ -53,17 +96,10 @@ public class InvertedIndex {
      * @param file the file name to check for
      * @return true if file name is in map false otherwise
      */
-    public boolean wordCountHas(String file) {
+    public boolean hasCount(String file) {
         return wordCounts.containsKey(file);
     }
     
-    /**
-     * Getter function for retrieving the inverted index data structure
-     * @return the inverted index
-     */
-    public TreeMap<String, TreeMap<String, TreeSet<Integer>>> getInvertedIndex() { // TODO Eventually remove
-        return invertedIndex;
-    }
 
     /**
      * Checks if a given word is stored in the inverted index
@@ -75,91 +111,74 @@ public class InvertedIndex {
     }
 
     /**
-     * Checks if a given word was found in a given file in the inverted index
+     * Checks if a word was found in a location in the inverted index
      * @param word the word to check
-     * @param file the file to check
-     * @return true if the word was found in the file, false if the word
-     * is not in the inverted index or not found in the file
+     * @param location the location to check
+     * @return true if the word was found in the location, false if the word
+     * is not in the inverted index or not found in the location
      * 
      * @see #hasWord(String)
-     * @see #getFileMap(String)
      */
-    public boolean inFile(String word, String file) {
-        return hasWord(word) ? getFileMap(word).containsKey(file) : false;
+    public boolean hasLocation(String word, String location) {
+        return hasWord(word) ? invertedIndex.get(word).containsKey(location) : false;
     }
-    
-    // TODO foundAt(String word, String file, int position)
 
     /**
-     * Getter function for retrieving TreeMap with all 
-     * file names word appeared in and positions in the file word appeared
-     * @param word key associated with inner TreeMap
-     * @return inner TreeMap of inverted index
-     */
-    public TreeMap<String, TreeSet<Integer>> getFileMap(String word) { // TODO Remove
-        return invertedIndex.get(word);
-    }
-    
-    /*
-     * TODO 
-
-    public Set<Integer> getPositions(String word, String filename) {
-    	return inFile(word, file) ? Collections.unmodifiableSet(invertedIndex.get(...).get(...)) : Collections.emptySet();
-    }
-    
-    getLocations(String word) --> a view of the inner map keyset
-    
-    getWords() --> a view of the outer keyset
-    
-    numWords --> getWords().size() -or- have an efficient implementation
-    */
-
-    /**
-     * Adds the position a word was found to the inverted index
-     * @param word the word in the file
-     * @param fileName the name of the file
-     * @param position the words position in the file
+     * Check if a word is found at a specified postion in a location in the inverted index
+     * @param word the word to check
+     * @param location the location to check
+     * @param position the position of the word in the location
+     * @return true if the word is in the position of the location, false if the the word is not in the index
+     *          the location is not in the map, or the word is not found in the position
      * 
-     * @see #getFileMap(String)
+     * @see #hasLocation(String, String)
      */
-    public void putPosition(String word, String fileName, int position) { // TODO Remove or make private
-        getFileMap(word).get(fileName).add(position);
+    public boolean wordAtPosition(String word, String location, int position) {
+        return hasLocation(word, location) ? invertedIndex.get(word).get(location).contains(position) : false;
     }
 
     /**
-     * Adds words, filenames, and word position
-     * to the inverted index
+     * Adds file names and word counts to map
+     * @param path string representation of path to file
+     * @param wordCount the number of words in the file
+     */    
+    public void putCount(String path, int wordCount) {
+        wordCounts.put(path, wordCount);
+    }
+
+    /**
+     * Adds words, filenames, and word position to the inverted index
      * @param word the word to add
-     * @param fileName the file to add
+     * @param path the file to add
      * @param position the position of the word
-     * 
-     * @see #getFileMap(String)
-     * @see #putPosition(String, String, int)
      */
-    public void putData(String word, String fileName, int position) {
-    	/* TODO 
-    	invertedIndex.putIfAbsent(word, new TreeMap<>());
-    	invertedIndex.get(word).putIfAbsent(word, new TreeSet<>());
-    	invertedIndex.get(word).get(fileName).add(position);
-    	
-    	-or- look into computeIfAbsent
-    	
-    	Decide for the entire class if want to promote concise code or efficient code
-    	*/
-    	
+    public void putData(String word, String path, int position) {
         invertedIndex.putIfAbsent(word, new TreeMap<>());
-        getFileMap(word).putIfAbsent(fileName, new TreeSet<>());
-        putPosition(word, fileName, position);
+        TreeMap<String, TreeSet<Integer>> locationMap = invertedIndex.get(word);
+        locationMap.putIfAbsent(path, new TreeSet<>());
+        locationMap.get(path).add(position);
+    }
+
+    /**
+     * Outputs contents of word count map in pretty JSON format
+     * @param path destination for output
+     * @throws IOException if IO error occurs
+     */
+    public void writeCounts(Path path) throws IOException {
+        JsonWriter.writeObject(wordCounts, path);
+    }
+
+    /**
+     * Outputs contents of inverted index in pretty JSON format
+     * @param path destination for output
+     * @throws IOException if IO error occurs
+     */
+    public void writeInvertedIndex(Path path) throws IOException {
+    	JsonWriter.writeInvertedIndex(invertedIndex, path);
     }
     
     @Override
     public String toString() {
         return invertedIndex.toString();
     }
-    
-    /* TODO 
-    public void writeJson(Path path) throws IOException {
-    	JsonWriter.writeInvertedIndex(invertedIndex, path);
-    }
-    */
 }
