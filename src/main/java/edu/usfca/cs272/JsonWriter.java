@@ -138,6 +138,20 @@ public class JsonWriter {
 	}
 
 	/**
+	 * A helper method for writeObject() that writes some of the JSON output
+	 * @param entry the entry from the map
+	 * @param writer the writer to use
+	 * @param indent the initial indent level
+	 * @throws IOException if an IO error occurs
+	 */
+	public static void writeObjectEntry(Entry<String, ? extends Number> entry, Writer writer, int indent) throws IOException {
+		writer.write("\n");
+		writeQuote(entry.getKey(), writer, indent + 1);
+		writer.write(": ");
+		writer.write(entry.getValue().toString());
+	}
+
+	/**
 	 * Writes the elements as a pretty JSON object.
 	 *
 	 * @param elements the elements to write
@@ -157,19 +171,14 @@ public class JsonWriter {
 		var iterator = elements.entrySet().iterator();
 
 		if (iterator.hasNext()) {
-			Entry<String, ? extends Number> element = iterator.next();
-			writer.write("\n");
-			writeQuote(element.getKey(), writer, indent + 1);
-			writer.write(": ");
-			writer.write(element.getValue().toString());
+			Entry<String, ? extends Number> entry = iterator.next();
+			writeObjectEntry(entry, writer, indent);
 		}
 
 		while (iterator.hasNext()) {
-			Entry<String, ? extends Number> element = iterator.next();
-			writer.write(",\n");
-			writeQuote(element.getKey(), writer, indent + 1);
-			writer.write(": ");
-			writer.write(element.getValue().toString());
+			Entry<String, ? extends Number> entry = iterator.next();
+			writer.write(",");
+			writeObjectEntry(entry, writer, indent);
 		}
 
 		writer.write("\n");
@@ -214,6 +223,20 @@ public class JsonWriter {
 	}
 
 	/**
+	 * A helper method for writeObjectArrays that writes a portion of the JSON ouptut
+	 * @param entry the entry from the map
+	 * @param writer the writer to use
+	 * @param indent the initial indent level
+	 * @throws IOException if an IO error occurs
+	 */
+	public static void writeObjectArraysEntry(Entry<String, ? extends Collection<? extends Number>> entry, Writer writer, int indent) throws IOException {
+		writer.write("\n");
+		writeQuote(entry.getKey(), writer, indent + 1);
+		writer.write(": ");
+		writeArray(entry.getValue(), writer, indent + 1);
+	}
+
+	/**
 	 * Writes the elements as a pretty JSON object with nested arrays. The generic
 	 * notation used allows this method to be used for any type of map with any type
 	 * of nested collection of number objects.
@@ -231,51 +254,19 @@ public class JsonWriter {
 	 * @see #writeArray(Collection)
 	 */
 	public static void writeObjectArrays(Map<String, ? extends Collection<? extends Number>> elements, Writer writer, int indent) throws IOException {
-		/* TODO 
 		writer.write("{");
 
 		var iterator = elements.entrySet().iterator();
 
 		if (iterator.hasNext()) {
-			this could be a writeEntry method called here and in the while
-			Entry<String, ? extends Collection<? extends Number>> element = iterator.next();
-			writer.write("\n");
-			writeQuote(element.getKey(), writer, indent + 1);
-			writer.write(": ");
-			writeArray(element.getValue(), writer, indent + 1);
+			Entry<String, ? extends Collection<? extends Number>> entry = iterator.next();
+			writeObjectArraysEntry(entry, writer, indent);
 		}
 
 		while (iterator.hasNext()) {
+			Entry<String, ? extends Collection<? extends Number>> entry = iterator.next();
 			writer.write(",");
-			
-			Entry<String, ? extends Collection<? extends Number>> element = iterator.next();
-			writer.write("\n");
-			writeQuote(element.getKey(), writer, indent + 1);
-			writer.write(": ");
-			writeArray(element.getValue(), writer, indent + 1);
-		}
-
-		writer.write("\n");
-		writeIndent("}", writer, indent);
-		*/
-		
-		writer.write("{\n");
-
-		var iterator = elements.entrySet().iterator();
-
-		if (iterator.hasNext()) {
-			Entry<String, ? extends Collection<? extends Number>> element = iterator.next();
-			writeQuote(element.getKey(), writer, indent + 1);
-			writer.write(": ");
-			writeArray(element.getValue(), writer, indent + 1);
-		}
-
-		while (iterator.hasNext()) {
-			Entry<String, ? extends Collection<? extends Number>> element = iterator.next();
-			writer.write(",\n");
-			writeQuote(element.getKey(), writer, indent + 1);
-			writer.write(": ");
-			writeArray(element.getValue(), writer, indent + 1);
+			writeObjectArraysEntry(entry, writer, indent);
 		}
 
 		writer.write("\n");
@@ -392,6 +383,21 @@ public class JsonWriter {
 			return null;
 		}
 	}
+
+	/**
+	 * A helper method for writeInvertedIndex() that writes a portion of the JSON output
+	 * @param entry the entry from the map
+	 * @param writer the writer to use
+	 * @param indent the initial indent level
+	 * @throws IOException if an IO error occurs
+	 */
+	public static void writeInvertedIndexEntry(Entry<String, ? extends Map<String, ? extends Collection<? extends Number>>> entry, Writer writer, int indent) throws IOException {
+		writer.write("\n");
+		writeIndent(writer, indent + 1);
+		writeQuote(entry.getKey(), writer, indent);
+		writer.write(": ");
+		writeObjectArrays(entry.getValue(), writer, indent + 1);
+	}
 	
 	/**
 	 * Writes the inverted index as a pretty JSON array with nested objects
@@ -409,21 +415,14 @@ public class JsonWriter {
 		var iterator = index.entrySet().iterator();
 
 		if (iterator.hasNext()) {
-			Entry<String, ? extends Map<String, ? extends Collection<? extends Number>>> element = iterator.next();
-			writer.write("\n");
-			writeIndent(writer, indent + 1);
-			writeQuote(element.getKey(), writer, indent);
-			writer.write(": ");
-			writeObjectArrays(element.getValue(), writer, indent + 1);
+			Entry<String, ? extends Map<String, ? extends Collection<? extends Number>>> entry = iterator.next();
+			writeInvertedIndexEntry(entry, writer, indent);
 		}
 
 		while (iterator.hasNext()) {
-			Entry<String, ? extends Map<String, ? extends Collection<? extends Number>>> element = iterator.next();
-			writer.write(",\n");
-			writeIndent(writer, indent + 1);
-			writeQuote(element.getKey(), writer, indent);
-			writer.write(": ");
-			writeObjectArrays(element.getValue(), writer, indent + 1);
+			Entry<String, ? extends Map<String, ? extends Collection<? extends Number>>> entry = iterator.next();
+			writer.write(",");
+			writeInvertedIndexEntry(entry, writer, indent);
 		}
 
 		writer.write("\n}");
