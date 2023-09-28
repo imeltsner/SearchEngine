@@ -3,6 +3,7 @@ package edu.usfca.cs272;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -34,32 +35,26 @@ public class InvertedIndex {
     public Map<String, Integer> viewCounts() {
         return Collections.unmodifiableMap(wordCounts);
     }
-
+    
     /**
-     * Returns a view of the inverted index
-     * @return an unmodifiable map of the inverted index
+     * Returns a view of the words of the inverted index
+     * @return an unmodifiable set of the words in the inverted index
      */
-    public Map<String, TreeMap<String, TreeSet<Integer>>> viewInvertedIndex() { // TODO Remove
-        return Collections.unmodifiableMap(invertedIndex);
+    public Set<String> viewWords() {
+    	return Collections.unmodifiableSet(invertedIndex.keySet());
     }
     
-    /* 
-    public Set<String> viewWords() {
-    	unmodifiable view of the invertedIndex.keySet()
-    }
-    */
 
     /**
      * Returns a view of the locations associated with a word in the inverted index
-     * @param word the word in the locations
-     * @return an unmodifiable map of the locations associated with a word or an empty map
+     * @param word the word in the inverted index
+     * @return an unmodifiable set of the locations associated with a word or an empty set
      *          if the word is not found in the index
      * 
      * @see #hasWord(String)
      */
-    public Map<String, TreeSet<Integer>> viewLocations(String word) { // TODO Fix
-    	// TODO Return the keyset for invertedIndex.get(word) instead of the entire inner map
-        return hasWord(word) ? Collections.unmodifiableMap(invertedIndex.get(word)) : Collections.emptyMap();
+    public Set<String> viewLocations(String word) {
+        return hasWord(word) ? Collections.unmodifiableSet(invertedIndex.get(word).keySet()) : Collections.emptySet();
     }
 
     /**
@@ -107,7 +102,6 @@ public class InvertedIndex {
         return wordCounts.containsKey(file);
     }
     
-
     /**
      * Checks if a given word is stored in the inverted index
      * @param word the word to check
@@ -160,20 +154,23 @@ public class InvertedIndex {
      * @param position the position of the word
      */
     public void putData(String word, String path, int position) {
-    	// TODO Go for most compact, don't worry about the repeated get calls
         invertedIndex.putIfAbsent(word, new TreeMap<>());
-        TreeMap<String, TreeSet<Integer>> locationMap = invertedIndex.get(word);
-        locationMap.putIfAbsent(path, new TreeSet<>());
-        locationMap.get(path).add(position);
+        invertedIndex.get(word).putIfAbsent(path, new TreeSet<>());
+        invertedIndex.get(word).get(path).add(position);
     }
     
-    /* TODO 
+    /**
+     * Adds a list of words to the inverted index starting at a given position
+     * @param words the words to add
+     * @param path the location of the words
+     * @param start the starting position
+     */
     public void putAll(List<String> words, String path, int start) {
-    		for each word in words
-    			putData(word, path, start++)
+        for (String word : words) {
+            putData(word, path, start++);
+        }
     }
-    */
-
+    
     /**
      * Outputs contents of word count map in pretty JSON format
      * @param path destination for output
