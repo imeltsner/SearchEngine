@@ -1,7 +1,6 @@
 package edu.usfca.cs272;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
@@ -30,13 +29,7 @@ public class Driver {
 			Path input = parser.getPath("-text");
 
 			try {
-				// TODO InvertedIndexProcessor.process(...)
-				if (Files.isDirectory(input)) {
-					InvertedIndexProcessor.processDir(input, index);
-				}
-				else {
-					InvertedIndexProcessor.processFile(input, index);
-				}
+				InvertedIndexProcessor.process(input, index);
 			} 
 			catch (IOException e) {
 				System.out.println("File not found at path: " + input.toString());
