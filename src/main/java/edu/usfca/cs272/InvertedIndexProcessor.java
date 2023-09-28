@@ -64,6 +64,8 @@ public class InvertedIndexProcessor {
 		return split(clean(text));
 	}
 
+	// TODO Remove the stuff above here, that is in FileStemmer
+	
 	/**
 	 * Reads a file, cleans and stems each word
 	 * Adds word counts to map and word positions in files to inverted index 
@@ -74,10 +76,10 @@ public class InvertedIndexProcessor {
 	 */
 	public static void processFile(Path path, InvertedIndex index) throws IOException {
 		Stemmer stemmer = new SnowballStemmer(ENGLISH);
-		String sPath = path.toString();
+		String sPath = path.toString(); // TODO location
 		int count = 0;
 
-		try (BufferedReader reader = Files.newBufferedReader(path)) {
+		try (BufferedReader reader = Files.newBufferedReader(path)) { // TODO UTF8
 			while (reader.ready()) {
 				String[] words = parse(reader.readLine());
 				for (String word: words) {
@@ -127,4 +129,15 @@ public class InvertedIndexProcessor {
 		String lowerCasePath = path.toString().toLowerCase();
 		return lowerCasePath.endsWith(".txt") || lowerCasePath.endsWith(".text");
 	}
+	
+	/* TODO 
+	public static void process(Path path, InvertedIndex index) throws ... {
+		if (Files.isDirectory(input)) {
+			InvertedIndexProcessor.processDir(input, index);
+		}
+		else {
+			InvertedIndexProcessor.processFile(input, index);
+		}
+	}
+	*/
 }

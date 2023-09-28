@@ -39,9 +39,15 @@ public class InvertedIndex {
      * Returns a view of the inverted index
      * @return an unmodifiable map of the inverted index
      */
-    public Map<String, TreeMap<String, TreeSet<Integer>>> viewInvertedIndex() {
+    public Map<String, TreeMap<String, TreeSet<Integer>>> viewInvertedIndex() { // TODO Remove
         return Collections.unmodifiableMap(invertedIndex);
     }
+    
+    /* 
+    public Set<String> viewWords() {
+    	unmodifiable view of the invertedIndex.keySet()
+    }
+    */
 
     /**
      * Returns a view of the locations associated with a word in the inverted index
@@ -51,7 +57,8 @@ public class InvertedIndex {
      * 
      * @see #hasWord(String)
      */
-    public Map<String, TreeSet<Integer>> viewLocations(String word) {
+    public Map<String, TreeSet<Integer>> viewLocations(String word) { // TODO Fix
+    	// TODO Return the keyset for invertedIndex.get(word) instead of the entire inner map
         return hasWord(word) ? Collections.unmodifiableMap(invertedIndex.get(word)) : Collections.emptyMap();
     }
 
@@ -153,11 +160,19 @@ public class InvertedIndex {
      * @param position the position of the word
      */
     public void putData(String word, String path, int position) {
+    	// TODO Go for most compact, don't worry about the repeated get calls
         invertedIndex.putIfAbsent(word, new TreeMap<>());
         TreeMap<String, TreeSet<Integer>> locationMap = invertedIndex.get(word);
         locationMap.putIfAbsent(path, new TreeSet<>());
         locationMap.get(path).add(position);
     }
+    
+    /* TODO 
+    public void putAll(List<String> words, String path, int start) {
+    		for each word in words
+    			putData(word, path, start++)
+    }
+    */
 
     /**
      * Outputs contents of word count map in pretty JSON format
