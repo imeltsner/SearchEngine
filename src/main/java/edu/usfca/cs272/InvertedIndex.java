@@ -10,7 +10,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 /** 
- * A class to store an inverted index and a 
+ * A class to store an inverted index and 
  * map of wordcounts
  * 
  * @author Isaac Meltsner
@@ -19,10 +19,10 @@ public class InvertedIndex {
     /** Stores filenames and wordcounts */
     private final TreeMap<String, Integer> wordCounts;
 
-    /** Stores words, filenames, and positions in file */
+    /** Stores words, locations, and word positions in locations */
     private final TreeMap<String, TreeMap<String, TreeSet<Integer>>> invertedIndex;
 
-    /** Class constructor to init map and inverted index */
+    /** Class constructor to initialize map and inverted index */
     public InvertedIndex() {
         wordCounts = new TreeMap<>();
         invertedIndex = new TreeMap<>();
@@ -44,7 +44,6 @@ public class InvertedIndex {
     	return Collections.unmodifiableSet(invertedIndex.keySet());
     }
     
-
     /**
      * Returns a view of the locations associated with a word in the inverted index
      * @param word the word in the inverted index
@@ -59,8 +58,8 @@ public class InvertedIndex {
 
     /**
      * Returns a view of all positions where a word occured in a location
-     * @param word the word in the locations
-     * @param location the location of the word
+     * @param word the word in the location
+     * @param location the location where the word is found
      * @return an unmodifiable set containing all the positions a word was found at a given location
      *          or an empty set if word is not in index or not found at location
      */
