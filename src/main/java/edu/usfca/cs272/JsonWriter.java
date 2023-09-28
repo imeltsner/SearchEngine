@@ -231,6 +231,34 @@ public class JsonWriter {
 	 * @see #writeArray(Collection)
 	 */
 	public static void writeObjectArrays(Map<String, ? extends Collection<? extends Number>> elements, Writer writer, int indent) throws IOException {
+		/* TODO 
+		writer.write("{");
+
+		var iterator = elements.entrySet().iterator();
+
+		if (iterator.hasNext()) {
+			this could be a writeEntry method called here and in the while
+			Entry<String, ? extends Collection<? extends Number>> element = iterator.next();
+			writer.write("\n");
+			writeQuote(element.getKey(), writer, indent + 1);
+			writer.write(": ");
+			writeArray(element.getValue(), writer, indent + 1);
+		}
+
+		while (iterator.hasNext()) {
+			writer.write(",");
+			
+			Entry<String, ? extends Collection<? extends Number>> element = iterator.next();
+			writer.write("\n");
+			writeQuote(element.getKey(), writer, indent + 1);
+			writer.write(": ");
+			writeArray(element.getValue(), writer, indent + 1);
+		}
+
+		writer.write("\n");
+		writeIndent("}", writer, indent);
+		*/
+		
 		writer.write("{\n");
 
 		var iterator = elements.entrySet().iterator();
@@ -375,7 +403,6 @@ public class JsonWriter {
 	 * @see #writeQuote(String, Writer, int)
 	 * @see #writeObjectArrays(Map, Writer, int)
 	 */
-
 	public static void writeInvertedIndex(Map<String, ? extends Map<String, ? extends Collection<? extends Number>>> index, Writer writer, int indent) throws IOException {
 		writer.write("{");
 

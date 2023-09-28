@@ -30,6 +30,7 @@ public class Driver {
 			Path input = parser.getPath("-text");
 
 			try {
+				// TODO InvertedIndexProcessor.process(...)
 				if (Files.isDirectory(input)) {
 					InvertedIndexProcessor.processDir(input, index);
 				}
