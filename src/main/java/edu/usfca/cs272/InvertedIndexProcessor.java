@@ -4,12 +4,11 @@ import static opennlp.tools.stemmer.snowball.SnowballStemmer.ALGORITHM.ENGLISH;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
-import java.text.Normalizer;
-import java.util.regex.Pattern;
 
 import opennlp.tools.stemmer.Stemmer;
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
@@ -21,51 +20,6 @@ import opennlp.tools.stemmer.snowball.SnowballStemmer;
  * @author Isaac Meltsner
  */
 public class InvertedIndexProcessor {
-	/** Regular expression that matches any whitespace. **/
-	public static final Pattern SPLIT_REGEX = Pattern.compile("(?U)\\p{Space}+");
-
-	/** Regular expression that matches non-alphabetic characters. **/
-	public static final Pattern CLEAN_REGEX = Pattern.compile("(?U)[^\\p{Alpha}\\p{Space}]+");
-
-	/**
-	 * Cleans the text by removing any non-alphabetic characters (e.g. non-letters
-	 * like digits, punctuation, symbols, and diacritical marks like the umlaut) and
-	 * converting the remaining characters to lowercase.
-	 *
-	 * @param text the text to clean
-	 * @return cleaned text
-	 */
-	public static String clean(String text) {
-		String cleaned = Normalizer.normalize(text, Normalizer.Form.NFD);
-		cleaned = CLEAN_REGEX.matcher(cleaned).replaceAll("");
-		return cleaned.toLowerCase();
-	}
-
-	/**
-	 * Splits the supplied text by whitespaces.
-	 *
-	 * @param text the text to split
-	 * @return an array of {@link String} objects
-	 */
-	public static String[] split(String text) {
-		return text.isBlank() ? new String[0] : SPLIT_REGEX.split(text.strip());
-	}
-
-	/**
-	 * Parses the text into an array of clean words.
-	 *
-	 * @param text the text to clean and split
-	 * @return an array of {@link String} objects
-	 *
-	 * @see #clean(String)
-	 * @see #parse(String)
-	 */
-	public static String[] parse(String text) {
-		return split(clean(text));
-	}
-
-	// TODO Remove the stuff above here, that is in FileStemmer
-	
 	/**
 	 * Reads a file, cleans and stems each word
 	 * Adds word counts to map and word positions in files to inverted index 
@@ -76,20 +30,20 @@ public class InvertedIndexProcessor {
 	 */
 	public static void processFile(Path path, InvertedIndex index) throws IOException {
 		Stemmer stemmer = new SnowballStemmer(ENGLISH);
-		String sPath = path.toString(); // TODO location
+		String location = path.toString();
 		int count = 0;
 
-		try (BufferedReader reader = Files.newBufferedReader(path)) { // TODO UTF8
+		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
 			while (reader.ready()) {
-				String[] words = parse(reader.readLine());
+				String[] words = FileStemmer.parse(reader.readLine());
 				for (String word: words) {
-					index.putData(stemmer.stem(word).toString(), sPath, count + 1);
+					index.putData(stemmer.stem(word).toString(), location, count + 1);
 					count++;
 				}
 			}
 
 			if (count != 0) {
-				index.putCount(sPath, count);
+				index.putCount(location, count);
 			}
 		}
 	}
@@ -130,14 +84,19 @@ public class InvertedIndexProcessor {
 		return lowerCasePath.endsWith(".txt") || lowerCasePath.endsWith(".text");
 	}
 	
-	/* TODO 
-	public static void process(Path path, InvertedIndex index) throws ... {
-		if (Files.isDirectory(input)) {
-			InvertedIndexProcessor.processDir(input, index);
+	/**
+	 * Processes path according to path type
+	 * @param path the path to process
+	 * @param index the inverted index
+	 * @throws IOException if IOError occurs
+	 * @throws NullPointerException if null pointer is found
+	 */
+	public static void process(Path path, InvertedIndex index) throws IOException, NullPointerException {
+		if (Files.isDirectory(path)) {
+			InvertedIndexProcessor.processDir(path, index);
 		}
 		else {
-			InvertedIndexProcessor.processFile(input, index);
+			InvertedIndexProcessor.processFile(path, index);
 		}
 	}
-	*/
 }
