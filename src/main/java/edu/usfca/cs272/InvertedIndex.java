@@ -2,9 +2,12 @@ package edu.usfca.cs272;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -142,7 +145,7 @@ public class InvertedIndex {
      * @param path string representation of path to file
      * @param wordCount the number of words in the file
      */    
-    public void putCount(String path, int wordCount) {
+    public void addCount(String path, int wordCount) {
         wordCounts.put(path, wordCount);
     }
 
@@ -152,7 +155,7 @@ public class InvertedIndex {
      * @param path the file to add
      * @param position the position of the word
      */
-    public void putData(String word, String path, int position) {
+    public void addData(String word, String path, int position) {
         invertedIndex.putIfAbsent(word, new TreeMap<>());
         invertedIndex.get(word).putIfAbsent(path, new TreeSet<>());
         invertedIndex.get(word).get(path).add(position);
@@ -164,9 +167,9 @@ public class InvertedIndex {
      * @param path the location of the words
      * @param start the starting position
      */
-    public void putAll(List<String> words, String path, int start) {
+    public void addAll(List<String> words, String path, int start) {
         for (String word : words) {
-            putData(word, path, start++);
+            addData(word, path, start++);
         }
     }
     
@@ -188,6 +191,42 @@ public class InvertedIndex {
     	JsonWriter.writeInvertedIndex(invertedIndex, path);
     }
     
+    public List<SearchResult> exactSearchSingle(TreeSet<String> query) {
+
+        List<SearchResult> results = new ArrayList<>();
+        HashMap<String, SearchResult> seenLocations = new HashMap<>();
+        var searchWords = query.iterator();
+
+        while(searchWords.hasNext()) {
+
+            String word = searchWords.next();
+
+            if (hasWord(word)) {
+
+                var locations = invertedIndex.get(word).entrySet().iterator();
+
+                while (locations.hasNext()) {
+
+                    Entry<String, TreeSet<Integer>> location = locations.next();
+                    SearchResult visited = seenLocations.get(location.getKey());
+                    
+                    if (visited == null) {
+                        SearchResult result = new SearchResult(String.join(" ", query), location.getKey());
+                        result.addWordsFound(location.getValue().size());
+                        result.addTotalWords(wordCounts.get(location.getKey()));
+                        results.add(result);
+                        seenLocations.put(location.getKey(), result);
+                    }
+                    else {
+                        visited.addTotalWords(location.getValue().size());
+                    }
+                }
+            }
+        }
+
+        return results;
+    }
+
     @Override
     public String toString() {
         return invertedIndex.toString();
