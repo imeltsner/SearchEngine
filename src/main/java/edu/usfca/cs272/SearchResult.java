@@ -13,6 +13,9 @@ public class SearchResult implements Comparable<SearchResult> {
     /** The total words at a location */
     private int totalWords;
 
+    /** The score defined by count / total words */
+    private double score;
+
     /**
      * Class constructor
      * @param query the search query
@@ -22,11 +25,12 @@ public class SearchResult implements Comparable<SearchResult> {
         this.location = location;
         this.count = 0;
         this.totalWords = 0;
+        this.score = 0;
     }
 
     /**
-     * Adds value to the total query words matched
-     * @param numWords the number of words found matching a query word
+     * Adds number of words matched to the total query words matched
+     * @param numWords the number of words matching a query word
      */
     public void addWordsFound(int numWords) {
         count += numWords;
@@ -41,32 +45,51 @@ public class SearchResult implements Comparable<SearchResult> {
     }
 
     /**
-     * Returns the score defined by words found divided by total words
-     * @return the score to return
+     * Calculates the score defined by count / total words
      */
-    public double getScore() {
-        return count / totalWords;
+    public void calculateScore() {
+        score = (double) count / (double) totalWords;
     }
 
+    /**
+     * Returns number of query words matched
+     * @return the count
+     */
     public int getCount() {
         return count;
     }
 
+    /**
+     * Returns the score defined by count / total words
+     * @return the score 
+     */
+    public double getScore() {
+        return score;
+    }
+
+    /**
+     * Returns the query line as a single string
+     * @return the query line
+     */
     public String getQuery() {
         return query;
     }
 
+    /**
+     * Returns the location associated with the search result
+     * @return the location
+     */
     public String getLocation() {
         return location;
     }
 
     @Override
     public int compareTo(SearchResult other) {
-        if (this.getScore() != other.getScore()) {
-            return Double.compare(this.getScore(), other.getScore());
+        if (this.score != other.score) {
+            return Double.compare(other.score, this.score);
         }
         else if (this.count != other.count) {
-            return Integer.compare(this.count, other.count);
+            return Integer.compare(other.count, this.count);
         }
         else {
             return String.CASE_INSENSITIVE_ORDER.compare(this.location, other.getLocation());
@@ -75,11 +98,10 @@ public class SearchResult implements Comparable<SearchResult> {
 
     @Override
     public String toString() {
-        String q = "Search query: " + this.query + "\n";
-        String l = "Location: " + this.location + "\n";
-        String c = "Count: " + count + "\n";
-        String t = "Total words: " + totalWords + "\n";
-        String s = "Score: " + getScore() + "\n";
-        return q + l + c + t + s;
+        String q = this.query.toUpperCase() + "\n";
+        String w = "where: " + this.location + "\n";
+        String c = "count: " + count + "\n";
+        String s = "score: " + String.format("%.8f", score) + "\n";
+        return q + c + s + w;
     }
 }
