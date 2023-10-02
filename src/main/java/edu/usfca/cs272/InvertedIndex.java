@@ -196,9 +196,9 @@ public class InvertedIndex {
      * @param query the query to search
      * @return a sorted list of search results
      */
-    public TreeSet<SearchResult> exactSearchSingle(TreeSet<String> query) {
+    public ArrayList<SearchResult> exactSearchSingle(TreeSet<String> query) {
 
-        TreeSet<SearchResult> results = new TreeSet<>();
+        ArrayList<SearchResult> results = new ArrayList<>();
         HashMap<String, SearchResult> seenLocations = new HashMap<>();
         var searchWords = query.iterator();
 
@@ -219,16 +219,19 @@ public class InvertedIndex {
                         SearchResult result = new SearchResult(String.join(" ", query), location.getKey());
                         result.addWordsFound(location.getValue().size());
                         result.addTotalWords(wordCounts.get(location.getKey()));
+                        result.getScore();
                         results.add(result);
                         seenLocations.put(location.getKey(), result);
                     }
                     else {
-                        visited.addTotalWords(location.getValue().size());
+                        visited.addWordsFound(location.getValue().size());
+                        visited.getScore();
                     }
                 }
             }
         }
 
+        Collections.sort(results);
         return results;
     }
 
@@ -237,13 +240,12 @@ public class InvertedIndex {
      * @param queries the queries to search for
      * @return a map containing the search queries and the results for each query
      */
-    public TreeMap<String, TreeSet<SearchResult>> exactSearch(ArrayList<TreeSet<String>> queries) {
-        TreeMap<String, TreeSet<SearchResult>> allResults = new TreeMap<>();
-
+    public TreeMap<String, ArrayList<SearchResult>> exactSearch(ArrayList<TreeSet<String>> queries) {
+        TreeMap<String, ArrayList<SearchResult>> allResults = new TreeMap<>();
         for (TreeSet<String> query : queries) {
-            TreeSet<SearchResult> result = exactSearchSingle(query);
-            System.out.println(result);
-            //allResults.put(result.first().getQuery(), result);
+            ArrayList<SearchResult> result = exactSearchSingle(query);
+            String queryString = String.join(" ", query);
+            allResults.put(queryString, result);
         }
 
         return allResults;
