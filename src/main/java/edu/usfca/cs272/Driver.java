@@ -2,6 +2,8 @@ package edu.usfca.cs272;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.TreeSet;
 
 /**
  * Class responsible for running this project based on the provided command-line
@@ -62,5 +64,25 @@ public class Driver {
 				System.out.println("Index output file not found at path" + indexOutput.toString());
 			}
 		}
+
+		if (parser.hasFlag("-query")) {
+
+			Path queryFile = parser.getPath("-query");
+			ArrayList<TreeSet<String>> queries;
+
+			try {
+				queries = FileStemmer.listUniqueStems(queryFile);
+			}
+			catch (IOException e) {
+				System.out.println("Query file not found");
+			}
+		}
+
+		//TODO perform search
+
+		if (parser.hasFlag("-results")) {
+			Path searchOutput = parser.getPath("-results", Path.of("results.json"));
+		}
+
 	}
 }
