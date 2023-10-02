@@ -37,13 +37,13 @@ public class InvertedIndexProcessor {
 			while (reader.ready()) {
 				String[] words = FileStemmer.parse(reader.readLine());
 				for (String word: words) {
-					index.putData(stemmer.stem(word).toString(), location, count + 1);
+					index.addData(stemmer.stem(word).toString(), location, count + 1);
 					count++;
 				}
 			}
 
 			if (count != 0) {
-				index.putCount(location, count);
+				index.addCount(location, count);
 			}
 		}
 	}
