@@ -191,9 +191,14 @@ public class InvertedIndex {
     	JsonWriter.writeInvertedIndex(invertedIndex, path);
     }
     
-    public List<SearchResult> exactSearchSingle(TreeSet<String> query) {
+    /**
+     * Performs an exact search of a single search query
+     * @param query the query to search
+     * @return a sorted list of search results
+     */
+    public TreeSet<SearchResult> exactSearchSingle(TreeSet<String> query) {
 
-        List<SearchResult> results = new ArrayList<>();
+        TreeSet<SearchResult> results = new TreeSet<>();
         HashMap<String, SearchResult> seenLocations = new HashMap<>();
         var searchWords = query.iterator();
 
@@ -225,6 +230,23 @@ public class InvertedIndex {
         }
 
         return results;
+    }
+
+    /**
+     * Perfoms exact search on multiple queries
+     * @param queries the queries to search for
+     * @return a map containing the search queries and the results for each query
+     */
+    public TreeMap<String, TreeSet<SearchResult>> exactSearch(ArrayList<TreeSet<String>> queries) {
+        TreeMap<String, TreeSet<SearchResult>> allResults = new TreeMap<>();
+
+        for (TreeSet<String> query : queries) {
+            TreeSet<SearchResult> result = exactSearchSingle(query);
+            System.out.println(result);
+            //allResults.put(result.first().getQuery(), result);
+        }
+
+        return allResults;
     }
 
     @Override
