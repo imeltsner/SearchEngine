@@ -197,8 +197,16 @@ public class InvertedIndex {
      * @return a sorted list of search results
      */
     public TreeSet<SearchResult> exactSearchSingle(TreeSet<String> query) {
+        /*
+         * TODO 
+         * What problem does the set or list of results solve?
+         * What problem does the lookup map solve?
+         * Why do we need both?
+         * 
+         * (Think about but don't change)
+         */
 
-        TreeSet<SearchResult> results = new TreeSet<>();
+        TreeSet<SearchResult> results = new TreeSet<>(); // TODO Switch to a list
         HashMap<String, SearchResult> seenLocations = new HashMap<>();
         var searchWords = query.iterator();
 
@@ -227,6 +235,8 @@ public class InvertedIndex {
             }
         }
 
+        // TODO Add everything from the map to the list, sort, return
+        // TODO results.addAll(seenLocations.values());
         var seenIterator = seenLocations.entrySet().iterator();
 
         while (seenIterator.hasNext()) {
@@ -236,6 +246,7 @@ public class InvertedIndex {
         return results;
     }
 
+    // TODO Move into query file processor
     /**
      * Perfoms exact search on multiple queries
      * @param queries the queries to search for

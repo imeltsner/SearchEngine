@@ -457,6 +457,14 @@ public class JsonWriter {
 			return null;
 		}
 	}
+	
+	/*
+	 * TODO 
+	 * the current method you have for a map to a collection of results
+	 * a method for a collection of results
+	 * either a method for a single result or a method within the search result writeJson(...)
+	 * 
+	 */
 
 	/**
 	 * Formats search results as pretty JSON output
