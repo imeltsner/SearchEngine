@@ -243,6 +243,9 @@ public class InvertedIndex {
         for (TreeSet<String> query : queries) {
             TreeSet<SearchResult> result = exactSearchSingle(query);
             String queryString = String.join(" ", query);
+            if (queryString.equals("")) {
+                continue;
+            }
             allResults.put(queryString, result);
         }
 
