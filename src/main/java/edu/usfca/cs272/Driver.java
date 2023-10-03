@@ -66,6 +66,8 @@ public class Driver {
 			}
 		}
 
+		TreeMap<String, TreeSet<SearchResult>> searchResults = new TreeMap<>();
+
 		if (parser.hasFlag("-query")) {
 
 			Path queryFile = parser.getPath("-query");
@@ -78,19 +80,19 @@ public class Driver {
 				System.out.println("Query file not found");
 			}
 
-			TreeMap<String, TreeSet<SearchResult>> searchResults = index.exactSearch(queries);
-
-			if (parser.hasFlag("-results")) {
-				Path searchOutput = parser.getPath("-results", Path.of("results.json"));
-
-				try {
-					JsonWriter.writeSearchResults(searchResults, searchOutput);
-				}
-				catch (IOException e) {
-					System.out.println("Results file not found");
-				}
-			}
+			searchResults = index.exactSearch(queries);
 		}
 
+		if (parser.hasFlag("-results")) {
+			
+			Path searchOutput = parser.getPath("-results", Path.of("results.json"));
+
+			try {
+				JsonWriter.writeSearchResults(searchResults, searchOutput);
+			}
+			catch (IOException e) {
+				System.out.println("Results file not found");
+			}
+		}
 	}
 }
