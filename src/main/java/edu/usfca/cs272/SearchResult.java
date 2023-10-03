@@ -29,26 +29,24 @@ public class SearchResult implements Comparable<SearchResult> {
     }
 
     /**
-     * Adds number of words matched to the total query words matched
-     * @param numWords the number of words matching a query word
+     * Increments match count and total words in a location 
+     * and calculates score
+     * @param matches number of matches found
+     * @param numWords total words in a location
      */
-    public void addWordsFound(int numWords) {
-        count += numWords;
+    public void calculateScore(int matches, int numWords) {
+        this.count += matches;
+        this.totalWords += numWords;
+        this.score = (double) this.count / (double) this.totalWords;
     }
 
     /**
-     * Adds the total words in a location
-     * @param numWords the number of words in a location
+     * Increments match count and calculates score
+     * @param matches number of matches found
      */
-    public void addTotalWords(int numWords) {
-        totalWords += numWords;
-    }
-
-    /**
-     * Calculates the score defined by count / total words
-     */
-    public void calculateScore() {
-        score = (double) count / (double) totalWords;
+    public void calculateScore(int matches) {
+        this.count += matches;
+        this.score = (double) this.count / (double) this.totalWords;
     }
 
     /**
@@ -92,7 +90,7 @@ public class SearchResult implements Comparable<SearchResult> {
             return Integer.compare(other.count, this.count);
         }
         else {
-            return String.CASE_INSENSITIVE_ORDER.compare(this.location, other.getLocation());
+            return String.CASE_INSENSITIVE_ORDER.compare(this.location, other.location);
         }
     }
 

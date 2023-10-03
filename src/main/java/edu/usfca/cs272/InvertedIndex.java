@@ -217,15 +217,12 @@ public class InvertedIndex {
                     
                     if (visited == null) {
                         SearchResult result = new SearchResult(String.join(" ", query), location.getKey());
-                        result.addWordsFound(location.getValue().size());
-                        result.addTotalWords(wordCounts.get(location.getKey()));
-                        result.calculateScore();
+                        result.calculateScore(location.getValue().size(), wordCounts.get(location.getKey()));
                         results.add(result);
                         seenLocations.put(location.getKey(), result);
                     }
                     else {
-                        visited.addWordsFound(location.getValue().size());
-                        visited.calculateScore();
+                        visited.calculateScore(location.getValue().size());
                     }
                 }
             }
@@ -240,7 +237,9 @@ public class InvertedIndex {
      * @return a map containing the search queries and the results for each query
      */
     public TreeMap<String, TreeSet<SearchResult>> exactSearch(ArrayList<TreeSet<String>> queries) {
+
         TreeMap<String, TreeSet<SearchResult>> allResults = new TreeMap<>();
+
         for (TreeSet<String> query : queries) {
             TreeSet<SearchResult> result = exactSearchSingle(query);
             String queryString = String.join(" ", query);
