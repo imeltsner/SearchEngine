@@ -19,6 +19,7 @@ public class SearchResult implements Comparable<SearchResult> {
     /**
      * Class constructor
      * @param query the search query
+     * @param location the location of the search
      */
     public SearchResult(String query, String location) {
         this.query = query;
