@@ -12,6 +12,8 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * Outputs several simple data structures in "pretty" JSON format where newlines
@@ -400,7 +402,7 @@ public class JsonWriter {
 	}
 	
 	/**
-	 * Writes the inverted index as a pretty JSON array with nested objects
+	 * Formats the inverted index as a pretty JSON array with nested objects
 	 * @param index the inverted index
 	 * @param writer the writer to use
 	 * @param indent the starting indent level
@@ -453,6 +455,77 @@ public class JsonWriter {
 		}
 		catch (IOException e) {
 			return null;
+		}
+	}
+
+	/**
+	 * Formats search results as pretty JSON output
+	 * @param results a map containing the query string and the search results
+	 * @param writer the writer to use
+	 * @param indent the initial indent level
+	 * @throws IOException if an IO error occurs
+	 */
+	public static void writeSearchResults(TreeMap<String, TreeSet<SearchResult>> results, Writer writer, int indent) throws IOException {
+		writer.write("{\n");
+
+		var iterator = results.entrySet().iterator();
+
+		while (iterator.hasNext()) {
+
+			Entry<String, TreeSet<SearchResult>> next = iterator.next();
+			String queryString = next.getKey();
+			writeQuote(queryString, writer, indent + 1);
+			writer.write(": [\n");
+
+			var resultsIterator = next.getValue().iterator();
+
+			while (resultsIterator.hasNext()) {
+				SearchResult result = resultsIterator.next();
+				writeIndent("{", writer, indent + 2);
+				writer.write("\n");
+				writeQuote("count", writer, indent + 3);
+				writer.write(": ");
+				writer.write(String.valueOf(result.getCount()));
+				writer.write(",\n");
+				writeQuote("score", writer, indent + 3);
+				writer.write(": ");
+				writer.write(String.format("%.8f", result.getScore()));
+				writer.write(",\n");
+				writeQuote("where", writer, indent + 3);
+				writer.write(": ");
+				writeQuote(result.getLocation(), writer, indent);
+				writer.write("\n");
+				writeIndent(writer, indent + 2);
+
+				if (resultsIterator.hasNext()) {
+					writer.write("},\n");
+				}
+				else {
+					writer.write("}\n");
+				}
+			}
+
+			writeIndent(writer, indent + 1);
+			if (iterator.hasNext()) {
+				writer.write("],\n");
+			}
+			else {
+				writer.write("]\n");
+			}
+		}
+
+		writer.write("}");
+	}
+
+	/**
+	 * Writes search results in pretty JSON format to a file
+	 * @param results the search results to write
+	 * @param path the path to the output file
+	 * @throws IOException if an IO error occurs
+	 */
+	public static void writeSearchResults(TreeMap<String, TreeSet<SearchResult>> results, Path path) throws IOException {
+		try (BufferedWriter writer = Files.newBufferedWriter(path, UTF_8)) {
+			writeSearchResults(results, writer, 0);
 		}
 	}
 }
