@@ -6,12 +6,12 @@ public class SearchResult implements Comparable<SearchResult> {
 
     /** The location containing a query word */
     private final String location;
+    
+    /** The total words at a location */
+    private final int totalWords;
 
     /** The total query words found at the location */
     private int count;
-
-    /** The total words at a location */
-    private int totalWords;
 
     /** The score defined by count / total words */
     private double score;
@@ -21,24 +21,12 @@ public class SearchResult implements Comparable<SearchResult> {
      * @param query the search query
      * @param location the location of the search
      */
-    public SearchResult(String query, String location) {
+    public SearchResult(String query, String location, int totalWords) {
         this.query = query;
         this.location = location;
+        this.totalWords = totalWords;
         this.count = 0;
-        this.totalWords = 0;
         this.score = 0;
-    }
-
-    /**
-     * Increments match count and total words in a location 
-     * and calculates score
-     * @param matches number of matches found
-     * @param numWords total words in a location
-     */
-    public void calculateScore(int matches, int numWords) {
-        this.count += matches;
-        this.totalWords += numWords;
-        this.score = (double) this.count / (double) this.totalWords;
     }
 
     /**
