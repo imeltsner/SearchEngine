@@ -1,5 +1,9 @@
 package edu.usfca.cs272;
 
+/**
+ * A class to store search result metadata
+ * @author Isaac Meltsner
+ */
 public class SearchResult implements Comparable<SearchResult> {
     /** The words in a search query stored in a single string */
     private final String query;
@@ -20,6 +24,7 @@ public class SearchResult implements Comparable<SearchResult> {
      * Class constructor
      * @param query the search query
      * @param location the location of the search
+     * @param totalWords the total words found at the location
      */
     public SearchResult(String query, String location, int totalWords) {
         this.query = query;
