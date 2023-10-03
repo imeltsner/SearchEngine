@@ -218,7 +218,6 @@ public class InvertedIndex {
                     if (visited == null) {
                         SearchResult result = new SearchResult(String.join(" ", query), location.getKey(), wordCounts.get(location.getKey()));
                         result.calculateScore(location.getValue().size());
-                        //results.add(result);
                         seenLocations.put(location.getKey(), result);
                     }
                     else {
