@@ -3,6 +3,7 @@ package edu.usfca.cs272;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**
@@ -68,7 +69,7 @@ public class Driver {
 		if (parser.hasFlag("-query")) {
 
 			Path queryFile = parser.getPath("-query");
-			ArrayList<TreeSet<String>> queries;
+			ArrayList<TreeSet<String>> queries = new ArrayList<>();
 
 			try {
 				queries = FileStemmer.listUniqueStems(queryFile);
@@ -76,12 +77,19 @@ public class Driver {
 			catch (IOException e) {
 				System.out.println("Query file not found");
 			}
-		}
 
-		//TODO perform search
+			TreeMap<String, TreeSet<SearchResult>> searchResults = index.exactSearch(queries);
 
-		if (parser.hasFlag("-results")) {
-			Path searchOutput = parser.getPath("-results", Path.of("results.json"));
+			if (parser.hasFlag("-results")) {
+				Path searchOutput = parser.getPath("-results", Path.of("results.json"));
+
+				try {
+					JsonWriter.writeSearchResults(searchResults, searchOutput);
+				}
+				catch (IOException e) {
+					System.out.println("Results file not found");
+				}
+			}
 		}
 
 	}
