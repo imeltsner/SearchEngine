@@ -72,15 +72,11 @@ public class SearchResult implements Comparable<SearchResult> {
 
     @Override
     public int compareTo(SearchResult other) {
-        if (this.score != other.score) {
-            return Double.compare(other.score, this.score);
-        }
-        else if (this.count != other.count) {
-            return Integer.compare(other.count, this.count);
-        }
-        else {
-            return String.CASE_INSENSITIVE_ORDER.compare(this.location, other.location);
-        }
+        int scoreComapre = Double.compare(other.score, this.score);
+        int countCompare = Integer.compare(other.count, this.count);
+        int stringCompare = String.CASE_INSENSITIVE_ORDER.compare(this.location, other.location);
+
+        return scoreComapre != 0 ? scoreComapre : countCompare != 0 ? countCompare : stringCompare;
     }
 
     @Override
