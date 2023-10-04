@@ -156,9 +156,9 @@ public class InvertedIndex {
      * @param position the position of the word
      */
     public void addData(String word, String path, int position) {
-        invertedIndex.putIfAbsent(word, new TreeMap<>());
-        invertedIndex.get(word).putIfAbsent(path, new TreeSet<>());
-        invertedIndex.get(word).get(path).add(position);
+        invertedIndex.computeIfAbsent(word, w -> new TreeMap<>())
+            .computeIfAbsent(path, p -> new TreeSet<>())
+            .add(position);
     }
     
     /**
