@@ -66,6 +66,13 @@ public class Driver {
 			}
 		}
 
+		/*
+		 * TODO Move to a QueryFileProcessor class as a member
+		 * Also make the index the query file processor is going to use for search a member too
+		 * 
+		 * processLine(String queryLine...)
+		 * processFile(Path queryFile...
+		 */
 		TreeMap<String, TreeSet<SearchResult>> searchResults = new TreeMap<>();
 
 		if (parser.hasFlag("-query")) {

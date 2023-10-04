@@ -6,7 +6,7 @@ package edu.usfca.cs272;
  */
 public class SearchResult implements Comparable<SearchResult> {
     /** The words in a search query stored in a single string */
-    private final String query;
+    private final String query; // TODO Do you need this?
 
     /** The location containing a query word */
     private final String location;

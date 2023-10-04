@@ -26,7 +26,6 @@ public class InvertedIndexProcessor {
 	 * @param path path of the file
 	 * @param index the Indexer object
 	 * @throws IOException if an IOException occurs
-	 * 
 	 */
 	public static void processFile(Path path, InvertedIndex index) throws IOException {
 		Stemmer stemmer = new SnowballStemmer(ENGLISH);
