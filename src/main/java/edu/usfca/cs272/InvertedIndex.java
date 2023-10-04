@@ -217,6 +217,7 @@ public class InvertedIndex {
                     if (visited == null) {
                         SearchResult result = new SearchResult(location.getKey(), wordCounts.get(location.getKey()));
                         result.calculateScore(location.getValue().size());
+                        results.add(result);
                         seenLocations.put(location.getKey(), result);
                     }
                     else {
@@ -226,9 +227,7 @@ public class InvertedIndex {
             }
         }
 
-        results.addAll(seenLocations.values());
         Collections.sort(results);
-
         return results;
     }
 
