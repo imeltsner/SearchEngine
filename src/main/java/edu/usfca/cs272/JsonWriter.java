@@ -457,17 +457,79 @@ public class JsonWriter {
 			return null;
 		}
 	}
-	
-	/*
-	 * TODO 
-	 * the current method you have for a map to a collection of results
-	 * a method for a collection of results
-	 * either a method for a single result or a method within the search result writeJson(...)
-	 * 
-	 */
 
 	/**
-	 * Formats search results as pretty JSON output
+	 * Outputs a single search result in pretty JSON format
+	 * @param result the search result
+	 * @param writer the writer to use
+	 * @param indent the initial indent
+	 * @throws IOException if an IO error occurs
+	 */
+	public static void writeResult(SearchResult result, Writer writer, int indent) throws IOException {
+		writeIndent("{", writer, indent + 2);
+		writer.write("\n");
+		writeQuote("count", writer, indent + 3);
+		writer.write(": ");
+		writer.write(String.valueOf(result.getCount()));
+		writer.write(",\n");
+		writeQuote("score", writer, indent + 3);
+		writer.write(": ");
+		writer.write(String.format("%.8f", result.getScore()));
+		writer.write(",\n");
+		writeQuote("where", writer, indent + 3);
+		writer.write(": ");
+		writeQuote(result.getLocation(), writer, indent);
+		writer.write("\n");
+		writeIndent(writer, indent + 2);
+		writer.write("}");
+	}
+
+	/**
+	 * Outputs list of search results as pretty JSON format
+	 * @param results the list of results
+	 * @param writer the writer to use
+	 * @param indent the initial indent level
+	 * @throws IOException if an IO error occurs
+	 */
+	 public static void writeSearchResults(ArrayList<SearchResult> results, Writer writer, int indent) throws IOException {
+		boolean empty = true;
+		var iterator = results.iterator();
+
+		if (iterator.hasNext()) {
+			empty = false;
+			SearchResult result = iterator.next();
+			writeResult(result, writer, indent);
+		}
+
+		while (iterator.hasNext()) {
+			SearchResult result = iterator.next();
+			writer.write(",\n");
+			writeResult(result, writer, indent);
+		}
+
+		if (!empty) {
+			writer.write("\n");
+		}
+	}
+
+	/**
+	 * Helper method for writeSearchResults that outputs map entry in pretty JSON format
+	 * @param entry the entry to output
+	 * @param writer the writer to use
+	 * @param indent the initial indent level
+	 * @throws IOException if an IO error occurs
+	 */
+	public static void writeResultsEntry(Entry<String, ArrayList<SearchResult>> entry, Writer writer, int indent) throws IOException {
+		String queryString = entry.getKey();
+		writeQuote(queryString, writer, indent + 1);
+		writer.write(": [\n");
+		writeSearchResults(entry.getValue(), writer, indent);
+		writeIndent(writer, indent + 1);
+		writer.write("]");
+	}
+
+	/**
+	 * Outputs map of search results as pretty JSON format
 	 * @param results a map containing the query string and the search results
 	 * @param writer the writer to use
 	 * @param indent the initial indent level
@@ -478,51 +540,18 @@ public class JsonWriter {
 
 		var iterator = results.entrySet().iterator();
 
-		while (iterator.hasNext()) {
-
-			Entry<String, ArrayList<SearchResult>> next = iterator.next();
-			String queryString = next.getKey();
-			writeQuote(queryString, writer, indent + 1);
-			writer.write(": [\n");
-
-			var resultsIterator = next.getValue().iterator();
-
-			while (resultsIterator.hasNext()) {
-				SearchResult result = resultsIterator.next();
-				writeIndent("{", writer, indent + 2);
-				writer.write("\n");
-				writeQuote("count", writer, indent + 3);
-				writer.write(": ");
-				writer.write(String.valueOf(result.getCount()));
-				writer.write(",\n");
-				writeQuote("score", writer, indent + 3);
-				writer.write(": ");
-				writer.write(String.format("%.8f", result.getScore()));
-				writer.write(",\n");
-				writeQuote("where", writer, indent + 3);
-				writer.write(": ");
-				writeQuote(result.getLocation(), writer, indent);
-				writer.write("\n");
-				writeIndent(writer, indent + 2);
-
-				if (resultsIterator.hasNext()) {
-					writer.write("},\n");
-				}
-				else {
-					writer.write("}\n");
-				}
-			}
-
-			writeIndent(writer, indent + 1);
-			if (iterator.hasNext()) {
-				writer.write("],\n");
-			}
-			else {
-				writer.write("]\n");
-			}
+		if (iterator.hasNext()) {
+			Entry<String, ArrayList<SearchResult>> entry = iterator.next();
+			writeResultsEntry(entry, writer, indent);
 		}
 
-		writer.write("}");
+		while (iterator.hasNext()) {
+			Entry<String, ArrayList<SearchResult>> entry = iterator.next();
+			writer.write(",\n");
+			writeResultsEntry(entry, writer, indent);
+		}
+
+		writer.write("\n}");
 	}
 
 	/**
