@@ -197,15 +197,6 @@ public class InvertedIndex {
      * @return a sorted list of search results
      */
     public ArrayList<SearchResult> exactSearch(TreeSet<String> query) {
-        /*
-         * TODO 
-         * What problem does the set or list of results solve?
-         * What problem does the lookup map solve?
-         * Why do we need both?
-         * 
-         * (Think about but don't change)
-         */
-
         ArrayList<SearchResult> results = new ArrayList<>();
         HashMap<String, SearchResult> seenLocations = new HashMap<>();
         var searchWords = query.iterator();
