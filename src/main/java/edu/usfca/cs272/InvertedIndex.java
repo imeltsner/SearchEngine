@@ -196,7 +196,7 @@ public class InvertedIndex {
      * @param query the query to search
      * @return a sorted list of search results
      */
-    public ArrayList<SearchResult> exactSearchSingle(TreeSet<String> query) {
+    public ArrayList<SearchResult> exactSearch(TreeSet<String> query) {
         /*
          * TODO 
          * What problem does the set or list of results solve?
@@ -239,28 +239,6 @@ public class InvertedIndex {
         Collections.sort(results);
 
         return results;
-    }
-
-    // TODO Move into query file processor
-    /**
-     * Perfoms exact search on multiple queries
-     * @param queries the queries to search for
-     * @return a map containing the search queries and the results for each query
-     */
-    public TreeMap<String, ArrayList<SearchResult>> exactSearch(ArrayList<TreeSet<String>> queries) {
-
-        TreeMap<String, ArrayList<SearchResult>> allResults = new TreeMap<>();
-
-        for (TreeSet<String> query : queries) {
-            ArrayList<SearchResult> results = exactSearchSingle(query);
-            String queryString = String.join(" ", query);
-            if (queryString.equals("")) {
-                continue;
-            }
-            allResults.put(queryString, results);
-        }
-
-        return allResults;
     }
 
     @Override

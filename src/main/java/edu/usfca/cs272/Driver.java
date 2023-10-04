@@ -2,9 +2,6 @@ package edu.usfca.cs272;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
 /**
  * Class responsible for running this project based on the provided command-line
@@ -66,28 +63,18 @@ public class Driver {
 			}
 		}
 
-		/*
-		 * TODO Move to a QueryFileProcessor class as a member
-		 * Also make the index the query file processor is going to use for search a member too
-		 * 
-		 * processLine(String queryLine...)
-		 * processFile(Path queryFile...
-		 */
-		TreeMap<String, ArrayList<SearchResult>> searchResults = new TreeMap<>();
+		QueryFileProcessor processor = new QueryFileProcessor(index);
 
 		if (parser.hasFlag("-query")) {
 
 			Path queryFile = parser.getPath("-query");
-			ArrayList<TreeSet<String>> queries = new ArrayList<>();
 
 			try {
-				queries = FileStemmer.listUniqueStems(queryFile);
+				processor.processFile(queryFile);
 			}
 			catch (IOException e) {
 				System.out.println("Query file not found");
 			}
-
-			searchResults = index.exactSearch(queries);
 		}
 
 		if (parser.hasFlag("-results")) {
@@ -95,7 +82,7 @@ public class Driver {
 			Path searchOutput = parser.getPath("-results", Path.of("results.json"));
 
 			try {
-				JsonWriter.writeSearchResults(searchResults, searchOutput);
+				JsonWriter.writeSearchResults(processor.getExactSearchResults(), searchOutput);
 			}
 			catch (IOException e) {
 				System.out.println("Results file not found");
