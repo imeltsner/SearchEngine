@@ -5,9 +5,6 @@ package edu.usfca.cs272;
  * @author Isaac Meltsner
  */
 public class SearchResult implements Comparable<SearchResult> {
-    /** The words in a search query stored in a single string */
-    private final String query; // TODO Do you need this?
-
     /** The location containing a query word */
     private final String location;
     
@@ -22,12 +19,10 @@ public class SearchResult implements Comparable<SearchResult> {
 
     /**
      * Class constructor
-     * @param query the search query
      * @param location the location of the search
      * @param totalWords the total words found at the location
      */
-    public SearchResult(String query, String location, int totalWords) {
-        this.query = query;
+    public SearchResult(String location, int totalWords) {
         this.location = location;
         this.totalWords = totalWords;
         this.count = 0;
@@ -60,14 +55,6 @@ public class SearchResult implements Comparable<SearchResult> {
     }
 
     /**
-     * Returns the query line as a single string
-     * @return the query line
-     */
-    public String getQuery() {
-        return query;
-    }
-
-    /**
      * Returns the location associated with the search result
      * @return the location
      */
@@ -86,10 +73,9 @@ public class SearchResult implements Comparable<SearchResult> {
 
     @Override
     public String toString() {
-        String q = this.query.toUpperCase() + "\n";
         String w = "where: " + this.location + "\n";
         String c = "count: " + count + "\n";
         String s = "score: " + String.format("%.8f", score) + "\n";
-        return q + c + s + w;
+        return c + s + w;
     }
 }
