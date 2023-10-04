@@ -10,7 +10,11 @@ import java.util.Collections;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-
+/**
+ * A class to process files containing search queries
+ * 
+ * @author Isaac Meltsner
+ */
 public class QueryFileProcessor {
     /** Member to store search results */
     private final TreeMap<String, ArrayList<SearchResult>> exactSearchResults;
