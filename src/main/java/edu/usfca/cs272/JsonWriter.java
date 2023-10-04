@@ -9,11 +9,11 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 /**
  * Outputs several simple data structures in "pretty" JSON format where newlines
@@ -473,14 +473,14 @@ public class JsonWriter {
 	 * @param indent the initial indent level
 	 * @throws IOException if an IO error occurs
 	 */
-	public static void writeSearchResults(TreeMap<String, TreeSet<SearchResult>> results, Writer writer, int indent) throws IOException {
+	public static void writeSearchResults(TreeMap<String, ArrayList<SearchResult>> results, Writer writer, int indent) throws IOException {
 		writer.write("{\n");
 
 		var iterator = results.entrySet().iterator();
 
 		while (iterator.hasNext()) {
 
-			Entry<String, TreeSet<SearchResult>> next = iterator.next();
+			Entry<String, ArrayList<SearchResult>> next = iterator.next();
 			String queryString = next.getKey();
 			writeQuote(queryString, writer, indent + 1);
 			writer.write(": [\n");
@@ -531,7 +531,7 @@ public class JsonWriter {
 	 * @param path the path to the output file
 	 * @throws IOException if an IO error occurs
 	 */
-	public static void writeSearchResults(TreeMap<String, TreeSet<SearchResult>> results, Path path) throws IOException {
+	public static void writeSearchResults(TreeMap<String, ArrayList<SearchResult>> results, Path path) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, UTF_8)) {
 			writeSearchResults(results, writer, 0);
 		}

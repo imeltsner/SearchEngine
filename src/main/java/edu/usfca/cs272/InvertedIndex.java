@@ -196,7 +196,7 @@ public class InvertedIndex {
      * @param query the query to search
      * @return a sorted list of search results
      */
-    public TreeSet<SearchResult> exactSearchSingle(TreeSet<String> query) {
+    public ArrayList<SearchResult> exactSearchSingle(TreeSet<String> query) {
         /*
          * TODO 
          * What problem does the set or list of results solve?
@@ -206,7 +206,7 @@ public class InvertedIndex {
          * (Think about but don't change)
          */
 
-        TreeSet<SearchResult> results = new TreeSet<>(); // TODO Switch to a list
+        ArrayList<SearchResult> results = new ArrayList<>();
         HashMap<String, SearchResult> seenLocations = new HashMap<>();
         var searchWords = query.iterator();
 
@@ -224,7 +224,7 @@ public class InvertedIndex {
                     SearchResult visited = seenLocations.get(location.getKey());
                     
                     if (visited == null) {
-                        SearchResult result = new SearchResult(String.join(" ", query), location.getKey(), wordCounts.get(location.getKey()));
+                        SearchResult result = new SearchResult(location.getKey(), wordCounts.get(location.getKey()));
                         result.calculateScore(location.getValue().size());
                         seenLocations.put(location.getKey(), result);
                     }
@@ -235,13 +235,8 @@ public class InvertedIndex {
             }
         }
 
-        // TODO Add everything from the map to the list, sort, return
-        // TODO results.addAll(seenLocations.values());
-        var seenIterator = seenLocations.entrySet().iterator();
-
-        while (seenIterator.hasNext()) {
-            results.add(seenIterator.next().getValue());
-        }
+        results.addAll(seenLocations.values());
+        Collections.sort(results);
 
         return results;
     }
@@ -252,12 +247,12 @@ public class InvertedIndex {
      * @param queries the queries to search for
      * @return a map containing the search queries and the results for each query
      */
-    public TreeMap<String, TreeSet<SearchResult>> exactSearch(ArrayList<TreeSet<String>> queries) {
+    public TreeMap<String, ArrayList<SearchResult>> exactSearch(ArrayList<TreeSet<String>> queries) {
 
-        TreeMap<String, TreeSet<SearchResult>> allResults = new TreeMap<>();
+        TreeMap<String, ArrayList<SearchResult>> allResults = new TreeMap<>();
 
         for (TreeSet<String> query : queries) {
-            TreeSet<SearchResult> results = exactSearchSingle(query);
+            ArrayList<SearchResult> results = exactSearchSingle(query);
             String queryString = String.join(" ", query);
             if (queryString.equals("")) {
                 continue;

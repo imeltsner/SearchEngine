@@ -73,7 +73,7 @@ public class Driver {
 		 * processLine(String queryLine...)
 		 * processFile(Path queryFile...
 		 */
-		TreeMap<String, TreeSet<SearchResult>> searchResults = new TreeMap<>();
+		TreeMap<String, ArrayList<SearchResult>> searchResults = new TreeMap<>();
 
 		if (parser.hasFlag("-query")) {
 
