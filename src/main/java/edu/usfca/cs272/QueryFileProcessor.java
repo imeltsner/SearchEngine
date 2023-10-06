@@ -34,14 +34,15 @@ public class QueryFileProcessor {
     /**
      * Takes a file of search queries and performs a search for each query
      * @param queryFile the file to process
+     * @param usePartial true for partial search, false for exact search
      * @throws IOException if an IO error occurs
      * 
-     * @see #processLine(String)
+     * @see #processLine(String, boolean)
      */
-    public void processFile(Path queryFile) throws IOException {
+    public void processFile(Path queryFile, boolean usePartial) throws IOException {
         try (BufferedReader reader = Files.newBufferedReader(queryFile, StandardCharsets.UTF_8)) {
             while (reader.ready()) {
-                processLine(reader.readLine());
+                processLine(reader.readLine(), usePartial);
             }
         }
     }
@@ -50,8 +51,9 @@ public class QueryFileProcessor {
      * Parses and stems a search query, performs a search of the inverted index,
      * and sorts results
      * @param line the line containing a search query
+     * @param usePartial true for partial search, false for exact search
      */
-    public void processLine(String line) {
+    public void processLine(String line, boolean usePartial) {
         TreeSet<String> query = FileStemmer.uniqueStems(line);
         String queryString = String.join(" ", query);
 
@@ -59,7 +61,15 @@ public class QueryFileProcessor {
             return;
         }
 
-        ArrayList<SearchResult> result = index.exactSearch(query);
+        ArrayList<SearchResult> result;
+
+        if (usePartial) {
+            result = index.partialSearch(query);
+        }
+        else {
+            result = index.exactSearch(query);
+        }
+
         Collections.sort(result);
         exactSearchResults.put(queryString, result);
     }

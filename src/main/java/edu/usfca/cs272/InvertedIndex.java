@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -192,7 +193,33 @@ public class InvertedIndex {
     }
     
     /**
-     * Performs an exact search of a single search query
+     * A helper method to generate a list of search results
+     * @param word the query word matching an inverted index entry
+     * @param seenLocations a map of already created searc results
+     * @param results the list of search results
+     */
+    private void generateResults(String word, HashMap<String, SearchResult> seenLocations, ArrayList<SearchResult> results) {
+        var locations = invertedIndex.get(word).entrySet().iterator();
+
+        while (locations.hasNext()) {
+
+            Entry<String, TreeSet<Integer>> location = locations.next();
+            SearchResult visited = seenLocations.get(location.getKey());
+            
+            if (visited == null) {
+                SearchResult result = new SearchResult(location.getKey(), wordCounts.get(location.getKey()));
+                result.calculateScore(location.getValue().size());
+                results.add(result);
+                seenLocations.put(location.getKey(), result);
+            }
+            else {
+                visited.calculateScore(location.getValue().size());
+            }
+        }
+    }
+
+    /**
+     * Performs an exact search for a single search query
      * @param query the query to search
      * @return a sorted list of search results
      */
@@ -206,23 +233,39 @@ public class InvertedIndex {
             String word = searchWords.next();
 
             if (hasWord(word)) {
+                generateResults(word, seenLocations, results);
+            }
+        }
 
-                var locations = invertedIndex.get(word).entrySet().iterator();
+        Collections.sort(results);
+        return results;
+    }
 
-                while (locations.hasNext()) {
+    /**
+     * Performs a partial search for a single search query
+     * @param query the query to search
+     * @return a sorted list of search results
+     */
+    public ArrayList<SearchResult> partialSearch(TreeSet<String> query) {
+        ArrayList<SearchResult> results = new ArrayList<>();
+        HashMap<String, SearchResult> seenLocations = new HashMap<>();
+        var searchWords = query.iterator();
 
-                    Entry<String, TreeSet<Integer>> location = locations.next();
-                    SearchResult visited = seenLocations.get(location.getKey());
-                    
-                    if (visited == null) {
-                        SearchResult result = new SearchResult(location.getKey(), wordCounts.get(location.getKey()));
-                        result.calculateScore(location.getValue().size());
-                        results.add(result);
-                        seenLocations.put(location.getKey(), result);
-                    }
-                    else {
-                        visited.calculateScore(location.getValue().size());
-                    }
+        while (searchWords.hasNext()) {
+
+            String word = searchWords.next();
+            SortedMap<String, TreeMap<String, TreeSet<Integer>>> possibleMatchIndex = invertedIndex.tailMap(word);
+            var possibleMatches = possibleMatchIndex.entrySet().iterator();
+
+            while (possibleMatches.hasNext()) {
+
+                Entry<String, TreeMap<String, TreeSet<Integer>>> possibleMatch = possibleMatches.next();
+
+                if (possibleMatch.getKey().startsWith(word)) {
+                    generateResults(possibleMatch.getKey(), seenLocations, results);
+                }
+                else {
+                    break;
                 }
             }
         }

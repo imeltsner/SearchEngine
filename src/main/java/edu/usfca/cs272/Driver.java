@@ -70,9 +70,17 @@ public class Driver {
 			Path queryFile = parser.getPath("-query");
 
 			try {
-				processor.processFile(queryFile);
+				if (parser.hasFlag("-partial")) {
+					processor.processFile(queryFile, true);
+				}
+				else {
+					processor.processFile(queryFile, false);
+				}
 			}
 			catch (IOException e) {
+				System.out.println("Query file not found");
+			}
+			catch (NullPointerException e) {
 				System.out.println("Query file not found");
 			}
 		}
