@@ -4,7 +4,7 @@ package edu.usfca.cs272;
  * A class to store search result metadata
  * @author Isaac Meltsner
  */
-public class SearchResult implements Comparable<SearchResult> {
+public class SearchResult implements Comparable<SearchResult> { // TODO Make this a inner class inside of inverted index 
     /** The location containing a query word */
     private final String location;
     

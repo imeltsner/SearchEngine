@@ -17,8 +17,10 @@ import java.util.TreeSet;
  */
 public class QueryFileProcessor {
     /** Member to store search results */
-    private final TreeMap<String, ArrayList<SearchResult>> exactSearchResults;
+    private final TreeMap<String, ArrayList<SearchResult>> exactSearchResults; // TODO results
 
+    // TODO option 2: different maps (one for exact, one for partial)... need to pass the flag to the write method too then
+    
     /** Inverted index of words and location data */
     private final InvertedIndex index;
 
@@ -26,7 +28,7 @@ public class QueryFileProcessor {
      * Class constructor
      * @param index the inverted index to search
      */
-    public QueryFileProcessor(InvertedIndex index) {
+    public QueryFileProcessor(InvertedIndex index) { // TODO Pass in the partial flag here and store as a member (option 1)
         this.exactSearchResults = new TreeMap<>();
         this.index = index;
     }
@@ -54,23 +56,25 @@ public class QueryFileProcessor {
      * @param usePartial true for partial search, false for exact search
      */
     public void processLine(String line, boolean usePartial) {
-        TreeSet<String> query = FileStemmer.uniqueStems(line);
+        TreeSet<String> query = FileStemmer.uniqueStems(line); // TODO Figure out how to share a stemmer instead
         String queryString = String.join(" ", query);
 
         if (queryString.equals("")) {
             return;
         }
+        
+        // TODO Also return if you already have these results
 
         ArrayList<SearchResult> result;
 
-        if (usePartial) {
+        if (usePartial) { // TODO Call search instead
             result = index.partialSearch(query);
         }
         else {
             result = index.exactSearch(query);
         }
 
-        Collections.sort(result);
+        Collections.sort(result); // TODO Remove from here (should be in search)
         exactSearchResults.put(queryString, result);
     }
 
@@ -78,7 +82,9 @@ public class QueryFileProcessor {
      * Returns all search results from all queries in a file
      * @return the search results
      */
-    public TreeMap<String, ArrayList<SearchResult>> getExactSearchResults() {
+    public TreeMap<String, ArrayList<SearchResult>> getExactSearchResults() { // TODO Breaking encapsulation
         return exactSearchResults;
     }
+    
+    // TODO Create some safe get methods etc. and add a write method
 }

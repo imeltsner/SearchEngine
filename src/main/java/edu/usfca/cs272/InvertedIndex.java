@@ -218,6 +218,17 @@ public class InvertedIndex {
         }
     }
 
+    /* TODO 
+    public ArrayList<SearchResult> search(Set<String> query, boolean usePartial) {
+    	if (usePartial) {
+    		return index.partialSearch(query);
+    	}
+    	else {
+    		return index.exactSearch(query);
+    	}
+    }
+    */
+    
     /**
      * Performs an exact search for a single search query
      * @param query the query to search

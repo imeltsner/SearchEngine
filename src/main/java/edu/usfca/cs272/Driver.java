@@ -22,7 +22,8 @@ public class Driver {
 	public static void main(String[] args) {
 
 		InvertedIndex index = new InvertedIndex();
-		ArgumentParser parser = new ArgumentParser(args);
+		ArgumentParser parser = new ArgumentParser(args); // TODO Create first
+		// TODO QueryFileProcessor processor = new QueryFileProcessor(index, parser.hasFlag(-partial));
 		
 		if (parser.hasFlag("-text")) {
 
@@ -38,6 +39,12 @@ public class Driver {
 				System.out.println("Path to input file not found");
 			}
 		}
+		
+		/* TODO 
+		if (parser.hasFlag("-query")) {
+			
+		}
+		*/
 		
 		if (parser.hasFlag("-counts")) {
 			
@@ -70,6 +77,8 @@ public class Driver {
 			Path queryFile = parser.getPath("-query");
 
 			try {
+				// TODO processor.processFile(queryFile, parser.hasFlag("-partial"));
+				
 				if (parser.hasFlag("-partial")) {
 					processor.processFile(queryFile, true);
 				}
@@ -78,10 +87,10 @@ public class Driver {
 				}
 			}
 			catch (IOException e) {
-				System.out.println("Query file not found");
+				System.out.println("Query file not found"); // TODO unable to process
 			}
 			catch (NullPointerException e) {
-				System.out.println("Query file not found");
+				System.out.println("Query file not found"); // TODO flag missing a value
 			}
 		}
 
