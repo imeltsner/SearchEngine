@@ -322,7 +322,7 @@ public class InvertedIndex {
          * Increments match count and calculates score
          * @param matches number of matches found
          */
-        public void calculateScore(int matches) {
+        private void calculateScore(int matches) {
             this.count += matches;
             this.score = (double) this.count / (double) this.totalWords;
         }
