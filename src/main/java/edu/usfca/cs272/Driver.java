@@ -84,7 +84,7 @@ public class Driver {
 			Path searchOutput = parser.getPath("-results", Path.of("results.json"));
 
 			try {
-				JsonWriter.writeSearchResults(processor.getSearchResults(), searchOutput);
+				processor.writeSearchResults(searchOutput);
 			}
 			catch (IOException e) {
 				System.out.println("Unable to write to file at path: " + searchOutput.toString());
