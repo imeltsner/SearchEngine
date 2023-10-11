@@ -294,7 +294,9 @@ public class InvertedIndex {
         return invertedIndex.toString();
     }
 
+    /** Stores a search result associated with the inverted index */
     public class SearchResult implements Comparable<SearchResult> {
+        /** The location where a query word was found */
         private final String location;
         
         /** The total words at a location */

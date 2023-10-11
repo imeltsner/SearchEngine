@@ -29,12 +29,13 @@ public class QueryFileProcessor {
     /** Inverted index of words and location data */
     private final InvertedIndex index;
 
-    /** Flag to determine type of search */
+    /** Flag to determine type of search to perform */
     private boolean usePartial;
 
     /**
      * Class constructor
      * @param index the inverted index to search
+     * @param usePartial flag determining type of search to perform
      */
     public QueryFileProcessor(InvertedIndex index, boolean usePartial) {
         this.searchResults = new TreeMap<>();
