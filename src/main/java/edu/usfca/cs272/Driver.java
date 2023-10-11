@@ -22,7 +22,8 @@ public class Driver {
 	public static void main(String[] args) {
 
 		InvertedIndex index = new InvertedIndex();
-		ArgumentParser parser = new ArgumentParser(args); // TODO Create first
+		ArgumentParser parser = new ArgumentParser(args);
+		QueryFileProcessor processor = new QueryFileProcessor(index);
 		// TODO QueryFileProcessor processor = new QueryFileProcessor(index, parser.hasFlag(-partial));
 		
 		if (parser.hasFlag("-text")) {
@@ -33,18 +34,27 @@ public class Driver {
 				InvertedIndexProcessor.process(input, index);
 			} 
 			catch (IOException e) {
-				System.out.println("File not found at path: " + input.toString());
+				System.out.println("Unable to process file at path: " + input.toString());
 			}
 			catch (NullPointerException e) {
-				System.out.println("Path to input file not found");
+				System.out.println("-text flag is missing a value");
 			}
 		}
 		
-		/* TODO 
 		if (parser.hasFlag("-query")) {
-			
+
+			Path queryFile = parser.getPath("-query");
+
+			try {
+				processor.processFile(queryFile, parser.hasFlag("-partial"));
+			}
+			catch (IOException e) {
+				System.out.println("Unable to process file at path: " + queryFile.toString());
+			}
+			catch (NullPointerException e) {
+				System.out.println("-query flag is missing a value");
+			}
 		}
-		*/
 		
 		if (parser.hasFlag("-counts")) {
 			
@@ -54,7 +64,7 @@ public class Driver {
 				index.writeCounts(countsOutput);
 			}
 			catch (IOException e) {
-				System.out.println("Counts output file not found");
+				System.out.println("Unable to write to file at path: " + countsOutput.toString());
 			}
 		}
 
@@ -66,31 +76,7 @@ public class Driver {
 				index.writeInvertedIndex(indexOutput);
 			} 
 			catch (IOException e) {
-				System.out.println("Index output file not found at path" + indexOutput.toString());
-			}
-		}
-
-		QueryFileProcessor processor = new QueryFileProcessor(index);
-
-		if (parser.hasFlag("-query")) {
-
-			Path queryFile = parser.getPath("-query");
-
-			try {
-				// TODO processor.processFile(queryFile, parser.hasFlag("-partial"));
-				
-				if (parser.hasFlag("-partial")) {
-					processor.processFile(queryFile, true);
-				}
-				else {
-					processor.processFile(queryFile, false);
-				}
-			}
-			catch (IOException e) {
-				System.out.println("Query file not found"); // TODO unable to process
-			}
-			catch (NullPointerException e) {
-				System.out.println("Query file not found"); // TODO flag missing a value
+				System.out.println("Unable to write to file at path: " + indexOutput.toString());
 			}
 		}
 
@@ -102,7 +88,7 @@ public class Driver {
 				JsonWriter.writeSearchResults(processor.getExactSearchResults(), searchOutput);
 			}
 			catch (IOException e) {
-				System.out.println("Results file not found");
+				System.out.println("Unable to write to file at path: " + searchOutput.toString());
 			}
 		}
 	}
