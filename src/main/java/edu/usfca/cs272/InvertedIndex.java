@@ -234,7 +234,7 @@ public class InvertedIndex {
      * @param query the query to search
      * @return a sorted list of search results
      */
-    public ArrayList<SearchResult> exactSearch(TreeSet<String> query) {
+    public ArrayList<SearchResult> exactSearch(Set<String> query) {
         ArrayList<SearchResult> results = new ArrayList<>();
         HashMap<String, SearchResult> seenLocations = new HashMap<>();
         var searchWords = query.iterator();
@@ -257,7 +257,7 @@ public class InvertedIndex {
      * @param query the query to search
      * @return a sorted list of search results
      */
-    public ArrayList<SearchResult> partialSearch(TreeSet<String> query) {
+    public ArrayList<SearchResult> partialSearch(Set<String> query) {
         ArrayList<SearchResult> results = new ArrayList<>();
         HashMap<String, SearchResult> seenLocations = new HashMap<>();
         var searchWords = query.iterator();
@@ -283,6 +283,21 @@ public class InvertedIndex {
 
         Collections.sort(results);
         return results;
+    }
+
+    /**
+     * Performs exact search or partial search based on flag passed
+     * @param query the query to search
+     * @param usePartial true for partial search, false for exact search
+     * @return the search results
+     */
+    public ArrayList<SearchResult> search(Set<String> query, boolean usePartial) {
+    	if (usePartial) {
+    		return partialSearch(query);
+    	}
+    	else {
+    		return exactSearch(query);
+    	}
     }
 
     @Override
