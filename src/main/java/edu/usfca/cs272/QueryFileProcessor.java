@@ -1,5 +1,7 @@
 package edu.usfca.cs272;
 
+import static opennlp.tools.stemmer.snowball.SnowballStemmer.ALGORITHM.ENGLISH;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -8,6 +10,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
+import opennlp.tools.stemmer.Stemmer;
+import opennlp.tools.stemmer.snowball.SnowballStemmer;
 
 /**
  * A class to process files containing search queries
@@ -37,27 +42,26 @@ public class QueryFileProcessor {
     /**
      * Takes a file of search queries and performs a search for each query
      * @param queryFile the file to process
-     * @param usePartial true for partial search, false for exact search
      * @throws IOException if an IO error occurs
      * 
-     * @see #processLine(String, boolean)
+     * @see #processLine(String, Stemmer)
      */
     public void processFile(Path queryFile) throws IOException {
+        Stemmer stemmer = new SnowballStemmer(ENGLISH);
         try (BufferedReader reader = Files.newBufferedReader(queryFile, StandardCharsets.UTF_8)) {
             while (reader.ready()) {
-                processLine(reader.readLine());
+                processLine(reader.readLine(), stemmer);
             }
         }
     }
 
     /**
-     * Parses and stems a search query, performs a search of the inverted index,
-     * and sorts results
+     * Parses and stems a search query, performs a search of the inverted index, and sorts results
      * @param line the line containing a search query
-     * @param usePartial true for partial search, false for exact search
+     * @param stemmer the stemmer to use
      */
-    public void processLine(String line) {
-        TreeSet<String> query = FileStemmer.uniqueStems(line); // TODO Figure out how to share a stemmer instead
+    public void processLine(String line, Stemmer stemmer) {
+        TreeSet<String> query = FileStemmer.uniqueStems(line, stemmer);
         String queryString = String.join(" ", query);
 
         if (queryString.equals("") || searchResults.containsKey(queryString)) {
@@ -75,6 +79,15 @@ public class QueryFileProcessor {
      */
     public TreeMap<String, ArrayList<SearchResult>> getSearchResults() { // TODO Breaking encapsulation
         return searchResults;
+    }
+
+    /**
+     * Writes search results in pretty JSON format
+     * @param path the path of the file to write to
+     * @throws IOException if an IO error occurs
+     */
+    public void writeSearchResults(Path path) throws IOException {
+        JsonWriter.writeSearchResults(searchResults, path);
     }
     
     // TODO Create some safe get methods etc. and add a write method
