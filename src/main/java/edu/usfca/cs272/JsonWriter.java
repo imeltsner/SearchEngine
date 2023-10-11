@@ -465,7 +465,7 @@ public class JsonWriter {
 	 * @param indent the initial indent
 	 * @throws IOException if an IO error occurs
 	 */
-	public static void writeResult(SearchResult result, Writer writer, int indent) throws IOException {
+	public static void writeResult(InvertedIndex.SearchResult result, Writer writer, int indent) throws IOException {
 		writeIndent("{", writer, indent + 2);
 		writer.write("\n");
 		writeQuote("count", writer, indent + 3);
@@ -491,18 +491,18 @@ public class JsonWriter {
 	 * @param indent the initial indent level
 	 * @throws IOException if an IO error occurs
 	 */
-	 public static void writeSearchResults(ArrayList<SearchResult> results, Writer writer, int indent) throws IOException {
+	 public static void writeSearchResults(ArrayList<InvertedIndex.SearchResult> results, Writer writer, int indent) throws IOException {
 		boolean empty = true;
 		var iterator = results.iterator();
 
 		if (iterator.hasNext()) {
 			empty = false;
-			SearchResult result = iterator.next();
+			InvertedIndex.SearchResult result = iterator.next();
 			writeResult(result, writer, indent);
 		}
 
 		while (iterator.hasNext()) {
-			SearchResult result = iterator.next();
+			InvertedIndex.SearchResult result = iterator.next();
 			writer.write(",\n");
 			writeResult(result, writer, indent);
 		}
@@ -519,7 +519,7 @@ public class JsonWriter {
 	 * @param indent the initial indent level
 	 * @throws IOException if an IO error occurs
 	 */
-	public static void writeResultsEntry(Entry<String, ArrayList<SearchResult>> entry, Writer writer, int indent) throws IOException {
+	public static void writeResultsEntry(Entry<String, ArrayList<InvertedIndex.SearchResult>> entry, Writer writer, int indent) throws IOException {
 		String queryString = entry.getKey();
 		writeQuote(queryString, writer, indent + 1);
 		writer.write(": [\n");
@@ -535,18 +535,18 @@ public class JsonWriter {
 	 * @param indent the initial indent level
 	 * @throws IOException if an IO error occurs
 	 */
-	public static void writeSearchResults(TreeMap<String, ArrayList<SearchResult>> results, Writer writer, int indent) throws IOException {
+	public static void writeSearchResults(TreeMap<String, ArrayList<InvertedIndex.SearchResult>> results, Writer writer, int indent) throws IOException {
 		writer.write("{\n");
 
 		var iterator = results.entrySet().iterator();
 
 		if (iterator.hasNext()) {
-			Entry<String, ArrayList<SearchResult>> entry = iterator.next();
+			Entry<String, ArrayList<InvertedIndex.SearchResult>> entry = iterator.next();
 			writeResultsEntry(entry, writer, indent);
 		}
 
 		while (iterator.hasNext()) {
-			Entry<String, ArrayList<SearchResult>> entry = iterator.next();
+			Entry<String, ArrayList<InvertedIndex.SearchResult>> entry = iterator.next();
 			writer.write(",\n");
 			writeResultsEntry(entry, writer, indent);
 		}
@@ -560,7 +560,7 @@ public class JsonWriter {
 	 * @param path the path to the output file
 	 * @throws IOException if an IO error occurs
 	 */
-	public static void writeSearchResults(TreeMap<String, ArrayList<SearchResult>> results, Path path) throws IOException {
+	public static void writeSearchResults(TreeMap<String, ArrayList<InvertedIndex.SearchResult>> results, Path path) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, UTF_8)) {
 			writeSearchResults(results, writer, 0);
 		}
