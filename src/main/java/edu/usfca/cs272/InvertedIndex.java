@@ -281,12 +281,7 @@ public class InvertedIndex {
      * @return the search results
      */
     public ArrayList<SearchResult> search(Set<String> query, boolean usePartial) {
-    	if (usePartial) {
-    		return partialSearch(query);
-    	}
-    	else {
-    		return exactSearch(query);
-    	}
+    	return usePartial ? partialSearch(query) : exactSearch(query);
     }
 
     @Override
