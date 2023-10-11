@@ -18,18 +18,20 @@ public class QueryFileProcessor {
     /** Member to store search results */
     private final TreeMap<String, ArrayList<SearchResult>> searchResults;
 
-    // TODO option 2: different maps (one for exact, one for partial)... need to pass the flag to the write method too then
-    
     /** Inverted index of words and location data */
     private final InvertedIndex index;
+
+    /** Flag to determine type of search */
+    private boolean usePartial;
 
     /**
      * Class constructor
      * @param index the inverted index to search
      */
-    public QueryFileProcessor(InvertedIndex index) { // TODO Pass in the partial flag here and store as a member (option 1)
+    public QueryFileProcessor(InvertedIndex index, boolean usePartial) {
         this.searchResults = new TreeMap<>();
         this.index = index;
+        this.usePartial = usePartial;
     }
 
     /**
@@ -40,10 +42,10 @@ public class QueryFileProcessor {
      * 
      * @see #processLine(String, boolean)
      */
-    public void processFile(Path queryFile, boolean usePartial) throws IOException {
+    public void processFile(Path queryFile) throws IOException {
         try (BufferedReader reader = Files.newBufferedReader(queryFile, StandardCharsets.UTF_8)) {
             while (reader.ready()) {
-                processLine(reader.readLine(), usePartial);
+                processLine(reader.readLine());
             }
         }
     }
@@ -54,7 +56,7 @@ public class QueryFileProcessor {
      * @param line the line containing a search query
      * @param usePartial true for partial search, false for exact search
      */
-    public void processLine(String line, boolean usePartial) {
+    public void processLine(String line) {
         TreeSet<String> query = FileStemmer.uniqueStems(line); // TODO Figure out how to share a stemmer instead
         String queryString = String.join(" ", query);
 

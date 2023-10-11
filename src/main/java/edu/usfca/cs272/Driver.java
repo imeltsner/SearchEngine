@@ -23,8 +23,7 @@ public class Driver {
 
 		InvertedIndex index = new InvertedIndex();
 		ArgumentParser parser = new ArgumentParser(args);
-		QueryFileProcessor processor = new QueryFileProcessor(index);
-		// TODO QueryFileProcessor processor = new QueryFileProcessor(index, parser.hasFlag(-partial));
+		QueryFileProcessor processor = new QueryFileProcessor(index, parser.hasFlag("-partial"));
 		
 		if (parser.hasFlag("-text")) {
 
@@ -46,7 +45,7 @@ public class Driver {
 			Path queryFile = parser.getPath("-query");
 
 			try {
-				processor.processFile(queryFile, parser.hasFlag("-partial"));
+				processor.processFile(queryFile);
 			}
 			catch (IOException e) {
 				System.out.println("Unable to process file at path: " + queryFile.toString());
