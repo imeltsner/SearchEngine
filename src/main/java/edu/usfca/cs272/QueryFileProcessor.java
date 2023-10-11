@@ -74,14 +74,6 @@ public class QueryFileProcessor {
     }
 
     /**
-     * Returns all search results from all queries in a file
-     * @return the search results
-     */
-    public TreeMap<String, ArrayList<SearchResult>> getSearchResults() { // TODO Breaking encapsulation
-        return searchResults;
-    }
-
-    /**
      * Writes search results in pretty JSON format
      * @param path the path of the file to write to
      * @throws IOException if an IO error occurs
