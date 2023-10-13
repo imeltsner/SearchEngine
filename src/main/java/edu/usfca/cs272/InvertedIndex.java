@@ -84,7 +84,7 @@ public class InvertedIndex {
      * Returns the number files in the map
      * @return the number of files in the map
      */
-    public int numFiles() {
+    public int numFiles() { // TODO numCounts()
         return wordCounts.size();
     }
 
@@ -95,6 +95,13 @@ public class InvertedIndex {
     public int numWords() {
         return invertedIndex.size();
     }
+    
+    /* TODO 
+    public int numLocations(String word) --> viewLocations(word).size()
+    public int numPositions(String word, String location)
+    
+    fix up the names of the methods and parameters
+    */
 
     /**
      * Checks if wordCount map contains a given file name
@@ -111,7 +118,7 @@ public class InvertedIndex {
      * @return true if word is in inverted index false otherwise
      */
     public boolean hasWord(String word) {
-        return invertedIndex.containsKey(word);
+        return invertedIndex.containsKey(word); // TODO Use view?
     }
 
     /**
@@ -124,7 +131,7 @@ public class InvertedIndex {
      * @see #hasWord(String)
      */
     public boolean hasLocation(String word, String location) {
-        return hasWord(word) ? invertedIndex.get(word).containsKey(location) : false;
+        return hasWord(word) ? invertedIndex.get(word).containsKey(location) : false; // TODO Use view
     }
 
     /**
@@ -137,7 +144,8 @@ public class InvertedIndex {
      * 
      * @see #hasLocation(String, String)
      */
-    public boolean wordAtPosition(String word, String location, int position) {
+    public boolean wordAtPosition(String word, String location, int position) { // TODO hasPosition
+    	// TODO return viewPositions(word, location).contains(position);
         return hasLocation(word, location) ? invertedIndex.get(word).get(location).contains(position) : false;
     }
 
@@ -146,7 +154,7 @@ public class InvertedIndex {
      * @param path string representation of path to file
      * @param wordCount the number of words in the file
      */    
-    public void addCount(String path, int wordCount) {
+    public void addCount(String path, int wordCount) { // TODO Remove or make private
         wordCounts.put(path, wordCount);
     }
 
@@ -160,6 +168,16 @@ public class InvertedIndex {
         invertedIndex.computeIfAbsent(word, w -> new TreeMap<>())
             .computeIfAbsent(path, p -> new TreeSet<>())
             .add(position);
+        
+        /*
+         * TODO 2 options of updating the word count here
+         * 
+         * 1) increment the word count every time your code adds a new word
+         * 
+         * 2) use the max position seen for the path each time
+         * 
+         * map.merge
+         */
     }
     
     /**
@@ -205,6 +223,16 @@ public class InvertedIndex {
 
             Entry<String, TreeSet<Integer>> location = locations.next();
             SearchResult visited = seenLocations.get(location.getKey());
+            
+            	/* TODO 
+            if (visited == null) {
+              visited = new SearchResult(location.getKey(), wordCounts.get(location.getKey()));
+              results.add(visited);
+              seenLocations.put(location.getKey(), visited);
+          }
+          
+            visited.calculateScore(location.getValue().size());
+          */
             
             if (visited == null) {
                 SearchResult result = new SearchResult(location.getKey(), wordCounts.get(location.getKey()));
@@ -295,7 +323,7 @@ public class InvertedIndex {
         private final String location;
         
         /** The total words at a location */
-        private final int totalWords;
+        private final int totalWords; // TODO Remove
     
         /** The total query words found at the location */
         private int count;
@@ -322,6 +350,7 @@ public class InvertedIndex {
         private void calculateScore(int matches) {
             this.count += matches;
             this.score = (double) this.count / (double) this.totalWords;
+            // TODO this.score = (double) this.count / (double) wordCounts.get(this.location);
         }
     
         /**
