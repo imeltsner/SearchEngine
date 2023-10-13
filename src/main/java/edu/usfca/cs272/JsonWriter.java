@@ -491,7 +491,7 @@ public class JsonWriter {
 	 * @param indent the initial indent level
 	 * @throws IOException if an IO error occurs
 	 */
-	 public static void writeSearchResults(ArrayList<InvertedIndex.SearchResult> results, Writer writer, int indent) throws IOException {
+	 public static void writeSearchResults(ArrayList<InvertedIndex.SearchResult> results, Writer writer, int indent) throws IOException { // TODO Collection<...>
 		boolean empty = true;
 		var iterator = results.iterator();
 
@@ -519,7 +519,7 @@ public class JsonWriter {
 	 * @param indent the initial indent level
 	 * @throws IOException if an IO error occurs
 	 */
-	public static void writeResultsEntry(Entry<String, ArrayList<InvertedIndex.SearchResult>> entry, Writer writer, int indent) throws IOException {
+	public static void writeResultsEntry(Entry<String, ArrayList<InvertedIndex.SearchResult>> entry, Writer writer, int indent) throws IOException { // TODO ? extends Collection
 		String queryString = entry.getKey();
 		writeQuote(queryString, writer, indent + 1);
 		writer.write(": [\n");
@@ -535,7 +535,7 @@ public class JsonWriter {
 	 * @param indent the initial indent level
 	 * @throws IOException if an IO error occurs
 	 */
-	public static void writeSearchResults(TreeMap<String, ArrayList<InvertedIndex.SearchResult>> results, Writer writer, int indent) throws IOException {
+	public static void writeSearchResults(TreeMap<String, ArrayList<InvertedIndex.SearchResult>> results, Writer writer, int indent) throws IOException { // TODO Map
 		writer.write("{\n");
 
 		var iterator = results.entrySet().iterator();
@@ -565,4 +565,6 @@ public class JsonWriter {
 			writeSearchResults(results, writer, 0);
 		}
 	}
+	
+	// TODO StringWriter for the map version
 }

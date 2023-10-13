@@ -30,7 +30,7 @@ public class QueryFileProcessor {
     private final InvertedIndex index;
 
     /** Flag to determine type of search to perform */
-    private boolean usePartial;
+    private boolean usePartial; // TODO final
 
     /**
      * Class constructor
@@ -51,7 +51,7 @@ public class QueryFileProcessor {
      * @see #processLine(String, Stemmer)
      */
     public void processFile(Path queryFile) throws IOException {
-        Stemmer stemmer = new SnowballStemmer(ENGLISH);
+        Stemmer stemmer = new SnowballStemmer(ENGLISH); // TODO Make this a instance member 
         try (BufferedReader reader = Files.newBufferedReader(queryFile, StandardCharsets.UTF_8)) {
             while (reader.ready()) {
                 processLine(reader.readLine(), stemmer);
@@ -64,7 +64,7 @@ public class QueryFileProcessor {
      * @param line the line containing a search query
      * @param stemmer the stemmer to use
      */
-    public void processLine(String line, Stemmer stemmer) {
+    public void processLine(String line, Stemmer stemmer) { // TODO Could remove stemmer as a parameter
         TreeSet<String> query = FileStemmer.uniqueStems(line, stemmer);
         String queryString = String.join(" ", query);
 
@@ -100,7 +100,8 @@ public class QueryFileProcessor {
      * @return an unmodifiable view of all results associated with a query
      * or an empty list if query not in results
      */
-    public List<InvertedIndex.SearchResult> viewResult(String query) {
+    public List<InvertedIndex.SearchResult> viewResult(String query) { // TODO String line
+    	// TODO stem and join the line before doing the get
         List<InvertedIndex.SearchResult> results = searchResults.get(query);
         return results != null ? Collections.unmodifiableList(results) : Collections.emptyList();
     }
@@ -120,7 +121,7 @@ public class QueryFileProcessor {
      * @param result the result to check
      * @return true if result is associated with query, false if query not found or result not associated with query
      */
-    public boolean hasResult(String query, InvertedIndex.SearchResult result) {
+    public boolean hasResult(String query, InvertedIndex.SearchResult result) { // TODO Optionally remove
         ArrayList<InvertedIndex.SearchResult> results = searchResults.get(query);
         return results != null ? results.contains(result) : false;
     }
