@@ -84,7 +84,7 @@ public class InvertedIndex {
      * Returns the number files in the map
      * @return the number of files in the map
      */
-    public int numFiles() { // TODO numCounts()
+    public int numCounts() {
         return wordCounts.size();
     }
 
@@ -95,11 +95,27 @@ public class InvertedIndex {
     public int numWords() {
         return invertedIndex.size();
     }
+
+    /**
+     * Returns the number of locations a word was found
+     * @param word the word to check
+     * @return the number of locations a word was found
+     */
+    public int numLocations(String word) {
+        return viewLocations(word).size();
+    }
     
-    /* TODO 
-    public int numLocations(String word) --> viewLocations(word).size()
-    public int numPositions(String word, String location)
+    /**
+     * Returns the number of occurences of a word at a location
+     * @param word the word to check
+     * @param location the location to check
+     * @return the number of occurences of a word at a location
+     */
+    public int numPositions(String word, String location) {
+        return viewPositions(word, location).size();
+    }
     
+    /*
     fix up the names of the methods and parameters
     */
 
