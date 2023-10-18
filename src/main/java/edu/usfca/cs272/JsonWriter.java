@@ -9,11 +9,9 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 
 /**
  * Outputs several simple data structures in "pretty" JSON format where newlines
@@ -485,7 +483,7 @@ public class JsonWriter {
 	 * @param indent the initial indent level
 	 * @throws IOException if an IO error occurs
 	 */
-	 public static void writeSearchResults(ArrayList<InvertedIndex.SearchResult> results, Writer writer, int indent) throws IOException { // TODO Collection<...>
+	 public static void writeSearchResults(Collection<InvertedIndex.SearchResult> results, Writer writer, int indent) throws IOException {
 		boolean empty = true;
 		var iterator = results.iterator();
 
@@ -511,7 +509,7 @@ public class JsonWriter {
 	 * @param indent the initial indent level
 	 * @throws IOException if an IO error occurs
 	 */
-	public static void writeResultsEntry(Entry<String, ArrayList<InvertedIndex.SearchResult>> entry, Writer writer, int indent) throws IOException { // TODO ? extends Collection
+	public static void writeResultsEntry(Entry<String, ? extends Collection<InvertedIndex.SearchResult>> entry, Writer writer, int indent) throws IOException {
 		writeQuote(entry.getKey(), writer, indent + 1);
 		writer.write(": [\n");
 		writeSearchResults(entry.getValue(), writer, indent);
@@ -526,7 +524,7 @@ public class JsonWriter {
 	 * @param indent the initial indent level
 	 * @throws IOException if an IO error occurs
 	 */
-	public static void writeSearchResults(TreeMap<String, ArrayList<InvertedIndex.SearchResult>> results, Writer writer, int indent) throws IOException { // TODO Map
+	public static void writeSearchResults(Map<String, ? extends Collection<InvertedIndex.SearchResult>> results, Writer writer, int indent) throws IOException {
 		writer.write("{\n");
 
 		var iterator = results.entrySet().iterator();
@@ -549,7 +547,7 @@ public class JsonWriter {
 	 * @param path the path to the output file
 	 * @throws IOException if an IO error occurs
 	 */
-	public static void writeSearchResults(TreeMap<String, ArrayList<InvertedIndex.SearchResult>> results, Path path) throws IOException {
+	public static void writeSearchResults(Map<String, ? extends Collection<InvertedIndex.SearchResult>> results, Path path) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, UTF_8)) {
 			writeSearchResults(results, writer, 0);
 		}
