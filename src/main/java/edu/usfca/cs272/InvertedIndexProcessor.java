@@ -9,6 +9,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 
 import opennlp.tools.stemmer.Stemmer;
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
@@ -20,6 +21,9 @@ import opennlp.tools.stemmer.snowball.SnowballStemmer;
  * @author Isaac Meltsner
  */
 public class InvertedIndexProcessor {
+	/** Stemmer to stem words */
+	public static Stemmer stemmer = new SnowballStemmer(ENGLISH);
+
 	/**
 	 * Reads a file, cleans and stems each word
 	 * Adds word counts to map and word positions in files to inverted index 
@@ -28,17 +32,13 @@ public class InvertedIndexProcessor {
 	 * @throws IOException if an IOException occurs
 	 */
 	public static void processFile(Path path, InvertedIndex index) throws IOException {
-		Stemmer stemmer = new SnowballStemmer(ENGLISH);
-		String location = path.toString();
-		int count = 0;
+		int start = 0;
 
 		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
 			while (reader.ready()) {
-				String[] words = FileStemmer.parse(reader.readLine());
-				for (String word: words) {
-					index.addData(stemmer.stem(word).toString(), location, count + 1);
-					count++;
-				}
+				ArrayList<String> words = FileStemmer.listStems(reader.readLine(), stemmer);
+				index.addAll(words, path.toString(), start);
+				start += words.size();
 			}
 		}
 	}
@@ -56,9 +56,13 @@ public class InvertedIndexProcessor {
 	 */
 	public static void processDir(Path path, InvertedIndex index) throws IOException, NotDirectoryException {
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(path);) {
+
 			var iterator = stream.iterator();
+
 			while (iterator.hasNext()) {
+
 				Path newPath = iterator.next();
+				
 				if (Files.isDirectory(newPath)) {
 					processDir(newPath, index);
 				}

@@ -181,7 +181,7 @@ public class InvertedIndex {
      */
     public void addAll(List<String> words, String location, int start) {
         for (String word : words) {
-            addData(word, location, start++);
+            addData(word, location, ++start);
         }
     }
     
