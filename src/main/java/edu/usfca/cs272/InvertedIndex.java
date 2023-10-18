@@ -239,26 +239,14 @@ public class InvertedIndex {
 
             Entry<String, TreeSet<Integer>> location = locations.next();
             SearchResult visited = seenLocations.get(location.getKey());
-            
-            	/* TODO 
+         
             if (visited == null) {
-              visited = new SearchResult(location.getKey(), wordCounts.get(location.getKey()));
-              results.add(visited);
-              seenLocations.put(location.getKey(), visited);
-          }
-          
+                visited = new SearchResult(location.getKey(), wordCounts.get(location.getKey()));
+                results.add(visited);
+                seenLocations.put(location.getKey(), visited);
+            }
+
             visited.calculateScore(location.getValue().size());
-          */
-            
-            if (visited == null) {
-                SearchResult result = new SearchResult(location.getKey(), wordCounts.get(location.getKey()));
-                result.calculateScore(location.getValue().size());
-                results.add(result);
-                seenLocations.put(location.getKey(), result);
-            }
-            else {
-                visited.calculateScore(location.getValue().size());
-            }
         }
     }
     
