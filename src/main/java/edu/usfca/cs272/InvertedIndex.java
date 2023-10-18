@@ -130,7 +130,7 @@ public class InvertedIndex {
      * @return true if word is in inverted index false otherwise
      */
     public boolean hasWord(String word) {
-        return invertedIndex.containsKey(word); // TODO Use view?
+        return viewWords().contains(word);
     }
 
     /**
@@ -161,15 +161,6 @@ public class InvertedIndex {
     }
 
     /**
-     * Adds file names and word counts to map
-     * @param location string representation of path to file
-     * @param wordCount the number of words in the file
-     */    
-    public void addCount(String location, int wordCount) { // TODO Remove or make private
-        wordCounts.put(location, wordCount);
-    }
-
-    /**
      * Adds words, filenames, and word position to the inverted index
      * @param word the word to add
      * @param location the location to add
@@ -180,15 +171,7 @@ public class InvertedIndex {
             .computeIfAbsent(location, p -> new TreeSet<>())
             .add(position);
         
-        /*
-         * TODO 2 options of updating the word count here
-         * 
-         * 1) increment the word count every time your code adds a new word
-         * 
-         * 2) use the max position seen for the path each time
-         * 
-         * map.merge
-         */
+        wordCounts.merge(location, position, (old, current) -> current);
     }
     
     /**

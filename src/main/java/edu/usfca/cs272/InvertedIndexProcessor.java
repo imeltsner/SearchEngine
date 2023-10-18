@@ -40,11 +40,6 @@ public class InvertedIndexProcessor {
 					count++;
 				}
 			}
-
-			// TODO Remove
-			if (count != 0) {
-				index.addCount(location, count);
-			}
 		}
 	}
 
