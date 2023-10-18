@@ -236,7 +236,7 @@ public class InvertedIndex {
             SearchResult visited = seenLocations.get(location.getKey());
          
             if (visited == null) {
-                visited = new SearchResult(location.getKey(), wordCounts.get(location.getKey()));
+                visited = new SearchResult(location.getKey());
                 results.add(visited);
                 seenLocations.put(location.getKey(), visited);
             }
@@ -320,9 +320,6 @@ public class InvertedIndex {
     public class SearchResult implements Comparable<SearchResult> {
         /** The location where a query word was found */
         private final String location;
-        
-        /** The total words at a location */
-        private final int totalWords; // TODO Remove
     
         /** The total query words found at the location */
         private int count;
@@ -333,11 +330,9 @@ public class InvertedIndex {
         /**
          * Class constructor
          * @param location the location of the search
-         * @param totalWords the total words found at the location
          */
-        public SearchResult(String location, int totalWords) {
+        public SearchResult(String location) {
             this.location = location;
-            this.totalWords = totalWords;
             this.count = 0;
             this.score = 0;
         }
@@ -348,8 +343,7 @@ public class InvertedIndex {
          */
         private void calculateScore(int matches) {
             this.count += matches;
-            this.score = (double) this.count / (double) this.totalWords;
-            // TODO this.score = (double) this.count / (double) wordCounts.get(this.location);
+            this.score = (double) this.count / (double) wordCounts.get(this.location);
         }
     
         /**
