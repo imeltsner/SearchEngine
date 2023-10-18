@@ -101,8 +101,7 @@ public class QueryFileProcessor {
      * or an empty list if query not in results
      */
     public List<InvertedIndex.SearchResult> viewResult(String line) {
-        String query = String.join(line, FileStemmer.uniqueStems(line, stemmer));
-        List<InvertedIndex.SearchResult> results = searchResults.get(query);
+        List<InvertedIndex.SearchResult> results = searchResults.get(String.join(line, FileStemmer.uniqueStems(line, stemmer)));
         return results != null ? Collections.unmodifiableList(results) : Collections.emptyList();
     }
 
