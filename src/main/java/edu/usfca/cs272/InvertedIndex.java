@@ -114,10 +114,6 @@ public class InvertedIndex {
     public int numPositions(String word, String location) {
         return viewPositions(word, location).size();
     }
-    
-    /*
-    fix up the names of the methods and parameters
-    */
 
     /**
      * Checks if wordCount map contains a given file name
@@ -147,7 +143,7 @@ public class InvertedIndex {
      * @see #hasWord(String)
      */
     public boolean hasLocation(String word, String location) {
-        return hasWord(word) ? invertedIndex.get(word).containsKey(location) : false; // TODO Use view
+        return viewLocations(word).contains(location);
     }
 
     /**
@@ -160,9 +156,8 @@ public class InvertedIndex {
      * 
      * @see #hasLocation(String, String)
      */
-    public boolean hasPosition(String word, String location, int position) { // TODO hasPosition
-    	// TODO return viewPositions(word, location).contains(position);
-        return hasLocation(word, location) ? invertedIndex.get(word).get(location).contains(position) : false;
+    public boolean hasPosition(String word, String location, int position) {
+        return viewPositions(word, location).contains(position);
     }
 
     /**
