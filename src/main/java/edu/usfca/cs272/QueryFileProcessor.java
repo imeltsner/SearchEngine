@@ -73,7 +73,8 @@ public class QueryFileProcessor {
             return;
         }
 
-        searchResults.put(queryString, index.search(query, usePartial));
+        ArrayList<InvertedIndex.SearchResult> results = index.search(query, usePartial);
+        searchResults.put(queryString, results);
     }
 
     /**
@@ -95,7 +96,7 @@ public class QueryFileProcessor {
 
     /**
      * Shows a view of all search results associated with a given query
-     * @param query the query associated with the results
+     * @param line the query associated with the results
      * @return an unmodifiable view of all results associated with a query
      * or an empty list if query not in results
      */
