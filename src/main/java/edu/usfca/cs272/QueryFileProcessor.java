@@ -73,9 +73,7 @@ public class QueryFileProcessor {
             return;
         }
 
-        ArrayList<InvertedIndex.SearchResult> result;
-        result = index.search(query, usePartial);
-        searchResults.put(queryString, result);
+        searchResults.put(queryString, index.search(query, usePartial));
     }
 
     /**
