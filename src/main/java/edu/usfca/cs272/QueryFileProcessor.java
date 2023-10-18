@@ -32,6 +32,8 @@ public class QueryFileProcessor {
     /** Flag to determine type of search to perform */
     private final boolean usePartial;
 
+    private final Stemmer stemmer;
+
     /**
      * Class constructor
      * @param index the inverted index to search
@@ -41,6 +43,7 @@ public class QueryFileProcessor {
         this.searchResults = new TreeMap<>();
         this.index = index;
         this.usePartial = usePartial;
+        this.stemmer = new SnowballStemmer(ENGLISH);
     }
 
     /**
@@ -48,13 +51,12 @@ public class QueryFileProcessor {
      * @param queryFile the file to process
      * @throws IOException if an IO error occurs
      * 
-     * @see #processLine(String, Stemmer)
+     * @see #processLine(String)
      */
     public void processFile(Path queryFile) throws IOException {
-        Stemmer stemmer = new SnowballStemmer(ENGLISH); // TODO Make this a instance member 
         try (BufferedReader reader = Files.newBufferedReader(queryFile, StandardCharsets.UTF_8)) {
             while (reader.ready()) {
-                processLine(reader.readLine(), stemmer);
+                processLine(reader.readLine());
             }
         }
     }
@@ -62,9 +64,8 @@ public class QueryFileProcessor {
     /**
      * Parses and stems a search query, performs a search of the inverted index, and sorts results
      * @param line the line containing a search query
-     * @param stemmer the stemmer to use
      */
-    public void processLine(String line, Stemmer stemmer) { // TODO Could remove stemmer as a parameter
+    public void processLine(String line) {
         TreeSet<String> query = FileStemmer.uniqueStems(line, stemmer);
         String queryString = String.join(" ", query);
 
@@ -100,8 +101,8 @@ public class QueryFileProcessor {
      * @return an unmodifiable view of all results associated with a query
      * or an empty list if query not in results
      */
-    public List<InvertedIndex.SearchResult> viewResult(String query) { // TODO String line
-    	// TODO stem and join the line before doing the get
+    public List<InvertedIndex.SearchResult> viewResult(String line) {
+        String query = String.join(line, FileStemmer.uniqueStems(line, stemmer));
         List<InvertedIndex.SearchResult> results = searchResults.get(query);
         return results != null ? Collections.unmodifiableList(results) : Collections.emptyList();
     }
