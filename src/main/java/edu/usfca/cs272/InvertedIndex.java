@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -264,8 +263,7 @@ public class InvertedIndex {
         while (searchWords.hasNext()) {
 
             String word = searchWords.next();
-            SortedMap<String, TreeMap<String, TreeSet<Integer>>> possibleMatchIndex = invertedIndex.tailMap(word);
-            var possibleMatches = possibleMatchIndex.entrySet().iterator();
+            var possibleMatches = invertedIndex.tailMap(word).entrySet().iterator();
 
             while (possibleMatches.hasNext()) {
 
