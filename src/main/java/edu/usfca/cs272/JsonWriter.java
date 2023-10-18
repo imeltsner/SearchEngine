@@ -21,6 +21,7 @@ import java.util.Map.Entry;
  * concurrently, access must be synchronized externally.
  *
  * @author CS 272 Software Development (University of San Francisco)
+ * @author Isaac Meltsner
  * @version Fall 2023
  */
 public class JsonWriter {

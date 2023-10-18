@@ -32,6 +32,7 @@ public class QueryFileProcessor {
     /** Flag to determine type of search to perform */
     private final boolean usePartial;
 
+    /** Stemmer to stem queries */
     private final Stemmer stemmer;
 
     /**
@@ -48,7 +49,7 @@ public class QueryFileProcessor {
 
     /**
      * Takes a file of search queries and performs a search for each query
-     * @param queryFile the file to process
+     * @param path the file to process
      * @throws IOException if an IO error occurs
      * 
      * @see #processLine(String)
@@ -124,7 +125,7 @@ public class QueryFileProcessor {
     
     /**
      * Gets the number of results associated with a given query
-     * @param query the query string
+     * @param line the query string
      * @return the number of results associated with a given query or 0 if query is not in results
      */
     public int numResults(String line) {
