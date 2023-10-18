@@ -73,11 +73,11 @@ public class InvertedIndex {
 
     /**
      * Gets a word count from the wordCounts map
-     * @param path the file associated with the count
+     * @param location the file associated with the count
      * @return the number of words in a file or 0 if file not found
      */
-    public int getCount(String path) {
-        return wordCounts.getOrDefault(path, 0);
+    public int getCount(String location) {
+        return wordCounts.getOrDefault(location, 0);
     }
 
     /**
@@ -121,11 +121,11 @@ public class InvertedIndex {
 
     /**
      * Checks if wordCount map contains a given file name
-     * @param file the file name to check for
+     * @param location the file name to check for
      * @return true if file name is in map false otherwise
      */
-    public boolean hasCount(String file) {
-        return wordCounts.containsKey(file);
+    public boolean hasCount(String location) {
+        return wordCounts.containsKey(location);
     }
     
     /**
@@ -160,29 +160,29 @@ public class InvertedIndex {
      * 
      * @see #hasLocation(String, String)
      */
-    public boolean wordAtPosition(String word, String location, int position) { // TODO hasPosition
+    public boolean hasPosition(String word, String location, int position) { // TODO hasPosition
     	// TODO return viewPositions(word, location).contains(position);
         return hasLocation(word, location) ? invertedIndex.get(word).get(location).contains(position) : false;
     }
 
     /**
      * Adds file names and word counts to map
-     * @param path string representation of path to file
+     * @param location string representation of path to file
      * @param wordCount the number of words in the file
      */    
-    public void addCount(String path, int wordCount) { // TODO Remove or make private
-        wordCounts.put(path, wordCount);
+    public void addCount(String location, int wordCount) { // TODO Remove or make private
+        wordCounts.put(location, wordCount);
     }
 
     /**
      * Adds words, filenames, and word position to the inverted index
      * @param word the word to add
-     * @param path the file to add
+     * @param location the location to add
      * @param position the position of the word
      */
-    public void addData(String word, String path, int position) {
+    public void addData(String word, String location, int position) {
         invertedIndex.computeIfAbsent(word, w -> new TreeMap<>())
-            .computeIfAbsent(path, p -> new TreeSet<>())
+            .computeIfAbsent(location, p -> new TreeSet<>())
             .add(position);
         
         /*
@@ -199,12 +199,12 @@ public class InvertedIndex {
     /**
      * Adds a list of words to the inverted index starting at a given position
      * @param words the words to add
-     * @param path the location of the words
+     * @param location the location of the words
      * @param start the starting position
      */
-    public void addAll(List<String> words, String path, int start) {
+    public void addAll(List<String> words, String location, int start) {
         for (String word : words) {
-            addData(word, path, start++);
+            addData(word, location, start++);
         }
     }
     
