@@ -53,8 +53,8 @@ public class QueryFileProcessor {
      * 
      * @see #processLine(String)
      */
-    public void processFile(Path queryFile) throws IOException {
-        try (BufferedReader reader = Files.newBufferedReader(queryFile, StandardCharsets.UTF_8)) {
+    public void processFile(Path path) throws IOException {
+        try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
             while (reader.ready()) {
                 processLine(reader.readLine());
             }
@@ -108,11 +108,11 @@ public class QueryFileProcessor {
 
     /**
      * Checks if a query exists in the results
-     * @param query the query to check
+     * @param line the query to check
      * @return true if query exists, false otherwise
      */
-    public boolean hasQuery(String query) {
-        return searchResults.containsKey(query);
+    public boolean hasQuery(String line) {
+        return searchResults.containsKey(String.join(line, FileStemmer.uniqueStems(line, stemmer)));
     }
 
     /**
@@ -128,8 +128,8 @@ public class QueryFileProcessor {
      * @param query the query string
      * @return the number of results associated with a given query or 0 if query is not in results
      */
-    public int numResults(String query) {
-        ArrayList<InvertedIndex.SearchResult> results = searchResults.get(query);
+    public int numResults(String line) {
+        ArrayList<InvertedIndex.SearchResult> results = searchResults.get(String.join(line, FileStemmer.uniqueStems(line, stemmer)));
         return results != null ? results.size() : 0;
     }
 }
