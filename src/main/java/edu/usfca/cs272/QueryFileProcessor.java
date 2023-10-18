@@ -30,7 +30,7 @@ public class QueryFileProcessor {
     private final InvertedIndex index;
 
     /** Flag to determine type of search to perform */
-    private boolean usePartial; // TODO final
+    private final boolean usePartial;
 
     /**
      * Class constructor
@@ -113,17 +113,6 @@ public class QueryFileProcessor {
      */
     public boolean hasQuery(String query) {
         return searchResults.containsKey(query);
-    }
-
-    /**
-     * Checks if a result is associated with a given query
-     * @param query the query to check
-     * @param result the result to check
-     * @return true if result is associated with query, false if query not found or result not associated with query
-     */
-    public boolean hasResult(String query, InvertedIndex.SearchResult result) { // TODO Optionally remove
-        ArrayList<InvertedIndex.SearchResult> results = searchResults.get(query);
-        return results != null ? results.contains(result) : false;
     }
 
     /**
