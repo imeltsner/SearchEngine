@@ -553,5 +553,19 @@ public class JsonWriter {
 		}
 	}
 	
-	// TODO StringWriter for the map version
+	/**
+	 * Returns the search results as a pretty JSON array
+	 * @param results the search results
+	 * @return a String containing the elements in pretty JSON format
+	 */
+	public static String writeSearchResults(Map<String, ? extends Collection<InvertedIndex.SearchResult>> results) {
+		try {
+			StringWriter writer = new StringWriter();
+			writeSearchResults(results, writer, 0);
+			return writer.toString();
+		}
+		catch (IOException e) {
+			return null;
+		}
+	}
 }
