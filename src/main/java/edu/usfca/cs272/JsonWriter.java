@@ -173,14 +173,12 @@ public class JsonWriter {
 		var iterator = elements.entrySet().iterator();
 
 		if (iterator.hasNext()) {
-			Entry<String, ? extends Number> entry = iterator.next();
-			writeObjectEntry(entry, writer, indent);
+			writeObjectEntry(iterator.next(), writer, indent);
 		}
 
 		while (iterator.hasNext()) {
-			Entry<String, ? extends Number> entry = iterator.next();
 			writer.write(",");
-			writeObjectEntry(entry, writer, indent);
+			writeObjectEntry(iterator.next(), writer, indent);
 		}
 
 		writer.write("\n");
@@ -261,14 +259,12 @@ public class JsonWriter {
 		var iterator = elements.entrySet().iterator();
 
 		if (iterator.hasNext()) {
-			Entry<String, ? extends Collection<? extends Number>> entry = iterator.next();
-			writeObjectArraysEntry(entry, writer, indent);
+			writeObjectArraysEntry(iterator.next(), writer, indent);
 		}
 
 		while (iterator.hasNext()) {
-			Entry<String, ? extends Collection<? extends Number>> entry = iterator.next();
 			writer.write(",");
-			writeObjectArraysEntry(entry, writer, indent);
+			writeObjectArraysEntry(iterator.next(), writer, indent);
 		}
 
 		writer.write("\n");
@@ -417,14 +413,12 @@ public class JsonWriter {
 		var iterator = index.entrySet().iterator();
 
 		if (iterator.hasNext()) {
-			Entry<String, ? extends Map<String, ? extends Collection<? extends Number>>> entry = iterator.next();
-			writeInvertedIndexEntry(entry, writer, indent);
+			writeInvertedIndexEntry(iterator.next(), writer, indent);
 		}
 
 		while (iterator.hasNext()) {
-			Entry<String, ? extends Map<String, ? extends Collection<? extends Number>>> entry = iterator.next();
 			writer.write(",");
-			writeInvertedIndexEntry(entry, writer, indent);
+			writeInvertedIndexEntry(iterator.next(), writer, indent);
 		}
 
 		writer.write("\n}");
@@ -497,14 +491,12 @@ public class JsonWriter {
 
 		if (iterator.hasNext()) {
 			empty = false;
-			InvertedIndex.SearchResult result = iterator.next();
-			writeResult(result, writer, indent);
+			writeResult(iterator.next(), writer, indent);
 		}
 
 		while (iterator.hasNext()) {
-			InvertedIndex.SearchResult result = iterator.next();
 			writer.write(",\n");
-			writeResult(result, writer, indent);
+			writeResult(iterator.next(), writer, indent);
 		}
 
 		if (!empty) {
@@ -520,8 +512,7 @@ public class JsonWriter {
 	 * @throws IOException if an IO error occurs
 	 */
 	public static void writeResultsEntry(Entry<String, ArrayList<InvertedIndex.SearchResult>> entry, Writer writer, int indent) throws IOException { // TODO ? extends Collection
-		String queryString = entry.getKey();
-		writeQuote(queryString, writer, indent + 1);
+		writeQuote(entry.getKey(), writer, indent + 1);
 		writer.write(": [\n");
 		writeSearchResults(entry.getValue(), writer, indent);
 		writeIndent(writer, indent + 1);
@@ -541,14 +532,12 @@ public class JsonWriter {
 		var iterator = results.entrySet().iterator();
 
 		if (iterator.hasNext()) {
-			Entry<String, ArrayList<InvertedIndex.SearchResult>> entry = iterator.next();
-			writeResultsEntry(entry, writer, indent);
+			writeResultsEntry(iterator.next(), writer, indent);
 		}
 
 		while (iterator.hasNext()) {
-			Entry<String, ArrayList<InvertedIndex.SearchResult>> entry = iterator.next();
 			writer.write(",\n");
-			writeResultsEntry(entry, writer, indent);
+			writeResultsEntry(iterator.next(), writer, indent);
 		}
 
 		writer.write("\n}");
