@@ -9,7 +9,6 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 
 import opennlp.tools.stemmer.Stemmer;
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
@@ -32,13 +31,15 @@ public class InvertedIndexProcessor {
 	 * @throws IOException if an IOException occurs
 	 */
 	public static void processFile(Path path, InvertedIndex index) throws IOException {
-		int start = 0;
+		int count = 0;
 
 		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
 			while (reader.ready()) {
-				ArrayList<String> words = FileStemmer.listStems(reader.readLine(), stemmer);
-				index.addAll(words, path.toString(), start);
-				start += words.size();
+				String[] words = FileStemmer.parse(reader.readLine());
+				for (String word: words) {
+					index.addData(stemmer.stem(word).toString(), path.toString(), count + 1);
+					count++;
+				}
 			}
 		}
 	}
