@@ -12,8 +12,12 @@ import java.util.Set;
  * @author Isaac Meltsner
  */
 public class ThreadSafeInvertedIndex extends InvertedIndex {
+    /** Lock object to use */
     private MultiReaderLock lock;
 
+    /**
+     * Class constructor
+     */
     public ThreadSafeInvertedIndex() {
         super();
         lock = new MultiReaderLock();

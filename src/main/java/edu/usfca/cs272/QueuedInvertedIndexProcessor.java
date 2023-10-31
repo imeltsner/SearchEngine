@@ -27,6 +27,7 @@ public class QueuedInvertedIndexProcessor extends InvertedIndexProcessor {
 	 * adds contents of text files to inverted index
 	 * @param path path of directory
 	 * @param index the Indexer object
+     * @param queue the work queue to use
 	 * @throws IOException if IO error occurs
 	 * @throws NotDirectoryException if given path is not a directory
      * 
@@ -56,6 +57,7 @@ public class QueuedInvertedIndexProcessor extends InvertedIndexProcessor {
 	 * Processes path according to path type
 	 * @param path the path to process
 	 * @param index the inverted index
+     * @param queue the work queue to use
 	 * @throws IOException if IOError occurs
 	 * @throws NullPointerException if null pointer is found
 	 */
