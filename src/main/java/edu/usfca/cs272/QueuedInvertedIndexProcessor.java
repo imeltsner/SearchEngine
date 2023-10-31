@@ -1,12 +1,25 @@
 package edu.usfca.cs272;
 
+import static opennlp.tools.stemmer.snowball.SnowballStemmer.ALGORITHM.ENGLISH;
+
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
 
+import opennlp.tools.stemmer.Stemmer;
+import opennlp.tools.stemmer.snowball.SnowballStemmer;
+
+/**
+ * A thread safe version of the InvertedIndexProcessor class
+ * 
+ * @author Isaac Meltsner
+ */
 public class QueuedInvertedIndexProcessor extends InvertedIndexProcessor {
+
+	/** Stemmer to stem words */
+    private static Stemmer stemmer = new SnowballStemmer(ENGLISH);
     
      /**
 	 * Recursively iterates through a directory
@@ -56,11 +69,21 @@ public class QueuedInvertedIndexProcessor extends InvertedIndexProcessor {
 		}
 	}
 
+    /**
+     * Processes a single file
+     */
     private static class Task implements Runnable {
+        /** The path of the file to process */
         private Path path;
 
+        /** The inverted index to use */
         private InvertedIndex index;
 
+        /**
+         * Class constructor
+         * @param path the path of a file
+         * @param index the inverted index to use
+         */
         private Task(Path path, InvertedIndex index) {
             this.path = path;
             this.index = index;
@@ -69,7 +92,7 @@ public class QueuedInvertedIndexProcessor extends InvertedIndexProcessor {
         @Override
         public void run() {
             try {
-                processFile(path, index);
+                processFile(path, index, stemmer);
             }
             catch (IOException e) {
                 System.out.println("IO ERROR");
