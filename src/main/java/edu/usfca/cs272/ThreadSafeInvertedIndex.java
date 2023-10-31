@@ -75,7 +75,7 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
             return super.getCount(location);
         }
         finally {
-            lock.readLock().lock();
+            lock.readLock().unlock();
         }
     }
 
