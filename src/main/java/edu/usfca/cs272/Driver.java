@@ -93,6 +93,11 @@ public class Driver {
 
 		if (parser.hasFlag("-threads")) {
 			int threads = parser.getInteger("-threads", 5);
+
+			if (threads < 1) {
+				threads = 5;
+			}
+			
 			WorkQueue queue = new WorkQueue(threads);
 			Path input = parser.getPath("-text");
 
