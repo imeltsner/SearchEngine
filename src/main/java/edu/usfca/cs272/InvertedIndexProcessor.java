@@ -115,10 +115,10 @@ public class InvertedIndexProcessor {
 	 */
 	public static void process(Path path, InvertedIndex index) throws IOException, NullPointerException {
 		if (Files.isDirectory(path)) {
-			InvertedIndexProcessor.processDir(path, index);
+			processDir(path, index);
 		}
 		else {
-			InvertedIndexProcessor.processFile(path, index);
+			processFile(path, index);
 		}
 	}
 }
