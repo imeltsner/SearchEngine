@@ -90,5 +90,22 @@ public class Driver {
 				System.out.println("Unable to write to file at path: " + searchOutput.toString());
 			}
 		}
+
+		if (parser.hasFlag("-threads")) {
+			int threads = parser.getInteger("-threads", 5);
+			WorkQueue queue = new WorkQueue(threads);
+			Path input = parser.getPath("-text");
+
+			try {
+				QueuedInvertedIndexProcessor.process(input, index, queue);
+				queue.join();
+			} 
+			catch (IOException e) {
+				System.out.println("Unable to process file at path: " + input.toString());
+			}
+			catch (NullPointerException e) {
+				System.out.println("-text flag is missing a value");
+			}
+		}
 	}
 }
