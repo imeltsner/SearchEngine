@@ -17,10 +17,6 @@ import opennlp.tools.stemmer.snowball.SnowballStemmer;
  * @author Isaac Meltsner
  */
 public class QueuedInvertedIndexProcessor extends InvertedIndexProcessor {
-
-	/** Stemmer to stem words */
-    private static Stemmer stemmer = new SnowballStemmer(ENGLISH);
-    
      /**
 	 * Recursively iterates through a directory checks if files are text files
 	 * adds contents of text files to inverted index
@@ -73,10 +69,12 @@ public class QueuedInvertedIndexProcessor extends InvertedIndexProcessor {
      */
     private static class Task implements Runnable {
         /** The path of the file to process */
-        private Path path;
+        private final Path path;
 
         /** The inverted index to use */
-        private InvertedIndex index;
+        private final InvertedIndex index;
+
+        private final Stemmer stemmer = new SnowballStemmer(ENGLISH);
 
         /**
          * Class constructor
