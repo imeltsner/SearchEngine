@@ -13,8 +13,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 /** 
- * A class to store an inverted index and 
- * map of wordcounts
+ * A class to store an inverted index and map of wordcounts
  * 
  * @author Isaac Meltsner
  */

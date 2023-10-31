@@ -22,16 +22,13 @@ public class QueuedInvertedIndexProcessor extends InvertedIndexProcessor {
     private static Stemmer stemmer = new SnowballStemmer(ENGLISH);
     
      /**
-	 * Recursively iterates through a directory
-	 * checks if files are text files
+	 * Recursively iterates through a directory checks if files are text files
 	 * adds contents of text files to inverted index
 	 * @param path path of directory
 	 * @param index the Indexer object
      * @param queue the work queue to use
 	 * @throws IOException if IO error occurs
 	 * @throws NotDirectoryException if given path is not a directory
-     * 
-     * @see #processFile(Path, InvertedIndex)
 	 */
 	public static void processDir(Path path, InvertedIndex index, WorkQueue queue) throws IOException, NotDirectoryException {
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(path);) {
@@ -43,7 +40,7 @@ public class QueuedInvertedIndexProcessor extends InvertedIndexProcessor {
 				Path newPath = iterator.next();
 				
 				if (Files.isDirectory(newPath)) {
-					processDir(newPath, index);
+					processDir(newPath, index, queue);
 				}
 				else if (isTextFile(newPath)) {
 					Task task = new Task(newPath, index);
@@ -63,7 +60,7 @@ public class QueuedInvertedIndexProcessor extends InvertedIndexProcessor {
 	 */
 	public static void process(Path path, InvertedIndex index, WorkQueue queue) throws IOException, NullPointerException {
 		if (Files.isDirectory(path)) {
-			QueuedInvertedIndexProcessor.processDir(path, index, queue);
+			processDir(path, index, queue);
 		}
 		else {
             Task task = new Task(path, index);

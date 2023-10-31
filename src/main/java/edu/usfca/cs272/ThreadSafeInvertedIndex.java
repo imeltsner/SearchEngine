@@ -6,8 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 /** 
- * A class to store an inverted index and 
- * map of wordcounts
+ * A class to store an inverted index and map of wordcounts
  * 
  * @author Isaac Meltsner
  */
