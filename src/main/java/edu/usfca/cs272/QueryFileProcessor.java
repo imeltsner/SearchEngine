@@ -132,4 +132,9 @@ public class QueryFileProcessor {
         ArrayList<InvertedIndex.SearchResult> results = searchResults.get(String.join(line, FileStemmer.uniqueStems(line, stemmer)));
         return results != null ? results.size() : 0;
     }
+
+    @Override
+    public String toString() {
+        return searchResults.toString();
+    }
 }
