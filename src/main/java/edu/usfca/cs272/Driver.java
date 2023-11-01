@@ -21,8 +21,16 @@ public class Driver {
 	 */
 	public static void main(String[] args) {
 
-		InvertedIndex index = new InvertedIndex();
+		InvertedIndex index;
 		ArgumentParser parser = new ArgumentParser(args);
+
+		if (parser.hasFlag("-threads")) {
+			index = new ThreadSafeInvertedIndex();
+		}
+		else {
+			index = new InvertedIndex();
+		}
+		
 		QueryFileProcessor processor = new QueryFileProcessor(index, parser.hasFlag("-partial"));
 		
 		if (parser.hasFlag("-text")) {
