@@ -189,13 +189,13 @@ public class MultiReaderLock {
 				if (writers == 0) {
 					lock.notifyAll();
 				}
-			}
 
-			if (readers > 0) {
-				readers--;
-			}
-			else {
-				throw new IllegalStateException();
+				if (readers > 0) {
+					readers--;
+				}
+				else {
+					throw new IllegalStateException();
+				}
 			}
 		}
 	}
@@ -240,25 +240,22 @@ public class MultiReaderLock {
 		@Override
 		public void unlock() throws IllegalStateException, ConcurrentModificationException {
 			synchronized (lock) {
-				
-				if (readers == 0) {
-					lock.notifyAll();
+				if (writers <= 0) {
+					throw new IllegalStateException();
 				}
-			}
 
-			if (writers > 0) {
 				if (!isActiveWriter()) {
 					throw new ConcurrentModificationException();
 				}
 
 				writers--;
-			}
-			else {
-				throw new IllegalStateException();
-			}
 
-			if (writers == 0) {
-				activeWriter = null;
+				if (writers == 0) {
+					activeWriter = null;
+					if (readers == 0) {
+						lock.notifyAll();
+					}
+				}
 			}
 		}
 	}
