@@ -74,6 +74,7 @@ public class QueuedInvertedIndexProcessor extends InvertedIndexProcessor {
         /** The inverted index to use */
         private final InvertedIndex index;
 
+        /** The stemmer to use */
         private final Stemmer stemmer = new SnowballStemmer(ENGLISH);
 
         /**
@@ -90,7 +91,7 @@ public class QueuedInvertedIndexProcessor extends InvertedIndexProcessor {
         public void run() {
             try {
                 processFile(path, index, stemmer);
-            }
+            } 
             catch (IOException e) {
                 System.out.println("IO ERROR");
             }
