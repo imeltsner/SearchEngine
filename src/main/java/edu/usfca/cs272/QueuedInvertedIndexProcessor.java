@@ -64,9 +64,7 @@ public class QueuedInvertedIndexProcessor extends InvertedIndexProcessor {
 		}
 	}
 
-    /**
-     * Processes a single file
-     */
+    /** Processes a single file */
     private static class Task implements Runnable {
         /** The path of the file to process */
         private final Path path;
@@ -75,7 +73,7 @@ public class QueuedInvertedIndexProcessor extends InvertedIndexProcessor {
         private final InvertedIndex index;
 
         /** The stemmer to use */
-        private final Stemmer stemmer = new SnowballStemmer(ENGLISH);
+        private final Stemmer stemmer;
 
         /**
          * Class constructor
@@ -85,6 +83,7 @@ public class QueuedInvertedIndexProcessor extends InvertedIndexProcessor {
         private Task(Path path, InvertedIndex index) {
             this.path = path;
             this.index = index;
+            this.stemmer = new SnowballStemmer(ENGLISH);
         }
 
         @Override
