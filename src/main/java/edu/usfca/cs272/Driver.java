@@ -30,7 +30,21 @@ public class Driver {
 			Path input = parser.getPath("-text");
 
 			try {
-				InvertedIndexProcessor.process(input, index);
+				if (parser.hasFlag("-threads")) {
+					int threads = parser.getInteger("-threads", 5);
+
+					if (threads < 1) {
+						threads = 5;
+					}
+
+					WorkQueue queue = new WorkQueue(threads);
+
+					QueuedInvertedIndexProcessor.process(input, index, queue);
+					queue.join();
+				}
+				else {
+					InvertedIndexProcessor.process(input, index);
+				}
 			} 
 			catch (IOException e) {
 				System.out.println("Unable to process file at path: " + input.toString());
@@ -88,28 +102,6 @@ public class Driver {
 			}
 			catch (IOException e) {
 				System.out.println("Unable to write to file at path: " + searchOutput.toString());
-			}
-		}
-
-		if (parser.hasFlag("-threads")) {
-			int threads = parser.getInteger("-threads", 5);
-
-			if (threads < 1) {
-				threads = 5;
-			}
-			
-			WorkQueue queue = new WorkQueue(threads);
-			Path input = parser.getPath("-text");
-
-			try {
-				QueuedInvertedIndexProcessor.process(input, index, queue);
-				queue.join();
-			} 
-			catch (IOException e) {
-				System.out.println("Unable to process file at path: " + input.toString());
-			}
-			catch (NullPointerException e) {
-				System.out.println("-text flag is missing a value");
 			}
 		}
 	}
