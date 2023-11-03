@@ -23,9 +23,20 @@ public class Driver {
 
 		InvertedIndex index;
 		ArgumentParser parser = new ArgumentParser(args);
+		
+		ThreadSafeInvertedIndex safe = null;
+		
+		// TODO WorkQueue queue = null;
 
 		if (parser.hasFlag("-threads")) {
 			index = new ThreadSafeInvertedIndex();
+			
+			/* TODO 
+			safe =  new ThreadSafeInvertedIndex();
+			index = safe;
+			
+			could init queue here
+			*/
 		}
 		else {
 			index = new InvertedIndex();
@@ -48,7 +59,7 @@ public class Driver {
 					WorkQueue queue = new WorkQueue(threads);
 
 					QueuedInvertedIndexProcessor.process(input, index, queue);
-					queue.join();
+					queue.join(); // TODO Might need to move joining to the very end...
 				}
 				else {
 					InvertedIndexProcessor.process(input, index);
@@ -112,5 +123,7 @@ public class Driver {
 				System.out.println("Unable to write to file at path: " + searchOutput.toString());
 			}
 		}
+		
+		// TODO if queue != null, call join or shutdown
 	}
 }

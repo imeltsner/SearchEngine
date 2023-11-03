@@ -186,7 +186,8 @@ public class MultiReaderLock {
 		@Override
 		public void unlock() throws IllegalStateException {
 			synchronized (lock) {
-				if (writers == 0) {
+				// TODO Check this after the readers--;
+				if (writers == 0) { // TODO readers == 0
 					lock.notifyAll();
 				}
 
@@ -252,7 +253,7 @@ public class MultiReaderLock {
 
 				if (writers == 0) {
 					activeWriter = null;
-					if (readers == 0) {
+					if (readers == 0) { // TODO could assert readers == 0... but it should be at this point anyway
 						lock.notifyAll();
 					}
 				}
