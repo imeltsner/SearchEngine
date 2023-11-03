@@ -85,23 +85,28 @@ public class WorkQueue {
 	 * 
 	 * @throws InterruptedException if thread interrupted
 	 */
-	public synchronized void finish() throws InterruptedException { // TODO catch exception and do Thread.currentThread().interrupt()
-		while (pending > 0 && !tasks.isEmpty()) { // TODO Remove tasks.isEmpty check
-			this.wait();
+	public synchronized void finish() {
+		while (pending > 0) {
+			try {
+				this.wait();
+			}
+			catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
 		}
 	}
 
 	/**
 	 * Increments total active threads
 	 */
-	public synchronized void incrementPending() { // TODO private
+	private synchronized void incrementPending() {
 		pending++;
 	}
 
 	/**
 	 * Decrements total active threads and notifies if pending equals 0
 	 */
-	public synchronized void decrementPending() { // TODO private
+	private synchronized void decrementPending() {
 		pending--;
 
 		if (pending == 0) {
