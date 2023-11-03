@@ -21,28 +21,10 @@ public class Driver {
 	 */
 	public static void main(String[] args) {
 
-		InvertedIndex index;
-		ArgumentParser parser = new ArgumentParser(args);
-		
+		InvertedIndex index = new InvertedIndex();
 		ThreadSafeInvertedIndex safe = null;
-		
-		// TODO WorkQueue queue = null;
-
-		if (parser.hasFlag("-threads")) {
-			index = new ThreadSafeInvertedIndex();
-			
-			/* TODO 
-			safe =  new ThreadSafeInvertedIndex();
-			index = safe;
-			
-			could init queue here
-			*/
-		}
-		else {
-			index = new InvertedIndex();
-		}
-		
-		QueryFileProcessor processor = new QueryFileProcessor(index, parser.hasFlag("-partial"));
+		WorkQueue queue = null;
+		ArgumentParser parser = new ArgumentParser(args);
 		
 		if (parser.hasFlag("-text")) {
 
@@ -50,16 +32,18 @@ public class Driver {
 
 			try {
 				if (parser.hasFlag("-threads")) {
+					safe = new ThreadSafeInvertedIndex();
+					index = safe;
+
 					int threads = parser.getInteger("-threads", 5);
 
 					if (threads < 1) {
 						threads = 5;
 					}
 
-					WorkQueue queue = new WorkQueue(threads);
-
-					QueuedInvertedIndexProcessor.process(input, index, queue);
-					queue.join(); // TODO Might need to move joining to the very end...
+					queue = new WorkQueue(threads);
+					QueuedInvertedIndexProcessor.process(input, safe, queue);
+					queue.join(); //TODO move join to end for search
 				}
 				else {
 					InvertedIndexProcessor.process(input, index);
@@ -73,6 +57,8 @@ public class Driver {
 			}
 		}
 		
+		QueryFileProcessor processor = new QueryFileProcessor(index, parser.hasFlag("-partial"));
+
 		if (parser.hasFlag("-query")) {
 
 			Path queryFile = parser.getPath("-query");
