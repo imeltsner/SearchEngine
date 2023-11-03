@@ -12,7 +12,7 @@ import java.util.Set;
  */
 public class ThreadSafeInvertedIndex extends InvertedIndex {
     /** Lock object to use */
-    private MultiReaderLock lock; // TODO final
+    private final MultiReaderLock lock;
 
     /**
      * Class constructor
@@ -191,23 +191,35 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
     }
 
     @Override
-    public void writeCounts(Path path) throws IOException { // TODO read lock
-        lock.writeLock().lock();
+    public void writeCounts(Path path) throws IOException {
+        lock.readLock().lock();
 
         try {
             super.writeCounts(path);
         }
         finally {
-            lock.writeLock().unlock();
+            lock.readLock().unlock();
         }
     }
 
     @Override
-    public void writeInvertedIndex(Path path) throws IOException { // TODO Read lock
-        lock.writeLock().lock();
+    public void writeInvertedIndex(Path path) throws IOException {
+        lock.readLock().lock();
 
         try {
             super.writeInvertedIndex(path);
+        }
+        finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    @Override
+    public void addAll(InvertedIndex other) {
+        lock.writeLock().lock();
+
+        try {
+            super.addAll(other);
         }
         finally {
             lock.writeLock().unlock();
