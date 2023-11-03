@@ -102,7 +102,7 @@ public class QueryFileProcessor {
      * or an empty list if query not in results
      */
     public List<InvertedIndex.SearchResult> viewResult(String line) {
-        List<InvertedIndex.SearchResult> results = searchResults.get(String.join(line, FileStemmer.uniqueStems(line, stemmer)));
+        List<InvertedIndex.SearchResult> results = searchResults.get(joinQuery(line));
         return results != null ? Collections.unmodifiableList(results) : Collections.emptyList();
     }
 
@@ -112,7 +112,7 @@ public class QueryFileProcessor {
      * @return true if query exists, false otherwise
      */
     public boolean hasQuery(String line) {
-        return searchResults.containsKey(String.join(line, FileStemmer.uniqueStems(line, stemmer)));
+        return searchResults.containsKey(joinQuery(line));
     }
 
     /**
@@ -129,8 +129,17 @@ public class QueryFileProcessor {
      * @return the number of results associated with a given query or 0 if query is not in results
      */
     public int numResults(String line) {
-        ArrayList<InvertedIndex.SearchResult> results = searchResults.get(String.join(line, FileStemmer.uniqueStems(line, stemmer)));
+        ArrayList<InvertedIndex.SearchResult> results = searchResults.get(joinQuery(line));
         return results != null ? results.size() : 0;
+    }
+
+    /**
+     * Finds unique stems from a query line and joins them into a single string
+     * @param line the query to stem and join
+     * @return a single query string of unique stems
+     */
+    private String joinQuery(String line) {
+        return String.join(line, FileStemmer.uniqueStems(line, stemmer));
     }
 
     @Override
