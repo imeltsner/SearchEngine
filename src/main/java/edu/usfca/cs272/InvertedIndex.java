@@ -184,6 +184,14 @@ public class InvertedIndex {
         }
     }
     
+    /* TODO 
+    public void addAll(InvertedIndex other) {
+    	for (var entry : other.invertedIndex.entrySet()) {
+    		
+    	}
+    }
+    */
+    
     /**
      * Outputs contents of word count map in pretty JSON format
      * @param path destination for output

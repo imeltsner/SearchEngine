@@ -17,6 +17,11 @@ import opennlp.tools.stemmer.snowball.SnowballStemmer;
  * @author Isaac Meltsner
  */
 public class QueuedInvertedIndexProcessor extends InvertedIndexProcessor {
+	
+	// TODO Fix up indentation
+	
+	// TODO These need a thread-safe index
+	
      /**
 	 * Recursively iterates through a directory checks if files are text files
 	 * adds contents of text files to inverted index
@@ -90,9 +95,20 @@ public class QueuedInvertedIndexProcessor extends InvertedIndexProcessor {
         public void run() {
             try {
                 processFile(path, index, stemmer);
+                
+                /*
+                 	TODO 
+                	1. Create local data inside of run
+                	2. Added to the local data not the shared data
+                	3. Some kind of addAll to combine together local and shared data in a safe way
+                	
+                	InvertedIndex local = ...
+                	processFile(path, local, stemmer);
+                	index.addAll(local)
+                 */
             } 
             catch (IOException e) {
-                System.out.println("IO ERROR");
+                System.out.println("IO ERROR"); // TODO throw UncheckedIOExecption(e);
             }
         }
     }
