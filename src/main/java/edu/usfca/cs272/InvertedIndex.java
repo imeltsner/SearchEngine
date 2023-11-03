@@ -184,13 +184,19 @@ public class InvertedIndex {
         }
     }
     
-    /* TODO 
+    /**
+     * Adds contents of one inverted index to another
+     * @param other the inverted index to add
+     */
     public void addAll(InvertedIndex other) {
-    	for (var entry : other.invertedIndex.entrySet()) {
-    		
+    	for (var wordEntry : other.invertedIndex.entrySet()) {
+            for (var locationEntry : wordEntry.getValue().entrySet()) {
+                for (int position : locationEntry.getValue()) {
+                    addData(wordEntry.getKey(), locationEntry.getKey(), position);
+                }
+            }
     	}
     }
-    */
     
     /**
      * Outputs contents of word count map in pretty JSON format
