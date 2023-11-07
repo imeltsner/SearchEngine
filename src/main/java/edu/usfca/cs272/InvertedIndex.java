@@ -169,7 +169,7 @@ public class InvertedIndex {
             .computeIfAbsent(location, p -> new TreeSet<>())
             .add(position);
         
-        wordCounts.merge(location, position, (old, current) -> current);
+        wordCounts.merge(location, position, Integer::max);
     }
     
     /**
