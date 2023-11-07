@@ -35,7 +35,9 @@ public class InvertedIndexProcessor {
 
 		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
 			while (reader.ready()) {
+
 				String[] words = FileStemmer.parse(reader.readLine());
+				
 				for (String word: words) {
 					index.addData(stemmer.stem(word).toString(), path.toString(), count + 1);
 					count++;
