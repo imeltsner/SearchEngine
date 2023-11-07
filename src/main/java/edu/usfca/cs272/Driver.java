@@ -25,23 +25,28 @@ public class Driver {
 		ThreadSafeInvertedIndex safe = null;
 		WorkQueue queue = null;
 		ArgumentParser parser = new ArgumentParser(args);
+		boolean multiThread = false;
+
+		if (parser.hasFlag("-threads")) {
+			multiThread = true;
+			safe = new ThreadSafeInvertedIndex();
+			index = safe;
+
+			int threads = parser.getInteger("-threads", 5);
+
+			if (threads < 1) {
+				threads = 5;
+			}
+
+			queue = new WorkQueue(threads);
+		}
 		
 		if (parser.hasFlag("-text")) {
 
 			Path input = parser.getPath("-text");
 
 			try {
-				if (parser.hasFlag("-threads")) {
-					safe = new ThreadSafeInvertedIndex();
-					index = safe;
-
-					int threads = parser.getInteger("-threads", 5);
-
-					if (threads < 1) {
-						threads = 5;
-					}
-
-					queue = new WorkQueue(threads);
+				if (multiThread) {
 					QueuedInvertedIndexProcessor.process(input, safe, queue);
 					queue.join(); //TODO move join to end for search
 				}
