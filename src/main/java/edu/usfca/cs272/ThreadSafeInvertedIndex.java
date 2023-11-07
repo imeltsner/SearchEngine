@@ -2,6 +2,7 @@ package edu.usfca.cs272;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
@@ -191,6 +192,18 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
     }
 
     @Override
+    public void addAll(InvertedIndex other) {
+        lock.writeLock().lock();
+
+        try {
+            super.addAll(other);
+        }
+        finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    @Override
     public void writeCounts(Path path) throws IOException {
         lock.readLock().lock();
 
@@ -215,16 +228,38 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
     }
 
     @Override
-    public void addAll(InvertedIndex other) {
-        lock.writeLock().lock();
+    public ArrayList<SearchResult> exactSearch(Set<String> query) {
+        lock.readLock().lock(); 
 
         try {
-            super.addAll(other);
+            return super.exactSearch(query);
         }
         finally {
-            lock.writeLock().unlock();
+            lock.readLock().unlock();
         }
     }
-    
-    // TODO Not yet fully thread safe
+
+    @Override
+    public ArrayList<SearchResult> partialSearch(Set<String> query) {
+        lock.readLock().lock();
+
+        try {
+            return super.partialSearch(query);
+        }
+        finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    @Override
+    public String toString() {
+        lock.readLock().lock();
+
+        try {
+            return super.toString();
+        }
+        finally {
+            lock.readLock().unlock();
+        }
+    }
 }
