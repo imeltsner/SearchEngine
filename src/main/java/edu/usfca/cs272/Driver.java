@@ -25,6 +25,8 @@ public class Driver {
 		ThreadSafeInvertedIndex safe = null;
 		WorkQueue queue = null;
 		ArgumentParser parser = new ArgumentParser(args);
+		QueryFileProcessor processor = new QueryFileProcessor(index, parser.hasFlag("-partial"));
+		QueuedQueryFileProcessor safeProcessor = null;
 		boolean multiThread = false;
 
 		if (parser.hasFlag("-threads")) {
@@ -39,6 +41,7 @@ public class Driver {
 			}
 
 			queue = new WorkQueue(threads);
+			safeProcessor = new QueuedQueryFileProcessor(safe, parser.hasFlag("-partial"), queue);
 		}
 		
 		if (parser.hasFlag("-text")) {
@@ -48,7 +51,7 @@ public class Driver {
 			try {
 				if (multiThread) {
 					QueuedInvertedIndexProcessor.process(input, safe, queue);
-					queue.join(); //TODO move join to end for search
+					queue.finish();
 				}
 				else {
 					InvertedIndexProcessor.process(input, index);
@@ -61,15 +64,18 @@ public class Driver {
 				System.out.println("-text flag is missing a value");
 			}
 		}
-		
-		QueryFileProcessor processor = new QueryFileProcessor(index, parser.hasFlag("-partial"));
 
 		if (parser.hasFlag("-query")) {
 
 			Path queryFile = parser.getPath("-query");
 
 			try {
-				processor.processFile(queryFile);
+				if (multiThread) {
+					safeProcessor.processFile(queryFile);
+				}
+				else {
+					processor.processFile(queryFile);
+				}
 			}
 			catch (IOException e) {
 				System.out.println("Unable to process file at path: " + queryFile.toString());
@@ -77,6 +83,10 @@ public class Driver {
 			catch (NullPointerException e) {
 				System.out.println("-query flag is missing a value");
 			}
+		}
+
+		if (queue != null) {
+			queue.join();
 		}
 		
 		if (parser.hasFlag("-counts")) {
@@ -108,13 +118,16 @@ public class Driver {
 			Path searchOutput = parser.getPath("-results", Path.of("results.json"));
 
 			try {
-				processor.writeSearchResults(searchOutput);
+				if (multiThread) {
+					safeProcessor.writeSearchResults(searchOutput);
+				}
+				else {
+					processor.writeSearchResults(searchOutput);
+				}
 			}
 			catch (IOException e) {
 				System.out.println("Unable to write to file at path: " + searchOutput.toString());
 			}
 		}
-		
-		// TODO if queue != null, call join or shutdown
 	}
 }
