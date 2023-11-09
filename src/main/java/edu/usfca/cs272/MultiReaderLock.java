@@ -189,14 +189,14 @@ public class MultiReaderLock {
 				if (readers > 0) {
 					readers--;
 				}
+				else {
+					throw new IllegalStateException();
+				}
 
 				if (readers == 0) {
 					lock.notifyAll();
 				}
 
-				else {
-					throw new IllegalStateException();
-				}
 			}
 		}
 	}
