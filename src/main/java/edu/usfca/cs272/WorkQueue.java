@@ -82,8 +82,6 @@ public class WorkQueue {
 	/**
 	 * Waits for all pending work (or tasks) to be finished. Does not terminate the
 	 * worker threads so that the work queue can continue to be used.
-	 * 
-	 * @throws InterruptedException if thread interrupted
 	 */
 	public synchronized void finish() {
 		while (pending > 0) {
@@ -201,6 +199,7 @@ public class WorkQueue {
 					catch (RuntimeException e) {
 						// catch runtime exceptions to avoid leaking threads
 						System.err.printf("Error: %s encountered an exception while running.%n", this.getName());
+						e.printStackTrace();
 						log.catching(Level.ERROR, e);
 					}
 					finally {
