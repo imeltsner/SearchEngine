@@ -199,7 +199,6 @@ public class WorkQueue {
 					catch (RuntimeException e) {
 						// catch runtime exceptions to avoid leaking threads
 						System.err.printf("Error: %s encountered an exception while running.%n", this.getName());
-						e.printStackTrace();
 						log.catching(Level.ERROR, e);
 					}
 					finally {
