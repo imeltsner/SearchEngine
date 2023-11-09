@@ -98,17 +98,6 @@ public class QueuedInvertedIndexProcessor {
                 synchronized (index) {
                     index.addAll(local);
                 }
-
-                
-                /*
-                    1. Create local data inside of run
-                    2. Added to the local data not the shared data
-                    3. Some kind of addAll to combine together local and shared data in a safe way
-                    
-                    InvertedIndex local = ...
-                    processFile(path, local, stemmer);
-                    index.addAll(local)
-                 */
             } 
             catch (IOException e) {
                 throw new UncheckedIOException(e);
