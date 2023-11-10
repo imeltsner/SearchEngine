@@ -22,6 +22,8 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
         super();
         lock = new MultiReaderLock();
     }
+    
+    // TODO Override and writeLock the addAll method
 
     @Override
     public Map<String, Integer> viewCounts() {
