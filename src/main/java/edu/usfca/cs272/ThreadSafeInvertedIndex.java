@@ -3,6 +3,7 @@ package edu.usfca.cs272;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,8 +24,6 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
         lock = new MultiReaderLock();
     }
     
-    // TODO Override and writeLock the addAll method
-
     @Override
     public Map<String, Integer> viewCounts() {
         lock.readLock().lock();
@@ -187,6 +186,18 @@ public class ThreadSafeInvertedIndex extends InvertedIndex {
         
         try {
             super.addData(word, location, position);
+        }
+        finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    @Override
+    public void addAll(List<String> words, String location, int start) {
+        lock.writeLock().lock();
+
+        try {
+            super.addAll(words, location, start);
         }
         finally {
             lock.writeLock().unlock();
