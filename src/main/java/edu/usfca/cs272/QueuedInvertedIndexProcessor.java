@@ -95,9 +95,7 @@ public class QueuedInvertedIndexProcessor {
         public void run() {
             try {
                 InvertedIndexProcessor.processFile(path, local, stemmer);
-                synchronized (index) { // TODO Remove
                     index.addAll(local);
-                }
             } 
             catch (IOException e) {
                 throw new UncheckedIOException(e);
