@@ -190,29 +190,30 @@ public class InvertedIndex {
      */
     public void addAll(InvertedIndex other) {
     	for (var wordEntry : other.invertedIndex.entrySet()) {
-            for (var locationEntry : wordEntry.getValue().entrySet()) {
-                for (int position : locationEntry.getValue()) {
-                    addData(wordEntry.getKey(), locationEntry.getKey(), position);
-                }
-            }
-    	}
-    	
-    	/* TODO 
-    	for (var wordEntry : other.invertedIndex.entrySet()) {
-    		var thisEntry = this.invertedIndex.get(wordEntry.getKey());
+    		TreeMap<String, TreeSet<Integer>> wordMap = this.invertedIndex.get(wordEntry.getKey());
     		
-    		if (thisEntry == null) {
+    		if (wordMap == null) {
     			this.invertedIndex.put(wordEntry.getKey(), wordEntry.getValue());
     		}
     		else {
-    			have to loop here, but do the same check
+    			for (var locationEntry : wordEntry.getValue().entrySet()) {
+                    TreeSet<Integer> locationMap = wordMap.get(locationEntry.getKey());
+
+                    if (locationMap == null) {
+                        wordMap.put(locationEntry.getKey(), locationEntry.getValue());
+                    }
+                    else {
+                        for (int position : locationEntry.getValue()) {
+                            locationMap.add(position);
+                        }
+                    }
+                }
     		}
     	}
-    	
+        
     	for (var otherEntry : other.wordCounts.entrySet()) {
-    		if there is overlap, merge the two and keep the max
+    		this.wordCounts.merge(otherEntry.getKey(), otherEntry.getValue(), Integer::max);
     	}
-    	*/
     }
     
     /**
