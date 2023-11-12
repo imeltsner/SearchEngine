@@ -68,8 +68,9 @@ public class QueuedQueryFileProcessor {
 	 * @throws IOException if an IO error occurs
 	 */
 	public void writeSearchResults(Path path) throws IOException {
-		System.out.println("Number of lines: " + searchResults.size()); // TODO Remove
-		JsonWriter.writeSearchResults(searchResults, path);
+		synchronized (searchResults) {
+			JsonWriter.writeSearchResults(searchResults, path);
+		}
 	}
 
 	/**
@@ -77,7 +78,9 @@ public class QueuedQueryFileProcessor {
 	 * @return an unmodifiable set of the search queries
 	 */
 	public Set<String> viewQueries() {
-		return Collections.unmodifiableSet(searchResults.keySet());
+		synchronized (searchResults) {
+			return Collections.unmodifiableSet(searchResults.keySet());
+		}
 	}
 
 	/**
@@ -87,8 +90,10 @@ public class QueuedQueryFileProcessor {
 	 * or an empty list if query not in results
 	 */
 	public List<InvertedIndex.SearchResult> viewResult(String line) {
-		List<InvertedIndex.SearchResult> results = searchResults.get(joinQuery(line));
-		return results != null ? Collections.unmodifiableList(results) : Collections.emptyList();
+		synchronized (searchResults) {
+			List<InvertedIndex.SearchResult> results = searchResults.get(joinQuery(line));
+			return results != null ? Collections.unmodifiableList(results) : Collections.emptyList();
+		}
 	}
 
 	/**
@@ -97,7 +102,9 @@ public class QueuedQueryFileProcessor {
 	 * @return true if query exists, false otherwise
 	 */
 	public boolean hasQuery(String line) {
-		return searchResults.containsKey(joinQuery(line));
+		synchronized (searchResults) {
+			return searchResults.containsKey(joinQuery(line));
+		}
 	}
 
 	/**
@@ -105,10 +112,10 @@ public class QueuedQueryFileProcessor {
 	 * @return the number of queries in the results
 	 */
 	public int numQueries() {
-		return searchResults.size();
+		synchronized (searchResults) {
+			return searchResults.size();
+		}
 	}
-	
-	// TODO Need to synchronized (searchResults) { everywhere searchResults is accessed
 	
 	/**
 	 * Gets the number of results associated with a given query
@@ -116,8 +123,10 @@ public class QueuedQueryFileProcessor {
 	 * @return the number of results associated with a given query or 0 if query is not in results
 	 */
 	public int numResults(String line) {
-		ArrayList<InvertedIndex.SearchResult> results = searchResults.get(joinQuery(line));
-		return results != null ? results.size() : 0;
+		synchronized (searchResults) {
+			ArrayList<InvertedIndex.SearchResult> results = searchResults.get(joinQuery(line));
+			return results != null ? results.size() : 0;
+		}
 	}
 
 	/**
@@ -131,7 +140,9 @@ public class QueuedQueryFileProcessor {
 
 	@Override
 	public String toString() {
-		return searchResults.toString();
+		synchronized(searchResults) {
+			return searchResults.toString();
+		}
 	}
 
 	/** Processes a single query line and performs search of the inverted index */
