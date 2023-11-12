@@ -68,7 +68,7 @@ public class QueuedQueryFileProcessor {
 	 * @throws IOException if an IO error occurs
 	 */
 	public void writeSearchResults(Path path) throws IOException {
-		System.out.println("Number of lines: " + searchResults.size());
+		System.out.println("Number of lines: " + searchResults.size()); // TODO Remove
 		JsonWriter.writeSearchResults(searchResults, path);
 	}
 
@@ -107,6 +107,8 @@ public class QueuedQueryFileProcessor {
 	public int numQueries() {
 		return searchResults.size();
 	}
+	
+	// TODO Need to synchronized (searchResults) { everywhere searchResults is accessed
 	
 	/**
 	 * Gets the number of results associated with a given query

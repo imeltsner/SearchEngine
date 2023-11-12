@@ -196,6 +196,23 @@ public class InvertedIndex {
                 }
             }
     	}
+    	
+    	/* TODO 
+    	for (var wordEntry : other.invertedIndex.entrySet()) {
+    		var thisEntry = this.invertedIndex.get(wordEntry.getKey());
+    		
+    		if (thisEntry == null) {
+    			this.invertedIndex.put(wordEntry.getKey(), wordEntry.getValue());
+    		}
+    		else {
+    			have to loop here, but do the same check
+    		}
+    	}
+    	
+    	for (var otherEntry : other.wordCounts.entrySet()) {
+    		if there is overlap, merge the two and keep the max
+    	}
+    	*/
     }
     
     /**

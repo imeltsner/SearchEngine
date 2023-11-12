@@ -17,6 +17,11 @@ import java.util.TreeSet;
 import opennlp.tools.stemmer.Stemmer;
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
 
+/*
+ * TODO Make this and the threaded version implement the same interface
+ * and try to determine what can be implemented in the interface
+ */
+
 /**
  * A class to process files containing search queries
  * 
