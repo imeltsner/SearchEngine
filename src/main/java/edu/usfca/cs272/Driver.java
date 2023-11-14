@@ -25,8 +25,8 @@ public class Driver {
 		ThreadSafeInvertedIndex safe = null;
 		WorkQueue queue = null;
 		ArgumentParser parser = new ArgumentParser(args);
-		QueryFileProcessor processor = new QueryFileProcessor(index, parser.hasFlag("-partial"));
-		QueuedQueryFileProcessor safeProcessor = null;
+		BasicSearchProcessor processor = new BasicSearchProcessor(index, parser.hasFlag("-partial"));
+		QueuedSearchProcessor safeProcessor = null;
 		boolean multiThread = false;
 
 		if (parser.hasFlag("-threads")) {
@@ -41,7 +41,7 @@ public class Driver {
 			}
 
 			queue = new WorkQueue(threads);
-			safeProcessor = new QueuedQueryFileProcessor(safe, parser.hasFlag("-partial"), queue);
+			safeProcessor = new QueuedSearchProcessor(safe, parser.hasFlag("-partial"), queue);
 		}
 		
 		if (parser.hasFlag("-text")) {
