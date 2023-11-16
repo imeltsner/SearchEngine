@@ -54,6 +54,11 @@ public class QueuedSearchProcessor implements SearchProcessor {
 	 * @throws IOException if an IO error occurs
 	 */
 	public void processFile(Path path) throws IOException {
+		/* TODO 
+		SearchProcessor.super.processFile(path);
+		queue.finish();
+		*/
+		
 		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
 			while (reader.ready()) {
 				processLine(reader.readLine());
@@ -67,7 +72,7 @@ public class QueuedSearchProcessor implements SearchProcessor {
      */
     public void processLine(String line) {
         Task task = new Task(line);
-		queue.execute(task);
+		queue.execute(task); // TODO Indentation
     }
 
 	/**
@@ -180,6 +185,10 @@ public class QueuedSearchProcessor implements SearchProcessor {
 				if (queryString.equals("") || searchResults.containsKey(queryString)) {
 					return;
 				}
+				/* TODO else {
+					put(queryString, null)
+				}
+				*/
 			}
 			
 			ArrayList<ThreadSafeInvertedIndex.SearchResult> results = index.search(query, usePartial);

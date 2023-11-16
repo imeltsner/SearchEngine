@@ -63,6 +63,8 @@ public class QueuedInvertedIndexProcessor {
             Task task = new Task(path, index);
             queue.execute(task);
         }
+        
+        // TODO queue.finish();
     }
 
     /** Processes a single file */
@@ -92,7 +94,7 @@ public class QueuedInvertedIndexProcessor {
         }
 
         @Override
-        public void run() {
+        public void run() { // TODO Double-check indentation
             try {
                 InvertedIndexProcessor.processFile(path, local, stemmer);
                     index.addAll(local);
