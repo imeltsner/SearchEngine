@@ -2,10 +2,7 @@ package edu.usfca.cs272;
 
 import static opennlp.tools.stemmer.snowball.SnowballStemmer.ALGORITHM.ENGLISH;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,21 +42,6 @@ public class BasicSearchProcessor implements SearchProcessor {
         this.index = index;
         this.usePartial = usePartial;
         this.stemmer = new SnowballStemmer(ENGLISH);
-    }
-
-    /**
-     * Takes a file of search queries and performs a search for each query
-     * @param path the file to process
-     * @throws IOException if an IO error occurs
-     * 
-     * @see #processLine(String)
-     */
-    public void processFile(Path path) throws IOException { // TODO Delete from here, add as a default implementation in the interface
-        try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-            while (reader.ready()) {
-                processLine(reader.readLine());
-            }
-        }
     }
 
     /**

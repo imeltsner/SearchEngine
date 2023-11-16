@@ -1,6 +1,9 @@
 package edu.usfca.cs272;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
@@ -12,7 +15,13 @@ public interface SearchProcessor {
      * @param path the path to the file
      * @throws IOException if an IO error occurs
      */
-    public abstract void processFile(Path path) throws IOException;
+    public default void processFile(Path path) throws IOException {
+        try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+            while (reader.ready()) {
+                processLine(reader.readLine());
+            }
+        }
+    }
 
     /**
      * Processes a single search query

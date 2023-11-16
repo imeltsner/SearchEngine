@@ -2,10 +2,7 @@ package edu.usfca.cs272;
 
 import static opennlp.tools.stemmer.snowball.SnowballStemmer.ALGORITHM.ENGLISH;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,16 +51,8 @@ public class QueuedSearchProcessor implements SearchProcessor {
 	 * @throws IOException if an IO error occurs
 	 */
 	public void processFile(Path path) throws IOException {
-		/* TODO 
 		SearchProcessor.super.processFile(path);
 		queue.finish();
-		*/
-		
-		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-			while (reader.ready()) {
-				processLine(reader.readLine());
-			}
-		}
 	}
 
 	/**
@@ -72,7 +61,7 @@ public class QueuedSearchProcessor implements SearchProcessor {
      */
     public void processLine(String line) {
         Task task = new Task(line);
-		queue.execute(task); // TODO Indentation
+		queue.execute(task);
     }
 
 	/**
@@ -185,10 +174,10 @@ public class QueuedSearchProcessor implements SearchProcessor {
 				if (queryString.equals("") || searchResults.containsKey(queryString)) {
 					return;
 				}
-				/* TODO else {
-					put(queryString, null)
+				else {
+					searchResults.put(queryString, null);
 				}
-				*/
+				
 			}
 			
 			ArrayList<ThreadSafeInvertedIndex.SearchResult> results = index.search(query, usePartial);
