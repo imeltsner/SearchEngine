@@ -21,12 +21,11 @@ public class Driver {
 	 */
 	public static void main(String[] args) {
 
-		InvertedIndex index = new InvertedIndex();
+		InvertedIndex index = null;
 		ThreadSafeInvertedIndex safe = null;
 		WorkQueue queue = null;
 		ArgumentParser parser = new ArgumentParser(args);
-		BasicSearchProcessor processor = new BasicSearchProcessor(index, parser.hasFlag("-partial")); // TODO SearchProcessor
-		QueuedSearchProcessor safeProcessor = null; // TODO Remove
+		SearchProcessor processor = null;
 		boolean multiThread = false;
 
 		if (parser.hasFlag("-threads")) {
@@ -41,15 +40,12 @@ public class Driver {
 			}
 
 			queue = new WorkQueue(threads);
-			safeProcessor = new QueuedSearchProcessor(safe, parser.hasFlag("-partial"), queue);
-			// TODO processor = new QueuedSearchProcessor(safe, parser.hasFlag("-partial"), queue);
+			processor = new QueuedSearchProcessor(safe, parser.hasFlag("-partial"), queue);
 		}
-		/* TODO 
 		else {
 			index = new InvertedIndex();
-			process = ...
+			processor = new BasicSearchProcessor(index, parser.hasFlag("-partial"));
 		}
-		*/
 		
 		if (parser.hasFlag("-text")) {
 
@@ -58,7 +54,6 @@ public class Driver {
 			try {
 				if (multiThread) {
 					QueuedInvertedIndexProcessor.process(input, safe, queue);
-					queue.finish();
 				}
 				else {
 					InvertedIndexProcessor.process(input, index);
@@ -77,12 +72,7 @@ public class Driver {
 			Path queryFile = parser.getPath("-query");
 
 			try {
-				if (multiThread) {
-					safeProcessor.processFile(queryFile);
-				}
-				else {
-					processor.processFile(queryFile); // TODO Only part needed
-				}
+				processor.processFile(queryFile);
 			}
 			catch (IOException e) {
 				System.out.println("Unable to process file at path: " + queryFile.toString());
@@ -125,12 +115,7 @@ public class Driver {
 			Path searchOutput = parser.getPath("-results", Path.of("results.json"));
 
 			try {
-				if (multiThread) {
-					safeProcessor.writeSearchResults(searchOutput);
-				}
-				else {
-					processor.writeSearchResults(searchOutput); // TODO Only need this one
-				}
+				processor.writeSearchResults(searchOutput);
 			}
 			catch (IOException e) {
 				System.out.println("Unable to write to file at path: " + searchOutput.toString());
