@@ -54,7 +54,7 @@ public class BasicSearchProcessor implements SearchProcessor {
      * 
      * @see #processLine(String)
      */
-    public void processFile(Path path) throws IOException {
+    public void processFile(Path path) throws IOException { // TODO Delete from here, add as a default implementation in the interface
         try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
             while (reader.ready()) {
                 processLine(reader.readLine());

@@ -203,6 +203,7 @@ public class InvertedIndex {
                         wordMap.put(locationEntry.getKey(), locationEntry.getValue());
                     }
                     else {
+                    	    // TODO locationMap.addAll(locationEntry.getValue()); this index's position set addAll other index's position set
                         for (int position : locationEntry.getValue()) {
                             locationMap.add(position);
                         }

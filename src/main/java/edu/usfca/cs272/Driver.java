@@ -25,8 +25,8 @@ public class Driver {
 		ThreadSafeInvertedIndex safe = null;
 		WorkQueue queue = null;
 		ArgumentParser parser = new ArgumentParser(args);
-		BasicSearchProcessor processor = new BasicSearchProcessor(index, parser.hasFlag("-partial"));
-		QueuedSearchProcessor safeProcessor = null;
+		BasicSearchProcessor processor = new BasicSearchProcessor(index, parser.hasFlag("-partial")); // TODO SearchProcessor
+		QueuedSearchProcessor safeProcessor = null; // TODO Remove
 		boolean multiThread = false;
 
 		if (parser.hasFlag("-threads")) {
@@ -42,7 +42,14 @@ public class Driver {
 
 			queue = new WorkQueue(threads);
 			safeProcessor = new QueuedSearchProcessor(safe, parser.hasFlag("-partial"), queue);
+			// TODO processor = new QueuedSearchProcessor(safe, parser.hasFlag("-partial"), queue);
 		}
+		/* TODO 
+		else {
+			index = new InvertedIndex();
+			process = ...
+		}
+		*/
 		
 		if (parser.hasFlag("-text")) {
 
@@ -74,7 +81,7 @@ public class Driver {
 					safeProcessor.processFile(queryFile);
 				}
 				else {
-					processor.processFile(queryFile);
+					processor.processFile(queryFile); // TODO Only part needed
 				}
 			}
 			catch (IOException e) {
@@ -122,7 +129,7 @@ public class Driver {
 					safeProcessor.writeSearchResults(searchOutput);
 				}
 				else {
-					processor.writeSearchResults(searchOutput);
+					processor.writeSearchResults(searchOutput); // TODO Only need this one
 				}
 			}
 			catch (IOException e) {
