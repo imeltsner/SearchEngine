@@ -26,6 +26,7 @@ import org.apache.logging.log4j.Logger;
  * @see ReentrantReadWriteLock
  *
  * @author CS 272 Software Development (University of San Francisco)
+ * @author Isaac Meltsner
  * @version Fall 2023
  */
 public class MultiReaderLock {
@@ -57,9 +58,7 @@ public class MultiReaderLock {
 	 */
 	private final Object lock;
 
-	/**
-	 * Initializes a new simple read/write lock.
-	 */
+	/** Initializes a new simple read/write lock. */
 	public MultiReaderLock() {
 		readerLock = new ReadLock();
 		writerLock = new WriteLock();
@@ -150,9 +149,7 @@ public class MultiReaderLock {
 		public void unlock();
 	}
 
-	/**
-	 * Used to maintain simultaneous read operations.
-	 */
+	/** Used to maintain simultaneous read operations. */
 	private class ReadLock implements SimpleLock {
 		/**
 		 * Controls access to the read lock. The active thread is forced to wait while
@@ -201,9 +198,7 @@ public class MultiReaderLock {
 		}
 	}
 
-	/**
-	 * Used to maintain exclusive write operations.
-	 */
+	/** Used to maintain exclusive write operations. */
 	private class WriteLock implements SimpleLock {
 		/**
 		 * Controls access to the write lock. The active thread is forced to wait while

@@ -12,14 +12,10 @@ import java.util.HashMap;
  * @version Fall 2023
  */
 public class ArgumentParser {
-	/**
-	 * Stores command-line arguments in flag/value pairs.
-	 */
+	/** Stores command-line arguments in flag/value pairs. */
 	private final HashMap<String, String> map;
 
-	/**
-	 * Initializes this argument map.
-	 */
+	/** Initializes this argument map. */
 	public ArgumentParser() {
 		this.map = new HashMap<>();
 	}

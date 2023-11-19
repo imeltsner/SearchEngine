@@ -140,6 +140,7 @@ public class JsonWriter {
 
 	/**
 	 * A helper method for writeObject() that writes some of the JSON output
+	 * 
 	 * @param entry the entry from the map
 	 * @param writer the writer to use
 	 * @param indent the initial indent level
@@ -223,10 +224,14 @@ public class JsonWriter {
 
 	/**
 	 * A helper method for writeObjectArrays that writes a portion of the JSON ouptut
+	 * 
 	 * @param entry the entry from the map
 	 * @param writer the writer to use
 	 * @param indent the initial indent level
 	 * @throws IOException if an IO error occurs
+	 * 
+	 * @see #writeQuote(String, Writer, int)
+	 * @see #writeArray(Collection, Writer, int)
 	 */
 	public static void writeObjectArraysEntry(Entry<String, ? extends Collection<? extends Number>> entry, Writer writer, int indent) throws IOException {
 		writer.write("\n");
@@ -383,10 +388,15 @@ public class JsonWriter {
 
 	/**
 	 * A helper method for writeInvertedIndex() that writes a portion of the JSON output
+	 * 
 	 * @param entry the entry from the map
 	 * @param writer the writer to use
 	 * @param indent the initial indent level
 	 * @throws IOException if an IO error occurs
+	 * 
+	 * @see #writeIndent(String, Writer, int)
+	 * @see #writeQuote(String, Writer, int)
+	 * @see #writeObjectArrays(Map, Writer, int)
 	 */
 	public static void writeInvertedIndexEntry(Entry<String, ? extends Map<String, ? extends Collection<? extends Number>>> entry, Writer writer, int indent) throws IOException {
 		writer.write("\n");
@@ -398,13 +408,13 @@ public class JsonWriter {
 	
 	/**
 	 * Formats the inverted index as a pretty JSON array with nested objects
+	 * 
 	 * @param index the inverted index
 	 * @param writer the writer to use
 	 * @param indent the starting indent level
 	 * @throws IOException if an IO error occurs
 	 * 
-	 * @see #writeQuote(String, Writer, int)
-	 * @see #writeObjectArrays(Map, Writer, int)
+	 * @see #writeInvertedIndexEntry(Entry, Writer, int)
 	 */
 	public static void writeInvertedIndex(Map<String, ? extends Map<String, ? extends Collection<? extends Number>>> index, Writer writer, int indent) throws IOException {
 		writer.write("{");
@@ -425,9 +435,12 @@ public class JsonWriter {
 
 	/**
 	 * Writes the inverted index in pretty JSON format to file
+	 * 
 	 * @param index the inverted index
 	 * @param path the path to the file
 	 * @throws IOException if an IO error occurs
+	 * 
+	 * @see #writeInvertedIndex(Map, Writer, int)
 	 */
 	public static void writeInvertedIndex(Map<String, ? extends Map<String, ? extends Collection<? extends Number>>> index, Path path) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, UTF_8)) {
@@ -437,8 +450,11 @@ public class JsonWriter {
 
 	/**
 	 * Returns the inverted index as a pretty JSON array
+	 * 
 	 * @param index the inverted index
 	 * @return a String containing the elements in pretty JSON format
+	 * 
+	 * @see #writeInvertedIndex(Map, Writer, int)
 	 */
 	public static String writeInvertedIndex(Map<String, ? extends Map<String, ? extends Collection<? extends Number>>> index) {
 		try {
@@ -453,10 +469,14 @@ public class JsonWriter {
 
 	/**
 	 * Outputs a single search result in pretty JSON format
+	 * 
 	 * @param result the search result
 	 * @param writer the writer to use
 	 * @param indent the initial indent
 	 * @throws IOException if an IO error occurs
+	 * 
+	 * @see #writeQuote(String, Writer, int)
+	 * @see #writeIndent(String, Writer, int)
 	 */
 	public static void writeResult(InvertedIndex.SearchResult result, Writer writer, int indent) throws IOException {
 		writeIndent("{", writer, indent + 2);
@@ -479,10 +499,13 @@ public class JsonWriter {
 
 	/**
 	 * Outputs list of search results as pretty JSON format
+	 * 
 	 * @param results the list of results
 	 * @param writer the writer to use
 	 * @param indent the initial indent level
 	 * @throws IOException if an IO error occurs
+	 * 
+	 * @see #writeResult(edu.usfca.cs272.InvertedIndex.SearchResult, Writer, int)
 	 */
 	 public static void writeSearchResults(Collection<InvertedIndex.SearchResult> results, Writer writer, int indent) throws IOException {
 		boolean empty = true;
@@ -505,10 +528,15 @@ public class JsonWriter {
 
 	/**
 	 * Helper method for writeSearchResults that outputs map entry in pretty JSON format
+	 * 
 	 * @param entry the entry to output
 	 * @param writer the writer to use
 	 * @param indent the initial indent level
 	 * @throws IOException if an IO error occurs
+	 * 
+	 * @see #writeQuote(String, Writer, int)
+	 * @see #writeSearchResults(Collection, Writer, int)
+	 * @see #writeIndent(String, Writer, int)
 	 */
 	public static void writeResultsEntry(Entry<String, ? extends Collection<InvertedIndex.SearchResult>> entry, Writer writer, int indent) throws IOException {
 		writeQuote(entry.getKey(), writer, indent + 1);
@@ -520,10 +548,13 @@ public class JsonWriter {
 
 	/**
 	 * Outputs map of search results as pretty JSON format
+	 * 
 	 * @param results a map containing the query string and the search results
 	 * @param writer the writer to use
 	 * @param indent the initial indent level
 	 * @throws IOException if an IO error occurs
+	 * 
+	 * @see #writeResultsEntry(Entry, Writer, int)
 	 */
 	public static void writeSearchResults(Map<String, ? extends Collection<InvertedIndex.SearchResult>> results, Writer writer, int indent) throws IOException {
 		writer.write("{\n");
@@ -544,9 +575,12 @@ public class JsonWriter {
 
 	/**
 	 * Writes search results in pretty JSON format to a file
+	 * 
 	 * @param results the search results to write
 	 * @param path the path to the output file
 	 * @throws IOException if an IO error occurs
+	 * 
+	 * @see #writeSearchResults(Collection, Writer, int)
 	 */
 	public static void writeSearchResults(Map<String, ? extends Collection<InvertedIndex.SearchResult>> results, Path path) throws IOException {
 		try (BufferedWriter writer = Files.newBufferedWriter(path, UTF_8)) {
@@ -558,6 +592,8 @@ public class JsonWriter {
 	 * Returns the search results as a pretty JSON array
 	 * @param results the search results
 	 * @return a String containing the elements in pretty JSON format
+	 * 
+	 * @see #writeSearchResults(Collection, Writer, int)
 	 */
 	public static String writeSearchResults(Map<String, ? extends Collection<InvertedIndex.SearchResult>> results) {
 		try {

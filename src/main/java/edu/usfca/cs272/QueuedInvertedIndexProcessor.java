@@ -21,6 +21,7 @@ public class QueuedInvertedIndexProcessor {
 	 /**
 	 * Recursively iterates through a directory checks if files are text files
 	 * adds contents of text files to inverted index
+	 * 
 	 * @param path path of directory
 	 * @param index the Indexer object
 	 * @param queue the work queue to use
@@ -49,6 +50,7 @@ public class QueuedInvertedIndexProcessor {
 
 	/**
 	 * Processes path according to path type
+	 * 
 	 * @param path the path to process
 	 * @param index the inverted index
 	 * @param queue the work queue to use
@@ -82,7 +84,8 @@ public class QueuedInvertedIndexProcessor {
 		private final Stemmer stemmer;
 
 		/**
-		 * Class constructor
+		 * Initializes the path to the file and the thread safe inverted to use
+		 * 
 		 * @param path the path of a file
 		 * @param index the inverted index to use
 		 */

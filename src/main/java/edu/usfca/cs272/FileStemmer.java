@@ -26,10 +26,10 @@ import opennlp.tools.stemmer.snowball.SnowballStemmer.ALGORITHM;
  * @version Fall 2023
  */
 public class FileStemmer {
-	/** Regular expression that matches any whitespace. **/
+	/** Regular expression that matches any whitespace. */
 	public static final Pattern SPLIT_REGEX = Pattern.compile("(?U)\\p{Space}+");
 
-	/** Regular expression that matches non-alphabetic characters. **/
+	/** Regular expression that matches non-alphabetic characters. */
 	public static final Pattern CLEAN_REGEX = Pattern.compile("(?U)[^\\p{Alpha}\\p{Space}]+");
 
 	/**
@@ -194,6 +194,7 @@ public class FileStemmer {
 	/**
 	 * Reads a file line by line, parses each line into cleaned and stemmed words
 	 * and adds them to a collection
+	 * 
 	 * @param input the input file to parse and stem
 	 * @param stemmer the stemmer to use
 	 * @param stems the collection to add the stems

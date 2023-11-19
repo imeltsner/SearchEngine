@@ -32,7 +32,8 @@ public class QueuedSearchProcessor implements SearchProcessor {
 	private final Stemmer stemmer;
 
 	/**
-	 * Class constructor
+	 * Initializes the inverted index and work queue to use. Sets the type of search to perform
+	 * 
 	 * @param index the inverted index to search
 	 * @param usePartial flag determining type of search to perform
 	 * @param queue the work queue to use
@@ -47,6 +48,7 @@ public class QueuedSearchProcessor implements SearchProcessor {
 
 	/**
 	 * Takes a file of search queries and performs a search for each query
+	 * 
 	 * @param path the file to process
 	 * @throws IOException if an IO error occurs
 	 */
@@ -56,16 +58,18 @@ public class QueuedSearchProcessor implements SearchProcessor {
 	}
 
 	/**
-     * Parses and stems a search query, performs a search of the inverted index, and sorts results
-     * @param line the line containing a search query
-     */
-    public void processLine(String line) {
-        Task task = new Task(line);
+	 * Parses and stems a search query, performs a search of the inverted index, and sorts results
+	 * 
+	 * @param line the line containing a search query
+	 */
+	public void processLine(String line) {
+		Task task = new Task(line);
 		queue.execute(task);
-    }
+	}
 
 	/**
 	 * Writes search results in pretty JSON format
+	 * 
 	 * @param path the path of the file to write to
 	 * @throws IOException if an IO error occurs
 	 */
@@ -77,6 +81,7 @@ public class QueuedSearchProcessor implements SearchProcessor {
 
 	/**
 	 * Shows a view of every search query
+	 * 
 	 * @return an unmodifiable set of the search queries
 	 */
 	public Set<String> viewQueries() {
@@ -87,6 +92,7 @@ public class QueuedSearchProcessor implements SearchProcessor {
 
 	/**
 	 * Shows a view of all search results associated with a given query
+	 * 
 	 * @param line the query associated with the results
 	 * @return an unmodifiable view of all results associated with a query
 	 * or an empty list if query not in results
@@ -100,6 +106,7 @@ public class QueuedSearchProcessor implements SearchProcessor {
 
 	/**
 	 * Checks if a query exists in the results
+	 * 
 	 * @param line the query to check
 	 * @return true if query exists, false otherwise
 	 */
@@ -111,6 +118,7 @@ public class QueuedSearchProcessor implements SearchProcessor {
 
 	/**
 	 * Gets the number of queries in the results
+	 * 
 	 * @return the number of queries in the results
 	 */
 	public int numQueries() {
@@ -121,6 +129,7 @@ public class QueuedSearchProcessor implements SearchProcessor {
 	
 	/**
 	 * Gets the number of results associated with a given query
+	 * 
 	 * @param line the query string
 	 * @return the number of results associated with a given query or 0 if query is not in results
 	 */
@@ -133,6 +142,7 @@ public class QueuedSearchProcessor implements SearchProcessor {
 
 	/**
 	 * Finds unique stems from a query line and joins them into a single string
+	 * 
 	 * @param line the query to stem and join
 	 * @return a single query string of unique stems
 	 */
@@ -157,7 +167,8 @@ public class QueuedSearchProcessor implements SearchProcessor {
 		private final String line;
 
 		/**
-		 * Class constructor
+		 * Initialzies the query string and the local stemmer to use
+		 * 
 		 * @param line the query line to search
 		 */
 		private Task(String line) {
@@ -177,7 +188,6 @@ public class QueuedSearchProcessor implements SearchProcessor {
 				else {
 					searchResults.put(queryString, null);
 				}
-				
 			}
 			
 			ArrayList<ThreadSafeInvertedIndex.SearchResult> results = index.search(query, usePartial);
