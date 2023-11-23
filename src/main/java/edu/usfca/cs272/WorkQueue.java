@@ -94,16 +94,12 @@ public class WorkQueue {
 		}
 	}
 
-	/**
-	 * Increments total active threads
-	 */
+	/** Increments total active threads */
 	private synchronized void incrementPending() {
 		pending++;
 	}
 
-	/**
-	 * Decrements total active threads and notifies if pending equals 0
-	 */
+	/** Decrements total active threads and notifies if pending equals 0 */
 	private synchronized void decrementPending() {
 		pending--;
 
