@@ -67,6 +67,18 @@ public class Driver {
 			}
 		}
 
+		if (parser.hasFlag("-html")) {
+			try {
+				String url = LinkFinder.removeFragment(parser.getString("-html")).toString();
+				String html = HtmlFetcher.fetch(url, 3);
+				String cleanHtml = HtmlCleaner.stripHtml(html);
+				InvertedIndexProcessor.processString(cleanHtml, index, url, 0);
+			}
+			catch (NullPointerException e) {
+				System.out.println("Invalid url");
+			}
+		}
+
 		if (parser.hasFlag("-query")) {
 
 			Path queryFile = parser.getPath("-query");
