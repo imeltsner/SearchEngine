@@ -36,13 +36,7 @@ public class InvertedIndexProcessor {
 
 		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
 			while (reader.ready()) {
-
-				String[] words = FileStemmer.parse(reader.readLine());
-				
-				for (String word: words) {
-					index.addData(stemmer.stem(word).toString(), path.toString(), count + 1);
-					count++;
-				}
+				count = processString(reader.readLine(), index, path.toString(), count);
 			}
 		}
 	}
@@ -61,13 +55,35 @@ public class InvertedIndexProcessor {
 
 		try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
 			while (reader.ready()) {
+				
 				String[] words = FileStemmer.parse(reader.readLine());
+				
 				for (String word: words) {
 					index.addData(stemmer.stem(word).toString(), path.toString(), count + 1);
 					count++;
 				}
 			}
 		}
+	}
+
+	/**
+	 * Cleans, parses, and stems a string and adds each word found to the inverted index
+	 * 
+	 * @param content the string to parse
+	 * @param index the inverted index to use
+	 * @param location the location where the content was found
+	 * @param count the position of a word in the content
+	 * @return the last position of the word
+	 */
+	public static int processString(String content, InvertedIndex index, String location, int count) {
+		String[] words = FileStemmer.parse(content);
+				
+		for (String word : words) {
+			index.addData(stemmer.stem(word).toString(), location, count + 1);
+			count++;
+		}
+
+		return count;
 	}
 
 	/**
