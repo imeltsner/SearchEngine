@@ -73,7 +73,7 @@ public class LinkFinder {
 	 * Returns a set of all the unique valid HTTP(S) URLs found in the HREF
 	 * attribute of the anchor tags in the provided HTML.
 	 *
-	 * @param base the base URL used to convert relative URLs to absolute3
+	 * @param base the base URL used to convert relative URLs to absolute
 	 * @param html the raw HTML associated with the base URL
 	 * @return set of all valid and unique HTTP(S) links found
 	 *
