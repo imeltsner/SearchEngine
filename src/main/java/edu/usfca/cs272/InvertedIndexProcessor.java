@@ -87,6 +87,27 @@ public class InvertedIndexProcessor {
 	}
 
 	/**
+	 * Cleans, parses, and stems a string and adds each word found to the inverted index
+	 * 
+	 * @param content the string to parse
+	 * @param index the inverted index to use
+	 * @param location the location where the content was found
+	 * @param count the position of a word in the content
+	 * @param stemmer the stemmer to use
+	 * @return the last position of the word
+	 */
+	public static int processString(String content, InvertedIndex index, String location, int count, Stemmer stemmer) {
+		String[] words = FileStemmer.parse(content);
+				
+		for (String word : words) {
+			index.addData(stemmer.stem(word).toString(), location, count + 1);
+			count++;
+		}
+
+		return count;
+	}
+
+	/**
 	 * Recursively iterates through a directory, checks if files are text files
 	 * and adds contents of text files to inverted index
 	 * 
