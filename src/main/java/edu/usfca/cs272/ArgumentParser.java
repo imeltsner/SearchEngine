@@ -80,7 +80,7 @@ public class ArgumentParser {
 				currentFlag = arg;
 				map.put(currentFlag, null);
 			}
-			else if (currentFlag != null) {
+			else if (currentFlag != null && isValue(arg)) {
 				map.put(currentFlag, arg);
 				currentFlag = null;
 			}
