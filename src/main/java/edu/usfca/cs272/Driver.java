@@ -1,6 +1,7 @@
 package edu.usfca.cs272;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Path;
 
 /**
@@ -28,7 +29,7 @@ public class Driver {
 		SearchProcessor processor = null;
 		boolean multiThread = false;
 
-		if (parser.hasFlag("-threads")) {
+		if (parser.hasFlag("-threads") || parser.hasFlag("-html")) {
 			multiThread = true;
 			safe = new ThreadSafeInvertedIndex();
 			index = safe;
@@ -68,13 +69,15 @@ public class Driver {
 		}
 
 		if (parser.hasFlag("-html")) {
+
+			int maxLinks = parser.getInteger("-crawl", 1);
+			
 			try {
-				String url = LinkFinder.removeFragment(parser.getString("-html")).toString();
-				String html = HtmlFetcher.fetch(url, 3);
-				String cleanHtml = HtmlCleaner.stripHtml(html);
-				InvertedIndexProcessor.processString(cleanHtml, index, url, 0);
+				String seed = LinkFinder.removeFragment(parser.getString("-html"));
+				WebCrawler crawler = new WebCrawler(seed, maxLinks, queue, safe);
+				crawler.crawlLinks();
 			}
-			catch (NullPointerException e) {
+			catch (NullPointerException | MalformedURLException e) {
 				System.out.println("Invalid url");
 			}
 		}
