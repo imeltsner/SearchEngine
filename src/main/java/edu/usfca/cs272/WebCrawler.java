@@ -4,9 +4,9 @@ import static opennlp.tools.stemmer.snowball.SnowballStemmer.ALGORITHM.ENGLISH;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import opennlp.tools.stemmer.Stemmer;
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
@@ -22,7 +22,7 @@ public class WebCrawler {
 	private final WorkQueue queue;
 
 	/** A list of all the urls to crawl */
-	private final List<URL> URLs;
+	private final Set<URL> URLs;
 
 	/** The inverted index to use */
 	private final ThreadSafeInvertedIndex index;
@@ -31,7 +31,7 @@ public class WebCrawler {
 		this.seed = LinkFinder.removeFragment(seed);
 		this.maxLinks = maxLinks > 0 ? maxLinks : 1;
 		this.queue = queue;
-		this.URLs = new ArrayList<>();
+		this.URLs = new HashSet<>();
 		this.index = index;
 	}
 
@@ -39,29 +39,16 @@ public class WebCrawler {
 		this.seed = LinkFinder.removeFragment(seed);
 		this.maxLinks = 1;
 		this.queue = queue;
-		this.URLs = new ArrayList<>();
+		this.URLs = new HashSet<>();
 		this.index = index;
 	}
 
 	public void crawlLinks() throws MalformedURLException, NullPointerException {
 		URL seedURL = new URL(seed);
-		if (URLs.size() < maxLinks) {
-			URLs.add(seedURL);
-		}
-
-		String html = HtmlFetcher.fetch(seed, 3);
-		HashSet<URL> uniqueLinks = LinkFinder.uniqueUrls(new URL(seed), html);
-		URLs.addAll(uniqueLinks);
-
-		String cleanHtml = HtmlCleaner.stripHtml(html);
-		InvertedIndexProcessor.processString(cleanHtml, index, seed, 0);
-
-		if (maxLinks > 1 && URLs.size() > 1) {
-			for (int i = 1; i < URLs.size(); i++) {
-				Task task = new Task(URLs.get(i), index);
-				queue.execute(task);
-			}
-		}
+		URLs.add(seedURL);
+		Task task = new Task(seedURL, index);
+		queue.execute(task);
+		queue.finish();
 	}
 
 	private class Task implements Runnable {
@@ -86,16 +73,25 @@ public class WebCrawler {
 
 		@Override
 		public void run() {
-			String html = HtmlFetcher.fetch(url);
-			HashSet<URL> uniqueLinks = LinkFinder.uniqueUrls(url, html);
+			String html = HtmlFetcher.fetch(url, 3);
 
-			synchronized (URLs) {
-				URLs.addAll(uniqueLinks);
+			if (html == null) {
+				return;
 			}
 
-			String cleanHtml = HtmlCleaner.stripHtml(html);
-			InvertedIndexProcessor.processString(cleanHtml, local, url.toString(), 0, stemmer);
+			List<URL> links = LinkFinder.listUrls(url, html);
+			InvertedIndexProcessor.processString(HtmlCleaner.stripHtml(html), local, url.toString(), 0, stemmer);
 			index.addAll(local);
+
+			synchronized (URLs) {
+				for (URL link : links) {
+					if (!URLs.contains(link) && URLs.size() < maxLinks) {
+						URLs.add(link);
+						Task task = new Task(link, index);
+						queue.execute(task);
+					}
+				}
+			}
 		}
 	}
 }
