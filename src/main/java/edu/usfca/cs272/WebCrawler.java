@@ -11,6 +11,11 @@ import java.util.Set;
 import opennlp.tools.stemmer.Stemmer;
 import opennlp.tools.stemmer.snowball.SnowballStemmer;
 
+/**
+ * A class to crawl links based on a seed url and add the contents of web pages to an inverted index
+ * 
+ * @author Isaac Meltsner
+ */
 public class WebCrawler {
 	/** The total number of links to crawl */
 	private int maxLinks;
@@ -27,6 +32,14 @@ public class WebCrawler {
 	/** The inverted index to use */
 	private final ThreadSafeInvertedIndex index;
 
+	/**
+	 * Initializes the web crawler with a seed url, a work queue, an inverted index, and a max links to crawl
+	 * 
+	 * @param seed the seed url to start the crawl
+	 * @param maxLinks the total number of links to crawl
+	 * @param queue the work queue to use
+	 * @param index the inverted index to use
+	 */
 	public WebCrawler(String seed, int maxLinks, WorkQueue queue, ThreadSafeInvertedIndex index) {
 		this.seed = LinkFinder.removeFragment(seed);
 		this.maxLinks = maxLinks > 0 ? maxLinks : 1;
@@ -35,6 +48,13 @@ public class WebCrawler {
 		this.index = index;
 	}
 
+	/**
+	 * Initializes the web crawler with a seed url, a work queue, and an inverted index
+	 * 
+	 * @param seed the seed url to start the crawl
+	 * @param queue the work queue to use
+	 * @param index the inverted index to use
+	 */
 	public WebCrawler(String seed, WorkQueue queue, ThreadSafeInvertedIndex index) {
 		this.seed = LinkFinder.removeFragment(seed);
 		this.maxLinks = 1;
@@ -43,14 +63,44 @@ public class WebCrawler {
 		this.index = index;
 	}
 
+	/**
+	 * Starts a web crawl using the seed link
+	 * 
+	 * @throws MalformedURLException if the seed link is not a valid url
+	 * @throws NullPointerException if a null error occurs
+	 */
 	public void crawlLinks() throws MalformedURLException, NullPointerException {
 		URL seedURL = new URL(seed);
+		//synchronized (URLs) {
 		URLs.add(seedURL);
+		//}
 		Task task = new Task(seedURL, index);
 		queue.execute(task);
 		queue.finish();
 	}
 
+	/**
+	 * Creates a task for each link provided that cleans and scrapes html and adds the contents to the inverted index
+	 * 
+	 * @param links the links to crawl
+	 */
+	public void crawlLinks(List<URL> links) {
+		synchronized (URLs) {
+			for (URL link : links) {
+				if (URLs.size() > maxLinks) {
+					break;
+				}
+				
+				if (!URLs.contains(link) && URLs.size() < maxLinks) {
+					URLs.add(link);
+					Task task = new Task(link, index);
+					queue.execute(task);
+				}
+			}
+		}
+	}
+
+	/** Cleans and parses html, adds contents to inverted index, and find links on the page */
 	private class Task implements Runnable {
 		/** The url to parse */
 		private final URL url;
@@ -64,6 +114,12 @@ public class WebCrawler {
 		/** The stemmer to use */
 		private final Stemmer stemmer;
 
+		/**
+		 * Creates a task to parse a url and add its contents to the inverted index
+		 * 
+		 * @param url the url to parse and clean
+		 * @param index the index to use
+		 */
 		public Task(URL url, ThreadSafeInvertedIndex index) {
 			this.url = url;
 			this.index = index;
@@ -78,20 +134,12 @@ public class WebCrawler {
 			if (html == null) {
 				return;
 			}
-
-			List<URL> links = LinkFinder.listUrls(url, html);
+			
+			String noBlockElements = HtmlCleaner.stripBlockElements(html);
+			List<URL> links = LinkFinder.listUrls(url, noBlockElements);
+			crawlLinks(links);
 			InvertedIndexProcessor.processString(HtmlCleaner.stripHtml(html), local, url.toString(), 0, stemmer);
 			index.addAll(local);
-
-			synchronized (URLs) {
-				for (URL link : links) {
-					if (!URLs.contains(link) && URLs.size() < maxLinks) {
-						URLs.add(link);
-						Task task = new Task(link, index);
-						queue.execute(task);
-					}
-				}
-			}
 		}
 	}
 }
