@@ -71,9 +71,7 @@ public class WebCrawler {
 	 */
 	public void crawlLinks() throws MalformedURLException, NullPointerException {
 		URL seedURL = new URL(seed);
-		//synchronized (URLs) {
 		URLs.add(seedURL);
-		//}
 		Task task = new Task(seedURL, index);
 		queue.execute(task);
 		queue.finish();
@@ -84,7 +82,7 @@ public class WebCrawler {
 	 * 
 	 * @param links the links to crawl
 	 */
-	public void crawlLinks(List<URL> links) {
+	private void crawlLinks(List<URL> links) {
 		synchronized (URLs) {
 			for (URL link : links) {
 				if (URLs.size() > maxLinks) {
@@ -135,9 +133,8 @@ public class WebCrawler {
 				return;
 			}
 			
-			String noBlockElements = HtmlCleaner.stripBlockElements(html);
-			List<URL> links = LinkFinder.listUrls(url, noBlockElements);
-			crawlLinks(links);
+			crawlLinks(LinkFinder.listUrls(url, HtmlCleaner.stripBlockElements(html)));
+
 			InvertedIndexProcessor.processString(HtmlCleaner.stripHtml(html), local, url.toString(), 0, stemmer);
 			index.addAll(local);
 		}
