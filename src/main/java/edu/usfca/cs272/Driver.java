@@ -27,10 +27,11 @@ public class Driver {
 		WorkQueue queue = null;
 		ArgumentParser parser = new ArgumentParser(args);
 		SearchProcessor processor = null;
-		boolean multiThread = false;
 
-		if (parser.hasFlag("-threads") || parser.hasFlag("-html")) {
-			multiThread = true;
+		boolean html = parser.hasFlag("-html");
+		boolean multiThread = parser.hasFlag("-threads") || html;
+
+		if (multiThread) {
 			safe = new ThreadSafeInvertedIndex();
 			index = safe;
 
@@ -68,12 +69,12 @@ public class Driver {
 			}
 		}
 
-		if (parser.hasFlag("-html")) {
+		if (html) {
 
 			int maxLinks = parser.getInteger("-crawl", 1);
 			
 			try {
-				String seed = LinkFinder.removeFragment(parser.getString("-html"));
+				String seed = parser.getString("-html");
 				WebCrawler crawler = new WebCrawler(seed, maxLinks, queue, safe);
 				crawler.crawlLinks();
 			}
