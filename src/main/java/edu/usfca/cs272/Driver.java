@@ -144,17 +144,14 @@ public class Driver {
 			int port = parser.getInteger("-server", 8080);
 
 			try {
-				SearchEngine searchEngine = new SearchEngine(port);
+				SearchEngine searchEngine = new SearchEngine(port, safe);
 			}
 			catch (IOException e) {
-				e.printStackTrace();
 				System.out.println("Servlet handler error");
 			}
 			catch (Exception e) {
 				System.out.println("Server unable to start");
 			}
-
-			
 		}
 	}
 }
