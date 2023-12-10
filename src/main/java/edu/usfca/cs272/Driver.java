@@ -29,7 +29,8 @@ public class Driver {
 		SearchProcessor processor = null;
 
 		boolean html = parser.hasFlag("-html");
-		boolean multiThread = parser.hasFlag("-threads") || html;
+		boolean launchServer = parser.hasFlag("-server");
+		boolean multiThread = parser.hasFlag("-threads") || html || launchServer;
 
 		if (multiThread) {
 			safe = new ThreadSafeInvertedIndex();
@@ -136,6 +137,24 @@ public class Driver {
 			catch (IOException e) {
 				System.out.println("Unable to write to file at path: " + searchOutput.toString());
 			}
+		}
+
+		if (launchServer) {
+
+			int port = parser.getInteger("-server", 8080);
+
+			try {
+				SearchEngine searchEngine = new SearchEngine(port);
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+				System.out.println("Servlet handler error");
+			}
+			catch (Exception e) {
+				System.out.println("Server unable to start");
+			}
+
+			
 		}
 	}
 }
