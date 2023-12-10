@@ -50,19 +50,19 @@ public class SearchEngineServlet extends HttpServlet {
 	public static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(longDateFormat);
 
 	/** Top the of html page */
-	private final String headTemplate;
+	private final String headerTemplate;
 
-	/** Template for the search form */
+	/** Body of the html page */
 	private final String formTemplate;
 
 	/** Bottom of the html page */
-	private final String footTemplate;
+	private final String footerTemplate;
+
+	/** Bottom of the html page */
+	private final String allResultsTemplate;
 
 	/** Template for a single search result */
 	private final String resultTemplate;
-
-	/** Template for the results part of the page */
-	private final String resultsTemplate;
 
 	/** The inverted index to use */
 	private final ThreadSafeInvertedIndex index;
@@ -75,11 +75,11 @@ public class SearchEngineServlet extends HttpServlet {
 	 */
 	public SearchEngineServlet(ThreadSafeInvertedIndex index) throws IOException {
 		super();
-		headTemplate = Files.readString(base.resolve("header.html"), UTF_8);
-		formTemplate = Files.readString(base.resolve("search-form.html"), UTF_8);
-		footTemplate = Files.readString(base.resolve("footer.html"), UTF_8);
+		headerTemplate = Files.readString(base.resolve("header.html"), UTF_8);
+		formTemplate = Files.readString(base.resolve("form.html"), UTF_8);
+		footerTemplate = Files.readString(base.resolve("footer.html"), UTF_8);
+		allResultsTemplate = Files.readString(base.resolve("all-results.html"), UTF_8);
 		resultTemplate = Files.readString(base.resolve("result.html"));
-		resultsTemplate = Files.readString(base.resolve("results.html"));
 		
 		this.index = index;
 	}
@@ -91,9 +91,9 @@ public class SearchEngineServlet extends HttpServlet {
 		Map<String, String> values = setValues(request);
 
 		StringSubstitutor replacer = new StringSubstitutor(values);
-		String head = replacer.replace(headTemplate);
+		String head = replacer.replace(headerTemplate);
 		String form = replacer.replace(formTemplate);
-		String foot = replacer.replace(footTemplate);
+		String foot = replacer.replace(footerTemplate);
 
 		response.setContentType("text/html");
 		response.setStatus(HttpServletResponse.SC_OK);
@@ -120,11 +120,30 @@ public class SearchEngineServlet extends HttpServlet {
 		Map<String, String> values = setValues(request);
 		values.put("query", queryString);
 
+		
+		synchronized (results) {
+
+			StringBuilder resultsHTML = new StringBuilder();
+
+			if (results.isEmpty()) {
+				resultsHTML.append("<p>No results.</p>");
+			}
+			else {
+				for (InvertedIndex.SearchResult result : results) {
+					values.put("result", result.getLocation());
+					String html = StringSubstitutor.replace(resultTemplate, values);
+					resultsHTML.append(html);
+				}
+			}
+
+			values.put("results-list", resultsHTML.toString());
+		}
+		
 		StringSubstitutor replacer = new StringSubstitutor(values);
-		String head = replacer.replace(headTemplate);
+		String head = replacer.replace(headerTemplate);
 		String form = replacer.replace(formTemplate);
-		String foot = replacer.replace(footTemplate);
-		String output = replacer.replace(resultsTemplate);
+		String allResults = replacer.replace(allResultsTemplate);
+		String foot = replacer.replace(footerTemplate);
 
 		response.setContentType("text/html");
 		response.setStatus(HttpServletResponse.SC_OK);
@@ -132,21 +151,7 @@ public class SearchEngineServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		out.println(head);
 		out.println(form);
-		out.println(output);
-
-		synchronized (results) {
-			if (results.isEmpty()) {
-				out.println("<p>No results.</p>");
-			}
-			else {
-				for (InvertedIndex.SearchResult result : results) {
-					values.put("result", result.getLocation());
-					String html = StringSubstitutor.replace(resultTemplate, values);
-					out.println(html);
-				}
-			}
-		}
-		
+		out.println(allResults);
 		out.println(foot);
 		out.flush();
 	}
