@@ -88,10 +88,7 @@ public class SearchEngineServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		log.info("{} handling: {}", this.hashCode(), request);
 
-		
-
 		Map<String, String> values = setValues(request);
-
 		StringSubstitutor replacer = new StringSubstitutor(values);
 		String head = replacer.replace(headerTemplate);
 		String form = replacer.replace(formTemplate);
@@ -133,7 +130,6 @@ public class SearchEngineServlet extends HttpServlet {
 		Map<String, String> values = setValues(request);
 		values.put("query", queryString);
 
-		
 		synchronized (results) {
 
 			StringBuilder resultsHTML = new StringBuilder();
@@ -144,8 +140,7 @@ public class SearchEngineServlet extends HttpServlet {
 			else {
 				for (InvertedIndex.SearchResult result : results) {
 					values.put("result", result.getLocation());
-					String html = StringSubstitutor.replace(resultTemplate, values);
-					resultsHTML.append(html);
+					resultsHTML.append(StringSubstitutor.replace(resultTemplate, values));
 				}
 			}
 
@@ -183,6 +178,4 @@ public class SearchEngineServlet extends HttpServlet {
 		values.put("action", request.getServletPath());
 		return values;
 	}
-
-
 }
