@@ -145,6 +145,7 @@ public class Driver {
 
 			try {
 				SearchEngine searchEngine = new SearchEngine(port, safe);
+				searchEngine.start();
 			}
 			catch (IOException e) {
 				System.out.println("Servlet handler error");

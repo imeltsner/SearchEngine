@@ -24,14 +24,21 @@ public class SearchEngine {
      * @param port the port to use
      * @param index the index to use
      * @throws IOException if an IO error occurs
-     * @throws Exception if an error occurs
      */
-    public SearchEngine(int port, ThreadSafeInvertedIndex index) throws IOException, Exception {
+    public SearchEngine(int port, ThreadSafeInvertedIndex index) throws IOException {
         this.server = new Server(port);
         this.handler = new ServletHandler();
-
         handler.addServletWithMapping(new ServletHolder(new SearchEngineServlet(index)), "/search");
         server.setHandler(handler);
+        
+    }
+
+    /**
+     * Starts the server
+     * 
+     * @throws Exception if the server fails to start
+     */
+    public void start() throws Exception {
         server.start();
         server.join();
     }
