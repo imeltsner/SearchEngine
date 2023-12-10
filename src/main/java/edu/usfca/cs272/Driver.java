@@ -77,7 +77,7 @@ public class Driver {
 			try {
 				String seed = parser.getString("-html");
 				WebCrawler crawler = new WebCrawler(seed, maxLinks, queue, safe);
-				crawler.crawlLinks();
+				crawler.crawl();
 			}
 			catch (NullPointerException | MalformedURLException e) {
 				System.out.println("Invalid url");
