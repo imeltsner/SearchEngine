@@ -88,6 +88,8 @@ public class SearchEngineServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		log.info("{} handling: {}", this.hashCode(), request);
 
+		
+
 		Map<String, String> values = setValues(request);
 
 		StringSubstitutor replacer = new StringSubstitutor(values);
@@ -99,6 +101,17 @@ public class SearchEngineServlet extends HttpServlet {
 		response.setStatus(HttpServletResponse.SC_OK);
 
 		PrintWriter out = response.getWriter();
+
+		if (index.numWords() == 0) {
+			String warning = """
+				<div class="notification is-warning">
+					<button class="delete"></button>
+					<p><strong>WARNING:</strong> inverted index is empty</p>
+			  	</div>
+					""";
+			out.println(warning);
+		}
+
 		out.println(head);
 		out.println(form);
 		out.println(foot);
@@ -165,10 +178,11 @@ public class SearchEngineServlet extends HttpServlet {
 	private Map<String, String> setValues(HttpServletRequest request) {
 		Map<String, String> values = new HashMap<>();
 		values.put("title", title);
-		values.put("thread", Thread.currentThread().getName());
 		values.put("updated", dateFormatter.format(LocalDateTime.now()));
 		values.put("method", "POST");
 		values.put("action", request.getServletPath());
 		return values;
 	}
+
+
 }
