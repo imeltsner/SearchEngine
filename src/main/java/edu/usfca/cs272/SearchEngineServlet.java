@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.text.StringSubstitutor;
 import org.apache.logging.log4j.LogManager;
@@ -125,10 +126,16 @@ public class SearchEngineServlet extends HttpServlet {
 		queryString = StringEscapeUtils.escapeHtml4(queryString);
 
 		TreeSet<String> query = FileStemmer.uniqueStems(queryString);
+
+		StopWatch watch = new StopWatch();
+		watch.start();
 		ArrayList<InvertedIndex.SearchResult> results = index.search(query, true);
+		double searchTime = watch.getNanoTime() / 1_000_000_000.0;
 
 		Map<String, String> values = setValues(request);
 		values.put("query", queryString);
+		values.put("total-results", String.valueOf(results.size()));
+		values.put("search-time", String.format("%.10f", searchTime));
 
 		synchronized (results) {
 
@@ -138,8 +145,11 @@ public class SearchEngineServlet extends HttpServlet {
 				resultsHTML.append("<p>No results.</p>");
 			}
 			else {
+				
 				for (InvertedIndex.SearchResult result : results) {
 					values.put("result", result.getLocation());
+					values.put("score", String.format("%.3f", result.getScore()));
+					values.put("matches", String.valueOf(result.getCount()));
 					resultsHTML.append(StringSubstitutor.replace(resultTemplate, values));
 				}
 			}
