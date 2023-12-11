@@ -180,18 +180,17 @@ public class SearchEngineServlet extends HttpServlet {
 	 * @param out the print writer to use
 	 */
 	private void indexEmptyWaring(PrintWriter out) {
-        if (index.numWords() > 0) {
-            return;
-        }
-
-        else {
+		if (index.numWords() > 0) {
+			return;
+		}
+		else {
 			String warning = """
-				<div class="notification is-warning">
-					<button class="delete"></button>
-					<p><strong>WARNING:</strong> inverted index is empty</p>
-			  	</div>
+					<div class="notification is-warning">
+						<button class="delete"></button>
+						<p><strong>WARNING:</strong> inverted index is empty</p>
+			  		</div>
 					""";
 			out.println(warning);
 		}
-    }
+	}
 }

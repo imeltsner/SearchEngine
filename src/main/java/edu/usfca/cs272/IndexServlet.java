@@ -140,7 +140,7 @@ public class IndexServlet extends HttpServlet {
 				for (String location : index.viewLocations(word)) {
 					outputLocation(word, location, out);
 				}
-				
+
 				out.println("</div>");
 			}
 		}
@@ -179,13 +179,12 @@ public class IndexServlet extends HttpServlet {
 		if (index.numWords() > 0) {
 			return;
 		}
-
 		else {
 			String warning = """
-				<div class="notification is-warning">
-					<button class="delete"></button>
-					<p><strong>WARNING:</strong> inverted index is empty</p>
-			  	</div>
+					<div class="notification is-warning">
+						<button class="delete"></button>
+						<p><strong>WARNING:</strong> inverted index is empty</p>
+			  		</div>
 					""";
 			out.println(warning);
 		}
@@ -200,7 +199,7 @@ public class IndexServlet extends HttpServlet {
 		String html = """
 				<div class="container"
 					<div class="box">
-						<div class = "box">
+						<div class="box">
 							<h1 class="title">Inverted Index</h1>
 						</div>
 				""";
