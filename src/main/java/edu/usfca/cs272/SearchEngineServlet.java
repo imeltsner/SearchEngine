@@ -36,7 +36,7 @@ public class SearchEngineServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/** Title of webpage */
-	private static final String title = "Isaac Search";
+	private static final String title = "WikiCrawl";
 
 	/** Logger to use */
 	private static final Logger log = LogManager.getLogger();
@@ -100,15 +100,7 @@ public class SearchEngineServlet extends HttpServlet {
 
 		PrintWriter out = response.getWriter();
 
-		if (index.numWords() == 0) {
-			String warning = """
-				<div class="notification is-warning">
-					<button class="delete"></button>
-					<p><strong>WARNING:</strong> inverted index is empty</p>
-			  	</div>
-					""";
-			out.println(warning);
-		}
+		indexEmptyWaring(out);
 
 		out.println(head);
 		out.println(form);
@@ -188,4 +180,20 @@ public class SearchEngineServlet extends HttpServlet {
 		values.put("action", request.getServletPath());
 		return values;
 	}
+
+	private void indexEmptyWaring(PrintWriter out) {
+        if (index.numWords() > 0) {
+            return;
+        }
+
+        else {
+			String warning = """
+				<div class="notification is-warning">
+					<button class="delete"></button>
+					<p><strong>WARNING:</strong> inverted index is empty</p>
+			  	</div>
+					""";
+			out.println(warning);
+		}
+    }
 }
