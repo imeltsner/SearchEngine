@@ -20,6 +20,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * A servlet for the web page that displays the inverted index
+ * 
+ * @author Isaac Meltsner
+ */
 public class IndexServlet extends HttpServlet {
     /** Not used */
 	private static final long serialVersionUID = 1L;
