@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeSet;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.commons.text.StringSubstitutor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -90,22 +92,63 @@ public class IndexServlet extends HttpServlet {
 		pageTitle(out);
 
 		for (String word : index.viewWords()) {
-			String html = """
-					<div class=\"box\">
-						<h3><strong>%s</strong><h3>
-					""";
-			html = String.format(html, word);
-			out.println(html);
+			outputWord(word, out);
 
 			for (String location : index.viewLocations(word)) {
-				html = "<p><a href=%s>%s</a> | <strong>%d appearances</strong> </p>\n";
-				html = String.format(html, location, location, index.numPositions(word, location));
-				out.println(html);
+				outputLocation(word, location, out);
 			}
 
 			out.println("</div>");
 		}
 		
+		out.println("</div>");
+		out.println("</div>");
+		out.println(foot);
+		out.flush();
+	}
+
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		log.info("{} handling: {}", this.hashCode(), request);
+
+		Map<String, String> values = setValues(request);
+		StringSubstitutor replacer = new StringSubstitutor(values);
+		String head = replacer.replace(headerTemplate);
+		String form = replacer.replace(formTemplate);
+		String foot = replacer.replace(footerTemplate);
+
+		response.setContentType("text/html");
+		response.setStatus(HttpServletResponse.SC_OK);
+
+		PrintWriter out = response.getWriter();
+		indexEmptyWaring(out);
+		out.println(head);
+		out.println(form);
+		pageTitle(out);
+
+		String queryString = request.getParameter("query");
+		queryString = queryString == null || queryString.isBlank() ? "" : queryString;
+		queryString = StringEscapeUtils.escapeHtml4(queryString);
+		TreeSet<String> query = FileStemmer.uniqueStems(queryString);
+		boolean wordFound = false;
+
+		for (String word : query) {
+			if (index.viewWords().contains(word)) {
+				wordFound = true;
+				outputWord(word, out);
+
+				for (String location : index.viewLocations(word)) {
+					outputLocation(word, location, out);
+				}
+				
+				out.println("</div>");
+			}
+		}
+
+		if (!wordFound) {
+			out.println("<p>Not found</p>");
+		}
+
 		out.println("</div>");
 		out.println("</div>");
 		out.println(foot);
@@ -161,6 +204,34 @@ public class IndexServlet extends HttpServlet {
 							<h1 class="title">Inverted Index</h1>
 						</div>
 				""";
+		out.println(html);
+	}
+
+	/**
+	 * Outputs a word from the inverted index as html
+	 * 
+	 * @param word the word to output
+	 * @param out the print writer to use
+	 */
+	private void outputWord(String word, PrintWriter out) {
+		String html = """
+					<div class=\"box\">
+						<h3><strong>%s</strong><h3>
+					""";
+		html = String.format(html, word);
+		out.println(html);
+	}
+
+	/**
+	 * Outputs a location from the inverted index as html
+	 * 
+	 * @param word the word from the index
+	 * @param location the location associated with the word
+	 * @param out the print writer to use
+	 */
+	private void outputLocation(String word, String location, PrintWriter out) {
+		String html = "<p><a href=%s>%s</a> | <strong>%d appearances</strong> </p>\n";
+		html = String.format(html, location, location, index.numPositions(word, location));
 		out.println(html);
 	}
 }
