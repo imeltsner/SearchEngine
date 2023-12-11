@@ -29,6 +29,7 @@ public class SearchEngine {
         this.server = new Server(port);
         this.handler = new ServletHandler();
         handler.addServletWithMapping(new ServletHolder(new SearchEngineServlet(index)), "/search");
+        handler.addServletWithMapping(new ServletHolder(new IndexServlet(index)), "/index");
         server.setHandler(handler);
         
     }
