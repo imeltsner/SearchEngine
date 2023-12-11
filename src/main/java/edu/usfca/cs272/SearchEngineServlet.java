@@ -174,6 +174,11 @@ public class SearchEngineServlet extends HttpServlet {
 		return values;
 	}
 
+	/**
+	 * Outputs a warning to the web page if the inverted index is empty
+	 * 
+	 * @param out the print writer to use
+	 */
 	private void indexEmptyWaring(PrintWriter out) {
         if (index.numWords() > 0) {
             return;
