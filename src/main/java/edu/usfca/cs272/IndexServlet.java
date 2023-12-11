@@ -184,7 +184,7 @@ public class IndexServlet extends HttpServlet {
 					<div class="notification is-warning">
 						<button class="delete"></button>
 						<p><strong>WARNING:</strong> inverted index is empty</p>
-			  		</div>
+					</div>
 					""";
 			out.println(warning);
 		}
