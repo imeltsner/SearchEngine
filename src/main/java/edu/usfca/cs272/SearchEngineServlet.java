@@ -81,7 +81,6 @@ public class SearchEngineServlet extends HttpServlet {
 		footerTemplate = Files.readString(base.resolve("footer.html"), UTF_8);
 		allResultsTemplate = Files.readString(base.resolve("all-results.html"), UTF_8);
 		resultTemplate = Files.readString(base.resolve("result.html"));
-		
 		this.index = index;
 	}
 
@@ -99,9 +98,7 @@ public class SearchEngineServlet extends HttpServlet {
 		response.setStatus(HttpServletResponse.SC_OK);
 
 		PrintWriter out = response.getWriter();
-
 		indexEmptyWaring(out);
-
 		out.println(head);
 		out.println(form);
 		out.println(foot);
@@ -114,9 +111,7 @@ public class SearchEngineServlet extends HttpServlet {
 
 		String queryString = request.getParameter("query");
 		queryString = queryString == null || queryString.isBlank() ? "" : queryString;
-
 		queryString = StringEscapeUtils.escapeHtml4(queryString);
-
 		TreeSet<String> query = FileStemmer.uniqueStems(queryString);
 
 		StopWatch watch = new StopWatch();
@@ -130,14 +125,12 @@ public class SearchEngineServlet extends HttpServlet {
 		values.put("search-time", String.format("%.10f", searchTime));
 
 		synchronized (results) {
-
 			StringBuilder resultsHTML = new StringBuilder();
 
 			if (results.isEmpty()) {
 				resultsHTML.append("<p>No results.</p>");
 			}
 			else {
-				
 				for (InvertedIndex.SearchResult result : results) {
 					values.put("result", result.getLocation());
 					values.put("score", String.format("%.3f", result.getScore()));

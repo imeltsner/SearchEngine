@@ -26,7 +26,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author Isaac Meltsner
  */
 public class IndexServlet extends HttpServlet {
-    /** Not used */
+	/** Not used */
 	private static final long serialVersionUID = 1L;
 
 	/** Title of webpage */
@@ -47,72 +47,72 @@ public class IndexServlet extends HttpServlet {
 	/** Top the of html page */
 	private final String headerTemplate;
 
-    /** Body of the html page */
+	/** Body of the html page */
 	private final String formTemplate;
 
-    /** Bottom of the html page */
+	/** Bottom of the html page */
 	private final String footerTemplate;
 
-    /** The inverted index to use */
+	/** The inverted index to use */
 	private final ThreadSafeInvertedIndex index;
 
-    /**
-     * Initializes the servlet with the inverted index to use and the paths to the html files
-     * 
-     * @param index the inverted index to use
-     * @throws IOException if an IO error occurs
-     */
-    public IndexServlet(ThreadSafeInvertedIndex index) throws IOException {
-        super();
-        headerTemplate = Files.readString(base.resolve("header.html"), UTF_8);
-        formTemplate = Files.readString(base.resolve("form.html"), UTF_8);
+	/**
+	 * Initializes the servlet with the inverted index to use and the paths to the html files
+	 * 
+	 * @param index the inverted index to use
+	 * @throws IOException if an IO error occurs
+	 */
+	public IndexServlet(ThreadSafeInvertedIndex index) throws IOException {
+		super();
+		headerTemplate = Files.readString(base.resolve("header.html"), UTF_8);
+		formTemplate = Files.readString(base.resolve("form.html"), UTF_8);
 		footerTemplate = Files.readString(base.resolve("footer.html"), UTF_8);
-		
 		this.index = index;
-    }
+	}
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        log.info("{} handling: {}", this.hashCode(), request);
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		log.info("{} handling: {}", this.hashCode(), request);
 
 		Map<String, String> values = setValues(request);
 		StringSubstitutor replacer = new StringSubstitutor(values);
 		String head = replacer.replace(headerTemplate);
-        String form = replacer.replace(formTemplate);
+		String form = replacer.replace(formTemplate);
 		String foot = replacer.replace(footerTemplate);
 
 		response.setContentType("text/html");
 		response.setStatus(HttpServletResponse.SC_OK);
 
 		PrintWriter out = response.getWriter();
-        indexEmptyWaring(out);
-        out.println(head);
-        out.println(form);
-        pageTitle(out);
+		indexEmptyWaring(out);
+		out.println(head);
+		out.println(form);
+		pageTitle(out);
 
-        for (String word : index.viewWords()) {
-            String html = """
-                    <div class=\"box\">
-                        <h3><strong>%s</strong><h3>
-                    """;
-            html = String.format(html, word);
-            out.println(html);
+		for (String word : index.viewWords()) {
+			String html = """
+					<div class=\"box\">
+						<h3><strong>%s</strong><h3>
+					""";
+			html = String.format(html, word);
+			out.println(html);
 
-            for (String location : index.viewLocations(word)) {
-                html = "<p><a href=%s>%s</a> | <strong>%d appearances</strong> </p>\n";
-                html = String.format(html, location, location, index.numPositions(word, location));
-                out.println(html);
-            }
-            out.println("</div>");
-        }
-        
-        out.println("</div>");
-        out.println("</div>");
+			for (String location : index.viewLocations(word)) {
+				html = "<p><a href=%s>%s</a> | <strong>%d appearances</strong> </p>\n";
+				html = String.format(html, location, location, index.numPositions(word, location));
+				out.println(html);
+			}
+
+			out.println("</div>");
+		}
+		
+		out.println("</div>");
+		out.println("</div>");
 		out.println(foot);
 		out.flush();
-    }
+	}
 
-    /**
+	/**
 	 * Adds the values for the html template
 	 * 
 	 * @param request the http request to use
@@ -127,17 +127,17 @@ public class IndexServlet extends HttpServlet {
 		return values;
 	}
 
-    /**
-     * Outputs a warning to the web page if the inverted index is empty
-     * 
-     * @param out the print writer to use
-     */
-    private void indexEmptyWaring(PrintWriter out) {
-        if (index.numWords() > 0) {
-            return;
-        }
+	/**
+	 * Outputs a warning to the web page if the inverted index is empty
+	 * 
+	 * @param out the print writer to use
+	 */
+	private void indexEmptyWaring(PrintWriter out) {
+		if (index.numWords() > 0) {
+			return;
+		}
 
-        else {
+		else {
 			String warning = """
 				<div class="notification is-warning">
 					<button class="delete"></button>
@@ -146,21 +146,21 @@ public class IndexServlet extends HttpServlet {
 					""";
 			out.println(warning);
 		}
-    }
+	}
 
-    /**
-     * Outputs the title for this webpage
-     * 
-     * @param out the print writer to use
-     */
-    private void pageTitle(PrintWriter out) {
-        String html = """
-                <div class="container"
-                    <div class="box">
-                        <div class = "box">
-                            <h1 class="title">Inverted Index</h1>
-                        </div>
-                """;
-        out.println(html);
-    }
+	/**
+	 * Outputs the title for this webpage
+	 * 
+	 * @param out the print writer to use
+	 */
+	private void pageTitle(PrintWriter out) {
+		String html = """
+				<div class="container"
+					<div class="box">
+						<div class = "box">
+							<h1 class="title">Inverted Index</h1>
+						</div>
+				""";
+		out.println(html);
+	}
 }
