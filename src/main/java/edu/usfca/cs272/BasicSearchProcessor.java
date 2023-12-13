@@ -131,7 +131,7 @@ public class BasicSearchProcessor implements SearchProcessor {
 	 * @return a single query string of unique stems
 	 */
 	private String joinQuery(String line) {
-		return String.join(line, FileStemmer.uniqueStems(line, stemmer));
+		return String.join(" ", FileStemmer.uniqueStems(line, stemmer));
 	}
 
 	@Override
