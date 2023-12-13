@@ -69,10 +69,26 @@ public class WebCrawler {
 	 * @throws MalformedURLException if the seed link is not a valid url
 	 * @throws NullPointerException if a null error occurs
 	 */
-	public void crawlLinks() throws MalformedURLException, NullPointerException { // TODO seed should be a param here
-		URL seedURL = new URL(seed);
-		URLs.add(seedURL);
-		Task task = new Task(seedURL, index);
+	public void crawl() throws MalformedURLException, NullPointerException {
+		crawl(seed);
+	}
+
+	/**
+	 * Starts a web crawl using the given url
+	 * 
+	 * @param urlString the url to start the crawl
+	 * @throws MalformedURLException if the url is invalid
+	 * @throws NullPointerException if the url is null
+	 */
+	public void crawl(String urlString) throws MalformedURLException, NullPointerException {
+		URL url = new URL(urlString);
+
+		synchronized (URLs) {
+			if (!URLs.contains(url))
+				URLs.add(url);
+		}
+
+		Task task = new Task(url, index);
 		queue.execute(task);
 		queue.finish();
 	}

@@ -4,6 +4,15 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 
+/*
+ * TODO
+35	TOTAL
+	
+20	index browser subindex
+10	framework
+5	search statistics
+ */
+
 /**
  * Class responsible for running this project based on the provided command-line
  * arguments. See the README for details.
@@ -29,7 +38,8 @@ public class Driver {
 		SearchProcessor processor = null;
 
 		boolean html = parser.hasFlag("-html");
-		boolean multiThread = parser.hasFlag("-threads") || html;
+		boolean launchServer = parser.hasFlag("-server");
+		boolean multiThread = parser.hasFlag("-threads") || html || launchServer;
 
 		if (multiThread) {
 			safe = new ThreadSafeInvertedIndex();
@@ -76,7 +86,7 @@ public class Driver {
 			try {
 				String seed = parser.getString("-html");
 				WebCrawler crawler = new WebCrawler(seed, maxLinks, queue, safe);
-				crawler.crawlLinks();
+				crawler.crawl();
 			}
 			catch (NullPointerException | MalformedURLException e) {
 				System.out.println("Invalid url");
@@ -135,6 +145,22 @@ public class Driver {
 			}
 			catch (IOException e) {
 				System.out.println("Unable to write to file at path: " + searchOutput.toString());
+			}
+		}
+
+		if (launchServer) {
+
+			int port = parser.getInteger("-server", 8080);
+
+			try {
+				SearchEngine searchEngine = new SearchEngine(port, safe);
+				searchEngine.start();
+			}
+			catch (IOException e) {
+				System.out.println("Servlet handler error");
+			}
+			catch (Exception e) {
+				System.out.println("Server unable to start");
 			}
 		}
 	}
