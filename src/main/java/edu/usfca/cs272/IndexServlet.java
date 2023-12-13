@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.text.StringEscapeUtils;
@@ -65,7 +66,6 @@ public class IndexServlet extends HttpServlet {
 	 * @throws IOException if an IO error occurs
 	 */
 	public IndexServlet(ThreadSafeInvertedIndex index) throws IOException {
-		super();
 		headerTemplate = Files.readString(base.resolve("header.html"), UTF_8);
 		formTemplate = Files.readString(base.resolve("form.html"), UTF_8);
 		footerTemplate = Files.readString(base.resolve("footer.html"), UTF_8);
@@ -78,33 +78,9 @@ public class IndexServlet extends HttpServlet {
 
 		Map<String, String> values = setValues(request);
 		StringSubstitutor replacer = new StringSubstitutor(values);
-		String head = replacer.replace(headerTemplate);
-		String form = replacer.replace(formTemplate);
-		String foot = replacer.replace(footerTemplate);
+		PrintWriter out = printHeader(replacer, response);
 
-		response.setContentType("text/html");
-		response.setStatus(HttpServletResponse.SC_OK);
-
-		PrintWriter out = response.getWriter();
-		indexEmptyWaring(out);
-		out.println(head);
-		out.println(form);
-		pageTitle(out);
-
-		for (String word : index.viewWords()) {
-			outputWord(word, out);
-
-			for (String location : index.viewLocations(word)) {
-				outputLocation(word, location, out);
-			}
-
-			out.println("</div>");
-		}
-		
-		out.println("</div>");
-		out.println("</div>");
-		out.println(foot);
-		out.flush();
+		printIndex(index.viewWords(), out, replacer);
 	}
 
 	@Override
@@ -113,46 +89,14 @@ public class IndexServlet extends HttpServlet {
 
 		Map<String, String> values = setValues(request);
 		StringSubstitutor replacer = new StringSubstitutor(values);
-		String head = replacer.replace(headerTemplate);
-		String form = replacer.replace(formTemplate);
-		String foot = replacer.replace(footerTemplate);
-
-		response.setContentType("text/html");
-		response.setStatus(HttpServletResponse.SC_OK);
-
-		PrintWriter out = response.getWriter();
-		indexEmptyWaring(out);
-		out.println(head);
-		out.println(form);
-		pageTitle(out);
+		PrintWriter out = printHeader(replacer, response);
 
 		String queryString = request.getParameter("query");
 		queryString = queryString == null || queryString.isBlank() ? "" : queryString;
 		queryString = StringEscapeUtils.escapeHtml4(queryString);
 		TreeSet<String> query = FileStemmer.uniqueStems(queryString);
-		boolean wordFound = false;
 
-		for (String word : query) {
-			if (index.viewWords().contains(word)) {
-				wordFound = true;
-				outputWord(word, out);
-
-				for (String location : index.viewLocations(word)) {
-					outputLocation(word, location, out);
-				}
-
-				out.println("</div>");
-			}
-		}
-
-		if (!wordFound) {
-			out.println("<p>Not found</p>");
-		}
-
-		out.println("</div>");
-		out.println("</div>");
-		out.println(foot);
-		out.flush();
+		printIndex(query, out, replacer);
 	}
 
 	/**
@@ -232,5 +176,48 @@ public class IndexServlet extends HttpServlet {
 		String html = "<p><a href=%s>%s</a> | <strong>%d appearances</strong> </p>\n";
 		html = String.format(html, location, location, index.numPositions(word, location));
 		out.println(html);
+	}
+
+	private PrintWriter printHeader(StringSubstitutor replacer, HttpServletResponse response) throws IOException {
+		String head = replacer.replace(headerTemplate);
+		String form = replacer.replace(formTemplate);
+
+		response.setContentType("text/html");
+		response.setStatus(HttpServletResponse.SC_OK);
+
+		PrintWriter out = response.getWriter();
+		indexEmptyWaring(out);
+		out.println(head);
+		out.println(form);
+		pageTitle(out);
+
+		return out;
+	}
+
+	private void printIndex(Set<String> query, PrintWriter out, StringSubstitutor replacer) {
+		boolean wordFound = false;
+
+		for (String word : query) {
+			if (index.viewWords().contains(word)) {
+				wordFound = true;
+				outputWord(word, out);
+
+				for (String location : index.viewLocations(word)) {
+					outputLocation(word, location, out);
+				}
+
+				out.println("</div>");
+			}
+		}
+
+		if (!wordFound) {
+			out.println("<p>Not found</p>");
+		}
+
+		String foot = replacer.replace(footerTemplate);
+		out.println("</div>");
+		out.println("</div>");
+		out.println(foot);
+		out.flush();
 	}
 }
