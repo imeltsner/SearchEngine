@@ -4,6 +4,15 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 
+/*
+ * TODO
+35	TOTAL
+	
+20	index browser subindex
+10	framework
+5	search statistics
+ */
+
 /**
  * Class responsible for running this project based on the provided command-line
  * arguments. See the README for details.
