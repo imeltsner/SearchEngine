@@ -105,7 +105,7 @@ public class WebCrawler {
 					break;
 				}
 				
-				if (!URLs.contains(link) && URLs.size() < maxLinks) { // TODO Can remove && URLs.size() < maxLinks
+				if (!URLs.contains(link) && URLs.size() < maxLinks) {
 					URLs.add(link);
 					Task task = new Task(link, index);
 					queue.execute(task);
@@ -139,8 +139,6 @@ public class WebCrawler {
 			this.index = index;
 			this.local = new InvertedIndex();
 			this.stemmer = new SnowballStemmer(ENGLISH);
-			
-			// TODO URLs.add(link);
 		}
 
 		@Override
@@ -151,11 +149,12 @@ public class WebCrawler {
 				return;
 			}
 			
-			// TODO stripBlockElements is called twice
-			
-			crawlLinks(LinkFinder.listUrls(url, HtmlCleaner.stripBlockElements(html)));
+			html = HtmlCleaner.stripBlockElements(html);
+			crawlLinks(LinkFinder.listUrls(url, html));
 
-			InvertedIndexProcessor.processString(HtmlCleaner.stripHtml(html), local, url.toString(), 0, stemmer);
+			html = HtmlCleaner.stripTags(html);
+			html = HtmlCleaner.stripEntities(html);
+			InvertedIndexProcessor.processString(html, local, url.toString(), 0, stemmer);
 			index.addAll(local);
 		}
 	}
