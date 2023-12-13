@@ -186,8 +186,10 @@ public class SearchEngineServlet extends HttpServlet {
 		else {
 			String warning = """
 					<div class="notification is-warning">
-						<button class="delete"></button>
-						<p><strong>WARNING:</strong> inverted index is empty</p>
+						<div class="control">
+							<button class="delete"></button>
+							<p><strong>WARNING:</strong> inverted index is empty</p>
+						</div>
 					</div>
 					""";
 			out.println(warning);
