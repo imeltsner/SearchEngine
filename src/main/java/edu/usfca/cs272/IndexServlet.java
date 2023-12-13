@@ -180,6 +180,14 @@ public class IndexServlet extends HttpServlet {
 		out.println(html);
 	}
 
+	/**
+	 * Outputs the header of the webpage as html
+	 * 
+	 * @param replacer the string substitutor to fill the html template
+	 * @param response the http response
+	 * @return the print writer to use
+	 * @throws IOException if an IO error occurs
+	 */
 	private PrintWriter printHeader(StringSubstitutor replacer, HttpServletResponse response) throws IOException {
 		String head = replacer.replace(headerTemplate);
 		String form = replacer.replace(formTemplate);
@@ -196,6 +204,13 @@ public class IndexServlet extends HttpServlet {
 		return out;
 	}
 
+	/**
+	 * Outputs the inverted index as html
+	 * 
+	 * @param query the query search the inverted index
+	 * @param out the print writer to use
+	 * @param replacer the string substitutor to fill the html template
+	 */
 	private void printIndex(Set<String> query, PrintWriter out, StringSubstitutor replacer) {
 		boolean wordFound = false;
 
