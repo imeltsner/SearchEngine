@@ -69,7 +69,7 @@ public class WebCrawler {
 	 * @throws MalformedURLException if the seed link is not a valid url
 	 * @throws NullPointerException if a null error occurs
 	 */
-	public void crawlLinks() throws MalformedURLException, NullPointerException {
+	public void crawlLinks() throws MalformedURLException, NullPointerException { // TODO seed should be a param here
 		URL seedURL = new URL(seed);
 		URLs.add(seedURL);
 		Task task = new Task(seedURL, index);
@@ -89,7 +89,7 @@ public class WebCrawler {
 					break;
 				}
 				
-				if (!URLs.contains(link) && URLs.size() < maxLinks) {
+				if (!URLs.contains(link) && URLs.size() < maxLinks) { // TODO Can remove && URLs.size() < maxLinks
 					URLs.add(link);
 					Task task = new Task(link, index);
 					queue.execute(task);
@@ -123,6 +123,8 @@ public class WebCrawler {
 			this.index = index;
 			this.local = new InvertedIndex();
 			this.stemmer = new SnowballStemmer(ENGLISH);
+			
+			// TODO URLs.add(link);
 		}
 
 		@Override
@@ -132,6 +134,8 @@ public class WebCrawler {
 			if (html == null) {
 				return;
 			}
+			
+			// TODO stripBlockElements is called twice
 			
 			crawlLinks(LinkFinder.listUrls(url, HtmlCleaner.stripBlockElements(html)));
 
