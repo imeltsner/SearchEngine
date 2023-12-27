@@ -1,5 +1,7 @@
 # Search Engine
 
+[Java](https://img.shields.io/badge/Java-orange)
+
 This project is a multi-threaded search engine that uses a web crawler to parse content from web pages and store data in an inverted index. 
 Users can make queries to the inverted index and see all of the links to pages where their query string was found. Users can also view the entire contents of the inverted index. 
 
@@ -9,7 +11,7 @@ Users can make queries to the inverted index and see all of the links to pages w
 2. Start the program with the following command line arguments (see [Optional Arguments](#optional-arguments))
     - ``-html [link]`` where the ``[link]`` argument is the url to begin the web crawl to build the inverted index
     - ``-server [port]`` where the ``[port]`` argument is the port the web server will use to accept connections. Defaults to 8080
-3. Open a web browser and navigate to http://localhost:[port]/search where ``[port]`` is the port number you specified. Users can search the inverted index here.
+3. Open a web browser and navigate to http://localhost:[port]/search where ``[port]`` is the port number you specified. Users can search the inverted index here
 4. Additional endpoints
     - /index - this page allows users view the entire contents of the inverted index, or search for a specific word, where they will be shown a sub-index if the word is in the inverted index
 
