@@ -1,6 +1,6 @@
 # Search Engine
 
-[](https://img.shields.io/badge/Java-orange)
+![Java](https://img.shields.io/badge/Java-orange)
 
 This project is a multi-threaded search engine that uses a web crawler to parse content from web pages and store data in an inverted index. 
 Users can make queries to the inverted index and see all of the links to pages where their query string was found. Users can also view the entire contents of the inverted index. 
