@@ -1,6 +1,6 @@
 # Search Engine
 
-This project is a multi-threaded search engine that uses a web crawler to parse html page contents and store data in an inverted index. 
+This project is a multi-threaded search engine that uses a web crawler to parse content from web pages and store data in an inverted index. 
 Users can make queries to the inverted index and see all of the links to pages where their query string was found. Users can also view the entire contents of the inverted index. 
 
 ## Usage
@@ -12,7 +12,7 @@ Users can make queries to the inverted index and see all of the links to pages w
 
 #### Optional Arguments
 
-- -crawl [value] where the [value] argument specifies the maximum number of links to crawl. Defaults to 1
+- **-crawl [value]** where the **[value]** argument specifies the maximum number of links to crawl. Defaults to 1
 - -threads [value] where the [value] argument specifies the number of worker threads to use. Defaults to 5
 - -text [path] where the [path] argument is a path to a file or directory containing text files to store in the inverted index
     - use this argument in place of -html if you want to build the inverted index based on locally stored files instead of a web crawl
